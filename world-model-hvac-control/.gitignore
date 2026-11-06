@@ -1,0 +1,20 @@
+# local virtualenv
+.venv/
+venv/
+
+# simulator dataset / runtime cache (CityLearn downloads CityLearn data set
+# archives here; never commit them)
+data/
+.cache/
+citylearn_data/
+*.zip
+*.csv.gz
+
+# results are committed as tables only
+results/*.npz
+results/*.pt
+results/*.pth
+
+__pycache__/
+*.pyc
+.pytest_cache/

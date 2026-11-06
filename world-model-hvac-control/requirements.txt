@@ -1,0 +1,40 @@
+# POC #4 slice 1 -- world-model HVAC control
+# Python 3.12.3 (tested on this VM: 4 cores, 7.7 GB RAM, no GPU)
+#
+# Install:
+#   python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+#
+# NOTE on scikit-learn: CityLearn 3.2.0 pins `scikit-learn<=1.2.2` and 1.2.2
+# has no cp312 wheel, so pip builds it from source on first install (the built
+# wheel is then cached by pip). If the build fails with "No space left on
+# device", point TMPDIR at a filesystem with >= 1 GB free (this VM's /tmp is a
+# 512 MB tmpfs) and retry:
+#   TMPDIR=/var/tmp .venv/bin/pip install -r requirements.txt
+#
+# NOTE on torch: the +cpu local version is pinned so pip never resolves the
+# multi-GB CUDA wheels from PyPI (no GPU on this VM).
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# --- simulator ---
+citylearn==3.2.0
+
+# --- model-free baseline (stable-baselines3) ---
+stable-baselines3==2.9.2
+gymnasium==0.29.1
+torch==2.8.0+cpu
+cloudpickle==3.1.1
+
+# --- numerics / data ---
+numpy==1.26.4
+scipy==1.13.1
+pandas==2.2.3
+scikit-learn==1.2.2
+
+# --- CityLearn runtime deps (pinned for reproducibility) ---
+platformdirs==4.3.6
+pyyaml==6.0.2
+requests==2.32.3
+simplejson==3.19.3
+
+# --- tests ---
+pytest==8.3.4

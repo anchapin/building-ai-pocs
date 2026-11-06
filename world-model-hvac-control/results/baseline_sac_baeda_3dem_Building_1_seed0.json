@@ -1,0 +1,50 @@
+{
+  "results": {
+    "rule_based_fixed_setpoint": {
+      "comfort_violation_c_mean": 41.16557216644287,
+      "comfort_violations_mean": 20.5,
+      "comfort_violations_total": 41,
+      "energy_kwh_mean": 0.5676419138908386,
+      "energy_kwh_total": 1.1352838277816772,
+      "episodes": 2,
+      "steps": 46
+    },
+    "sac": {
+      "comfort_violation_c_mean": 30.531636238098145,
+      "comfort_violations_mean": 17.0,
+      "comfort_violations_total": 34,
+      "energy_kwh_mean": 0.5676419138908386,
+      "energy_kwh_total": 1.1352838277816772,
+      "episodes": 2,
+      "steps": 46
+    }
+  },
+  "run": {
+    "action_dim": 1,
+    "algo": "SAC",
+    "batch_size": 64,
+    "buffer_size": 10000,
+    "building": "Building_1",
+    "building_ids": [
+      "baeda_3dem:Building_1"
+    ],
+    "climate_id": "baeda_3dem",
+    "comfort_weight": 0.5,
+    "dataset": "baeda_3dem",
+    "energy_weight": 1.0,
+    "episode_time_steps": 24,
+    "eval_episodes": 2,
+    "gamma": 0.99,
+    "learning_rate": 0.0003,
+    "learning_starts": 100,
+    "library": "stable-baselines3",
+    "observation_dim": 10,
+    "seed": 0,
+    "timesteps": 2000
+  },
+  "runtime": {
+    "python": "3.12.3",
+    "timestamp": "2026-11-06T15:46:51",
+    "wall_time_s": 33.185
+  }
+}
