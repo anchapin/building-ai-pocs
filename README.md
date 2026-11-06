@@ -16,7 +16,7 @@ A clean negative result is a successful outcome — it saves a proposal cycle. N
 | Folder | Idea | Status |
 | --- | --- | --- |
 | `ss-dfa-surrogate-poc/` | SS-DFA / single-map (optical-AI framework) as a cheap-to-train thermal surrogate. Baseline for the photonic question. | In progress |
-| `retrofit-copilot/` | Matchline drawing → calibrated baseline → neuro-symbolic agent ranking energy-conservation measures. | Not started |
+| `retrofit-copilot/` | Matchline drawing → calibrated baseline → neuro-symbolic agent ranking energy-conservation measures. | **Go** — spun out to [anchapin/retrofit-copilot](https://github.com/anchapin/retrofit-copilot) (2026-11-06) |
 | `neural-operator-surrogate/` | Differentiable neural-operator / PINN surrogate for a slow BEM component, standalone. | Not started |
 | `drawing-verifier/` | VLM + neuro-symbolic verifier hardening drawing-to-BEM (Matchline). | In progress (slice 3: shared-wall zone membership; label Conditional) |
 | `world-model-hvac-control/` | Diffusion / world-model HVAC control for grid-interactive buildings. | Not started |
