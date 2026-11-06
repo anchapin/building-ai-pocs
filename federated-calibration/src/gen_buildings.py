@@ -84,6 +84,9 @@ CLIMATES: Dict[str, Tuple[float, float, float]] = {
     "temperate": (12.0, 5.0, 9.0),
     "cold": (2.0, 4.0, 9.5),
     "hot": (24.0, 6.0, 8.0),
+    # only used by the "wide" heterogeneity mode (slice 2)
+    "arctic": (-8.0, 3.0, 9.5),
+    "tropical": (30.0, 4.0, 9.0),
 }
 
 # (name, vintage, climate) of the nine federated clients.
@@ -103,6 +106,70 @@ CLIENT_SPECS: List[Tuple[str, str, str]] = [
 HELDOUT_SPECS: List[Tuple[str, str, str]] = [
     ("holdout-H1", "medium", "temperate"),
     ("holdout-H2", "very_heavy", "hot"),
+]
+
+# --------------------------------------------------------------------------
+# heterogeneity modes (slice 2)
+#
+# "baseline"  : the slice-1 population (unchanged, bit-identical).
+# "wide"      : same nine client archetypes, but the per-building truth
+#               parameters are drawn from a much wider range (a strongly
+#               heterogeneous federation).
+# "clustered" : the nine clients fall into three tight clusters with very
+#               different vintages/climates (a clustered non-IID split):
+#               clients 0-2 light/cold, 3-5 heavy/hot, 6-8 medium/temperate.
+#               Within a cluster the truth parameters are nearly identical,
+#               across clusters they are far apart -- so the *arithmetic
+#               mean* of the client parameter vectors is not any real
+#               building.
+#
+# The held-out buildings are NOT changed by the mode: the evaluation
+# protocol stays the slice-1 one (H1 = medium/temperate, H2 = very
+# heavy/hot), so slice-2 numbers are comparable with slice-1 numbers.
+# --------------------------------------------------------------------------
+HETEROGENEITY_MODES: Tuple[str, ...] = ("baseline", "wide", "clustered", "iid")
+
+# Per-building truth-parameter ranges, per mode.  The keys are the truth
+# parameter names; the values are the (low, high) multipliers applied to
+# the archetype's nominal value.
+TRUTH_RANGES: Dict[str, Dict[str, Tuple[float, float]]] = {
+    "baseline": {
+        "C": (0.85, 1.15),
+        "UA": (0.85, 1.15),
+        "s": (0.6, 1.4),
+        "g_sol": (0.8, 1.2),
+    },
+    "wide": {
+        "C": (0.6, 1.7),
+        "UA": (0.6, 1.7),
+        "s": (0.35, 1.9),
+        "g_sol": (0.55, 1.5),
+    },
+    # clusters are tight around their archetype value (see _cluster_specs)
+    "clustered": {
+        "C": (0.95, 1.05),
+        "UA": (0.95, 1.05),
+        "s": (0.9, 1.1),
+        "g_sol": (0.95, 1.05),
+    },
+    # IID control: every client is the same archetype with a very tight
+    # truth spread, so the federation is (nearly) IID.  Used only to
+    # re-check the issue's No-go trigger "federated ~= centralised on IID
+    # synthetic data".
+    "iid": {
+        "C": (0.98, 1.02),
+        "UA": (0.98, 1.02),
+        "s": (0.95, 1.05),
+        "g_sol": (0.98, 1.02),
+    },
+}
+
+# Clustered mode: (client index range, vintage, climate) of the three
+# client clusters.
+CLUSTER_SPECS: List[Tuple[Tuple[int, int], str, str]] = [
+    ((0, 3), "light", "cold"),
+    ((3, 6), "heavy", "hot"),
+    ((6, 9), "medium", "temperate"),
 ]
 
 DEFAULT_HOURS = 240  # 10 days of hourly data per building
@@ -236,13 +303,16 @@ def simulate_truth(params: TruthParams, t_out: np.ndarray, t_set: np.ndarray,
 # --------------------------------------------------------------------------
 
 def _make_building(name: str, vintage: str, climate: str, rng: np.random.Generator,
-                   n_hours: int) -> Building:
+                   n_hours: int,
+                   ranges: Dict[str, Tuple[float, float]] | None = None
+                   ) -> Building:
     c_nom, ua_nom, g_nom = VINTAGES[vintage]
+    r = ranges if ranges is not None else TRUTH_RANGES["baseline"]
     truth = TruthParams(
-        C=float(c_nom * rng.uniform(0.85, 1.15)),
-        UA=float(ua_nom * rng.uniform(0.85, 1.15)),
-        s=float(rng.uniform(0.6, 1.4)),
-        g_sol=float(g_nom * rng.uniform(0.8, 1.2)),
+        C=float(c_nom * rng.uniform(*r["C"])),
+        UA=float(ua_nom * rng.uniform(*r["UA"])),
+        s=float(rng.uniform(*r["s"])),
+        g_sol=float(g_nom * rng.uniform(*r["g_sol"])),
     )
     t_out = weather_trace(climate, n_hours, rng)
     set_offset = float(rng.uniform(-0.8, 0.8))
@@ -262,22 +332,56 @@ def _make_building(name: str, vintage: str, climate: str, rng: np.random.Generat
     )
 
 
-def generate_population(seed: int = 42, n_hours: int = DEFAULT_HOURS
+def client_specs(heterogeneity: str = "baseline") -> List[Tuple[str, str, str]]:
+    """The (name, vintage, climate) list of the nine clients, per mode.
+
+    "baseline"  -- the slice-1 population (unchanged).
+    "wide"      -- the same archetypes, but wider per-building truth spread
+                   (handled in `_make_building`).
+    "clustered" -- three tight, well-separated clusters (light/cold,
+                   heavy/hot, medium/temperate): a clustered non-IID split.
+    """
+    if heterogeneity == "baseline":
+        return list(CLIENT_SPECS)
+    if heterogeneity == "wide":
+        return list(CLIENT_SPECS)
+    if heterogeneity == "clustered":
+        specs: List[Tuple[str, str, str]] = []
+        for (lo, hi), vintage, climate in CLUSTER_SPECS:
+            for i in range(lo, hi):
+                specs.append(("client-%d" % i, vintage, climate))
+        return specs
+    if heterogeneity == "iid":
+        # every client the same archetype: an (almost) IID federation
+        return [("client-%d" % i, "medium", "temperate") for i in range(9)]
+    raise ValueError("unknown heterogeneity mode %r (known: %s)"
+                     % (heterogeneity, ", ".join(HETEROGENEITY_MODES)))
+
+
+def generate_population(seed: int = 42, n_hours: int = DEFAULT_HOURS,
+                        heterogeneity: str = "baseline"
                         ) -> Tuple[List[Building], List[Building]]:
     """Generate the client population and the held-out buildings.
 
     Deterministic for a fixed seed: every building draws from its own
     `np.random.default_rng([seed, index])` stream, so the population does
     not depend on the order in which buildings are generated.
+
+    `heterogeneity` selects the client population (see `client_specs`); the
+    held-out buildings are the same in every mode, so the evaluation
+    protocol is unchanged.
     """
+    ranges = TRUTH_RANGES[heterogeneity]
     clients: List[Building] = []
-    for i, (name, vintage, climate) in enumerate(CLIENT_SPECS):
+    for i, (name, vintage, climate) in enumerate(client_specs(heterogeneity)):
         rng = np.random.default_rng([seed, i])
-        clients.append(_make_building(name, vintage, climate, rng, n_hours))
+        clients.append(_make_building(name, vintage, climate, rng, n_hours,
+                                       ranges))
     heldout: List[Building] = []
     for j, (name, vintage, climate) in enumerate(HELDOUT_SPECS):
         rng = np.random.default_rng([seed, 100 + j])
-        heldout.append(_make_building(name, vintage, climate, rng, n_hours))
+        heldout.append(_make_building(name, vintage, climate, rng, n_hours,
+                                       TRUTH_RANGES["baseline"]))
     return clients, heldout
 
 

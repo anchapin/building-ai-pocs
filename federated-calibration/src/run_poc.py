@@ -67,6 +67,12 @@ def main(argv: List[str] | None = None) -> int:
     parser.add_argument("--rounds", type=int, default=15)
     parser.add_argument("--local-steps", type=int, default=60)
     parser.add_argument("--fit-steps", type=int, default=400)
+    parser.add_argument("--participation", type=float, default=1.0,
+                        help="fraction of the clients online in each FedAvg "
+                             "round (1.0 = everybody, every round)")
+    parser.add_argument("--heterogeneity", type=str, default="baseline",
+                        choices=("baseline", "wide", "clustered", "iid"),
+                        help="client population heterogeneity")
     parser.add_argument("--out-dir", default=DEFAULT_DATA_DIR)
     args = parser.parse_args(argv)
 
@@ -78,12 +84,20 @@ def main(argv: List[str] | None = None) -> int:
         print("federated-calibration POC, slice 1 -- seed %d" % seed)
         print("=" * 78)
         res = run_seed(seed, hours=args.hours, rounds=args.rounds,
-                       local_steps=args.local_steps, fit_steps=args.fit_steps)
+                       local_steps=args.local_steps, fit_steps=args.fit_steps,
+                       heterogeneity=args.heterogeneity,
+                       participation=args.participation)
         results.append(res)
 
     os.makedirs(args.out_dir, exist_ok=True)
+    suffix = ""
+    if args.heterogeneity != "baseline":
+        suffix += "_%s" % args.heterogeneity
+    if args.participation != 1.0:
+        suffix += "_p%g" % args.participation
     for seed, res in zip(seeds, results):
-        path = os.path.join(args.out_dir, "results_seed%d.json" % seed)
+        path = os.path.join(args.out_dir,
+                            "results%s_seed%d.json" % (suffix, seed))
         with open(path, "w") as fh:
             json.dump(res, fh, indent=2, sort_keys=True)
         print("")
