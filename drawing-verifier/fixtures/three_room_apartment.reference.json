@@ -1,0 +1,34 @@
+{
+  "fixture": "three_room_apartment",
+  "note": "Hand arithmetic (independent of the checker):",
+  "arithmetic": {
+    "z_living": "7.0 m x 9.0 m rectangle -> 7.0 * 9.0 = 63.0 m2",
+    "z_kitchen": "5.0 m x 4.0 m rectangle -> 5.0 * 4.0 = 20.0 m2",
+    "z_bath": "5.0 m x 5.0 m rectangle -> 5.0 * 5.0 = 25.0 m2",
+    "w1": "2.0 m wide x (2.3 - 1.0) m glass = 2.0 * 1.3 = 2.6 m2",
+    "w2": "2.5 m wide x (2.3 - 1.0) m glass = 2.5 * 1.3 = 3.25 m2",
+    "w3": "1.5 m wide x (2.3 - 1.0) m glass = 1.5 * 1.3 = 1.95 m2",
+    "w4": "1.2 m wide x (2.3 - 1.0) m glass = 1.2 * 1.3 = 1.56 m2",
+    "w5": "1.5 m wide x (2.2 - 1.0) m glass = 1.5 * 1.2 = 1.8 m2",
+    "z_living_wwr": "(2.6 + 3.25 + 1.95) m2 = 7.8 m2 glazing / 63.0 m2 floor = 0.1238",
+    "z_kitchen_wwr": "1.56 m2 glazing / 20.0 m2 floor = 0.0780",
+    "z_bath_wwr": "1.8 m2 glazing / 25.0 m2 floor = 0.0720",
+    "p1_wall_wwr": "2.6 m2 glazing / (7.0 m length x 3.0 m height = 21.0 m2) = 0.1238",
+    "p9_wall_wwr": "3.25 m2 glazing / (9.0 m length x 3.0 m height = 27.0 m2) = 0.1204",
+    "p8_wall_wwr": "1.95 m2 glazing / (7.0 m length x 3.0 m height = 21.0 m2) = 0.0929",
+    "p3_wall_wwr": "1.56 m2 glazing / (4.0 m length x 3.0 m height = 12.0 m2) = 0.1300",
+    "p4_wall_wwr": "1.8 m2 glazing / (5.0 m length x 3.0 m height = 15.0 m2) = 0.1200"
+  },
+  "zones": {
+    "z_living": {"floor_area_m2": 63.0, "wwr": 0.1238},
+    "z_kitchen": {"floor_area_m2": 20.0, "wwr": 0.0780},
+    "z_bath": {"floor_area_m2": 25.0, "wwr": 0.0720}
+  },
+  "walls": {
+    "p1": {"wwr": 0.1238},
+    "p9": {"wwr": 0.1204},
+    "p8": {"wwr": 0.0929},
+    "p3": {"wwr": 0.1300},
+    "p4": {"wwr": 0.1200}
+  }
+}

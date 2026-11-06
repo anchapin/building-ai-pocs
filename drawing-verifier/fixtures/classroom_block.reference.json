@@ -1,0 +1,22 @@
+{
+  "fixture": "classroom_block",
+  "note": "Hand arithmetic (independent of the checker):",
+  "arithmetic": {
+    "z_classroom": "8.0 m x 6.0 m rectangle -> 8.0 * 6.0 = 48.0 m2",
+    "z_corridor": "8.0 m x 2.0 m rectangle -> 8.0 * 2.0 = 16.0 m2",
+    "winA_winB": "2 windows x (1.5 m wide x (2.1 - 0.9) m glass) = 2 x (1.5 * 1.2) = 2 x 1.8 = 3.6 m2",
+    "winC": "2.0 m wide x (2.2 - 1.0) m glass = 2.0 * 1.2 = 2.4 m2",
+    "z_classroom_wwr": "3.6 m2 glazing / 48.0 m2 floor = 0.075",
+    "z_corridor_wwr": "2.4 m2 glazing / 16.0 m2 floor = 0.150",
+    "c2_wall_wwr": "3.6 m2 glazing / (6.0 m length x 3.0 m height = 18.0 m2) = 0.200",
+    "k3_wall_wwr": "2.4 m2 glazing / (8.0 m length x 3.0 m height = 24.0 m2) = 0.100"
+  },
+  "zones": {
+    "z_classroom": {"floor_area_m2": 48.0, "wwr": 0.075},
+    "z_corridor": {"floor_area_m2": 16.0, "wwr": 0.150}
+  },
+  "walls": {
+    "c2": {"wwr": 0.200},
+    "k3": {"wwr": 0.100}
+  }
+}

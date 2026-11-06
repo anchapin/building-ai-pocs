@@ -1,4 +1,4 @@
-"""Each of the four checks flags its target error and stays quiet on clean input."""
+"""Each check flags its target error and stays quiet on clean input."""
 
 import checker
 

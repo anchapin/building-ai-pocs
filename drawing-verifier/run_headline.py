@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Headline runner for the drawing-verifier symbolic checker (SLICE 1).
+"""Headline runner for the drawing-verifier symbolic checker (SLICE 1 + 2).
 
 One command reproduces the headline table:
 
@@ -93,7 +93,7 @@ def geometry_errors(model_path: str) -> List[Tuple[str, str, float, float, float
 
 
 def main() -> int:
-    print("drawing-verifier headline -- SLICE 1 (symbolic checker only)")
+    print("drawing-verifier headline -- SLICE 1 + 2 (symbolic checker only)")
     print("=" * 78)
     print()
 

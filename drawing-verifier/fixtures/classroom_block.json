@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "project": "classroom_block",
+  "units": "m",
+  "description": "School block: a 8.0 x 6.0 m classroom with a 8.0 x 2.0 m corridor along its north side; the wall between them is shared.",
+  "walls": [
+    {"id": "c1", "start": [0.0, 0.0], "end": [8.0, 0.0], "thickness": 0.2, "height": 3.0},
+    {"id": "c2", "start": [8.0, 0.0], "end": [8.0, 6.0], "thickness": 0.2, "height": 3.0},
+    {"id": "c3", "start": [8.0, 6.0], "end": [0.0, 6.0], "thickness": 0.2, "height": 3.0},
+    {"id": "c4", "start": [0.0, 6.0], "end": [0.0, 0.0], "thickness": 0.2, "height": 3.0},
+    {"id": "k2", "start": [8.0, 6.0], "end": [8.0, 8.0], "thickness": 0.2, "height": 3.0},
+    {"id": "k3", "start": [8.0, 8.0], "end": [0.0, 8.0], "thickness": 0.2, "height": 3.0},
+    {"id": "k4", "start": [0.0, 8.0], "end": [0.0, 6.0], "thickness": 0.2, "height": 3.0}
+  ],
+  "openings": [
+    {"id": "d_cls", "kind": "door", "host_wall": "c1", "center_offset": 1.0, "width": 0.9, "sill_height": 0.0, "head_height": 2.1, "schedule_tag": "t_door_01"},
+    {"id": "winA", "kind": "window", "host_wall": "c2", "center_offset": 1.5, "width": 1.5, "sill_height": 0.9, "head_height": 2.1, "schedule_tag": "t_window_01"},
+    {"id": "winB", "kind": "window", "host_wall": "c2", "center_offset": 4.5, "width": 1.5, "sill_height": 0.9, "head_height": 2.1, "schedule_tag": "t_window_01"},
+    {"id": "d_cor", "kind": "door", "host_wall": "k2", "center_offset": 1.0, "width": 0.9, "sill_height": 0.0, "head_height": 2.1, "schedule_tag": "t_door_01"},
+    {"id": "winC", "kind": "window", "host_wall": "k3", "center_offset": 4.0, "width": 2.0, "sill_height": 1.0, "head_height": 2.2, "schedule_tag": "t_window_02"}
+  ],
+  "zones": [
+    {
+      "id": "z_classroom",
+      "name": "Classroom",
+      "wall_loop": ["c1", "c2", "c3", "c4"],
+      "openings": ["d_cls", "winA", "winB"],
+      "schedule_tag": "t_zone_classroom"
+    },
+    {
+      "id": "z_corridor",
+      "name": "Corridor",
+      "wall_loop": ["c3", "k4", "k3", "k2"],
+      "openings": ["d_cor", "winC"],
+      "schedule_tag": "t_zone_corridor"
+    }
+  ],
+  "schedules": [
+    {"tag_id": "t_door_01", "symbol": "D01", "value": "Single swing door 900 x 2100", "kind": "door", "count": 2},
+    {"tag_id": "t_window_01", "symbol": "W01", "value": "Fixed window 1500 x 1200", "kind": "window", "count": 2},
+    {"tag_id": "t_window_02", "symbol": "W02", "value": "Fixed window 2000 x 1200", "kind": "window", "count": 1},
+    {"tag_id": "t_zone_classroom", "symbol": "Z30", "value": "Classroom, 1.0 m2/person", "kind": "zone", "count": 3},
+    {"tag_id": "t_zone_corridor", "symbol": "Z31", "value": "Corridor, 1.0 m2/person", "kind": "zone", "count": 2}
+  ]
+}

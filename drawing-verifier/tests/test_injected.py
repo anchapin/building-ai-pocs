@@ -10,6 +10,12 @@ def test_at_least_eight_injected_errors(cases):
     assert len(cases) >= 8
 
 
+def test_injected_set_grew_to_at_least_twenty_cases(cases):
+    # slice 1 had 12 cases; slice 2 adds the schedule/geometry consistency
+    # family and extra variants of the existing families
+    assert len(cases) >= 20, f"only {len(cases)} injected cases registered"
+
+
 def test_every_injected_error_is_flagged_with_the_right_class(injected_dir, cases):
     for case in cases:
         path = os.path.join(injected_dir, case["variant"])
@@ -46,6 +52,9 @@ def test_required_error_classes_are_covered(cases):
         "schedule_duplicate_tag",      # duplicate schedule tag
         "opening_host_missing",        # door with no host wall
         "opening_overlap",             # overlapping windows on one wall
+        "schedule_geometry_count_mismatch",   # schedule quantity vs geometry
+        "zone_schedule_count_mismatch",       # zone opening list vs schedule mark
+        "zone_opening_not_listed",            # zone forgot an opening
     }
     assert required.issubset(covered)
 
@@ -57,6 +66,7 @@ def test_clean_fixtures_produce_no_findings(fixture_dir):
         if n.endswith(".json") and not n.endswith(".reference.json")
     ]
     assert names, "no clean fixtures found"
+    assert len(names) >= 6, f"expected at least six clean fixtures, found {names}"
     for name in names:
         with open(os.path.join(fixture_dir, name), "r", encoding="utf-8") as handle:
             model = json.load(handle)
