@@ -1,0 +1,53 @@
+{
+  "config": {
+    "buildings": [
+      "resstock-amy2018-2021-release-1-102040"
+    ],
+    "datasets": [
+      "ca_alameda_county_neighborhood"
+    ],
+    "episode_steps": 168,
+    "noise_floor_kwh": 0.001,
+    "seed": 0,
+    "start_step": 4368
+  },
+  "rows": [
+    {
+      "active_actions": [
+        "electrical_storage",
+        "cooling_or_heating_device"
+      ],
+      "building": "resstock-amy2018-2021-release-1-102040",
+      "cooling_demand_kwh__full_cool": 189.97890649735928,
+      "cooling_demand_kwh__full_heat": 144.1274622529745,
+      "cooling_demand_kwh__none": 144.1274622529745,
+      "cooling_nominal_power_kw": 3.1114253997802734,
+      "cooling_setpoint_max_c": 25.55555534362793,
+      "cooling_setpoint_min_c": 23.5,
+      "dataset": "ca_alameda_county_neighborhood",
+      "episode_steps": 168,
+      "heating_actuated": true,
+      "heating_demand_kwh__full_cool": 473.5724540874362,
+      "heating_demand_kwh__full_heat": 492.39367639273405,
+      "heating_demand_kwh__none": 473.5724540874362,
+      "heating_nominal_power_kw": 8.868497848510742,
+      "heating_setpoint_max_c": 25.55555534362793,
+      "heating_setpoint_min_c": 23.5,
+      "indoor_temperature_max_c": 30.430648803710938,
+      "indoor_temperature_min_c": 12.446561813354492,
+      "net_electricity_kwh__full_cool": 4.270438194274902,
+      "net_electricity_kwh__full_heat": 10.027510643005371,
+      "net_electricity_kwh__none": 1.159012794494629,
+      "net_electricity_responsive": true,
+      "net_electricity_spread_kwh": 8.868497848510742,
+      "ok": true,
+      "seed": 0,
+      "start_step": 4368,
+      "steps__full_cool": 167,
+      "steps__full_heat": 167,
+      "steps__none": 167,
+      "thermal_demand_responsive": true,
+      "thermal_demand_spread_kwh": 45.851444244384766
+    }
+  ]
+}

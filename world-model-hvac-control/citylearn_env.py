@@ -61,6 +61,7 @@ __all__ = [
     "OBSERVATION_DIM",
     "CityLearnHVACEnv",
     "FixedSetpointController",
+    "resolve_dataset_schema",
     "run_rule_based_episode",
 ]
 
@@ -82,6 +83,28 @@ OBSERVATION_DIM: int = len(OBSERVATION_NAMES)
 _HVAC_ACTION_KEYS = ("cooling_or_heating_device", "cooling_device", "heating_device")
 
 
+def resolve_dataset_schema(dataset: str, root: Optional[str] = None) -> str:
+    """Return the CityLearn ``schema`` argument for ``dataset``.
+
+    If a local copy exists in ``<root>/data/datasets/<dataset>/schema.json``
+    it is used directly (CityLearn accepts a directory path and reads
+    ``schema.json`` from it); otherwise the data set name is returned and
+    CityLearn downloads it once into its cache directory. Either way the
+    data set is never committed to git.
+
+    ``root`` defaults to the directory containing this module (i.e. the
+    ``world-model-hvac-control`` folder); it is exposed so that callers
+    and tests can point the lookup at a different tree.
+    """
+
+    if root is None:
+        root = os.path.dirname(os.path.abspath(__file__))
+    local_dir = os.path.join(root, "data", "datasets", dataset)
+    if os.path.isfile(os.path.join(local_dir, "schema.json")):
+        return local_dir
+    return dataset
+
+
 def _series_last(series: Any) -> float:
     """Return the last element of a CityLearn time series as a float."""
 
@@ -100,18 +123,31 @@ class CityLearnHVACEnv(gym.Env):
     Parameters
     ----------
     dataset : str
-        CityLearn data set name (e.g. ``"baeda_3dem"``). The data set is
-        downloaded once into the CityLearn cache directory and never committed
-        to git.
+        CityLearn data set name (e.g. ``"baeda_3dem"``). If a local copy
+        exists in ``<poc>/data/datasets/<dataset>`` it is used directly
+        (CityLearn accepts a schema path), otherwise CityLearn downloads the
+        data set once into its cache directory; either way the data set is
+        never committed to git.
     building : str
         Name of the building inside the data set (e.g. ``"Building_1"``).
     episode_time_steps : int
         Number of time steps per episode.
+    start_step : int
+        First time step of the episode window inside the data set. 0
+        (default) keeps CityLearn's sequential episode windows; > 0 pins
+        every reset to the single window
+        ``[start_step, start_step + episode_time_steps - 1]``. Slice 2
+        uses this to evaluate on windows with non-degenerate comfort set
+        points (finding F3).
     seed : int
         Seed handed to the simulator.
     energy_weight, comfort_weight : float
         Weights of the reward function
         ``-(energy_weight * energy_kwh + comfort_weight * comfort_violation_c)``.
+    solar_generation : bool
+        Whether rooftop PV is simulated. ``False`` (the default) keeps the
+        simulation free of the optional PySAM dependency that PV auto-sizing
+        needs, and keeps the energy metric about consumption only.
     """
 
     metadata = {"render_modes": []}
@@ -121,9 +157,11 @@ class CityLearnHVACEnv(gym.Env):
         dataset: str = "baeda_3dem",
         building: str = "Building_1",
         episode_time_steps: int = 24,
+        start_step: int = 0,
         seed: int = 0,
         energy_weight: float = 1.0,
         comfort_weight: float = 0.5,
+        solar_generation: bool = False,
         citylearn_env: Optional[Any] = None,
     ) -> None:
         super().__init__()
@@ -133,17 +171,31 @@ class CityLearnHVACEnv(gym.Env):
         self.dataset = dataset
         self.building = building
         self.episode_time_steps = int(episode_time_steps)
+        self.start_step = int(start_step)
         self.seed = int(seed)
         self.energy_weight = float(energy_weight)
         self.comfort_weight = float(comfort_weight)
+        self.solar_generation = bool(solar_generation)
 
         if citylearn_env is None:
+            # start_step == 0 keeps CityLearn's default sequential episode
+            # windows (episode 0 covers steps 0..N-1, episode 1 covers
+            # N..2N-1, ...). start_step > 0 pins EVERY reset to the single
+            # window [start_step, start_step + N - 1] via CityLearn's
+            # episode-splits list, so evaluation replays one fixed window.
+            if self.start_step > 0:
+                episode_arg: Any = [
+                    (self.start_step, self.start_step + self.episode_time_steps - 1)
+                ]
+            else:
+                episode_arg = self.episode_time_steps
             citylearn_env = CityLearnEnv(
-                schema=dataset,
+                schema=resolve_dataset_schema(dataset),
                 buildings=[building],
-                episode_time_steps=self.episode_time_steps,
+                episode_time_steps=episode_arg,
                 random_seed=self.seed,
                 central_agent=True,
+                solar_generation=self.solar_generation,
             )
         self.env = citylearn_env
 

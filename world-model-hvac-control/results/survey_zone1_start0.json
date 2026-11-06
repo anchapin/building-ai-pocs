@@ -1,0 +1,54 @@
+{
+  "config": {
+    "buildings": [
+      "Building_1"
+    ],
+    "datasets": [
+      "citylearn_challenge_2020_climate_zone_1"
+    ],
+    "episode_steps": 24,
+    "noise_floor_kwh": 0.001,
+    "seed": 0,
+    "start_step": 0
+  },
+  "rows": [
+    {
+      "active_actions": [
+        "cooling_storage",
+        "dhw_storage",
+        "electrical_storage"
+      ],
+      "building": "Building_1",
+      "cooling_demand_kwh__full_cool": 406.01999950408936,
+      "cooling_demand_kwh__full_heat": 406.01999950408936,
+      "cooling_demand_kwh__none": 406.01999950408936,
+      "cooling_nominal_power_kw": 146.5551300048828,
+      "cooling_setpoint_max_c": 0.0,
+      "cooling_setpoint_min_c": 0.0,
+      "dataset": "citylearn_challenge_2020_climate_zone_1",
+      "episode_steps": 24,
+      "heating_actuated": false,
+      "heating_demand_kwh__full_cool": 0.0,
+      "heating_demand_kwh__full_heat": 0.0,
+      "heating_demand_kwh__none": 0.0,
+      "heating_nominal_power_kw": 0.0,
+      "heating_setpoint_max_c": 0.0,
+      "heating_setpoint_min_c": 0.0,
+      "indoor_temperature_max_c": 24.299999237060547,
+      "indoor_temperature_min_c": 23.270000457763672,
+      "net_electricity_kwh__full_cool": 9.65999984741211,
+      "net_electricity_kwh__full_heat": 9.65999984741211,
+      "net_electricity_kwh__none": 9.65999984741211,
+      "net_electricity_responsive": false,
+      "net_electricity_spread_kwh": 0.0,
+      "ok": true,
+      "seed": 0,
+      "start_step": 0,
+      "steps__full_cool": 23,
+      "steps__full_heat": 23,
+      "steps__none": 23,
+      "thermal_demand_responsive": false,
+      "thermal_demand_spread_kwh": 0.0
+    }
+  ]
+}

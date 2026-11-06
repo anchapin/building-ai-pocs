@@ -32,9 +32,19 @@ from typing import Any, Dict, List, Optional
 
 import numpy as np
 
+# CityLearn's battery-sizing data lives in the cache directory. The worktree
+# cache (``<poc>/.cache``) already holds it (downloaded once from the
+# CityLearn GitHub release); default to it so runs do not depend on the
+# shared-egress GitHub API rate limit. An explicitly set XDG_CACHE_HOME wins.
+os.environ.setdefault(
+    "XDG_CACHE_HOME", os.path.join(os.path.dirname(os.path.abspath(__file__)), ".cache")
+)
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from citylearn_env import CityLearnHVACEnv, FixedSetpointController  # noqa: E402
+from citylearn_env import OBSERVATION_NAMES, CityLearnHVACEnv, FixedSetpointController  # noqa: E402
+
+_INDOOR_INDEX = OBSERVATION_NAMES.index("indoor_dry_bulb_temperature")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -49,6 +59,25 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--out", default="results", help="output directory for the results JSON")
     parser.add_argument("--run-name", default=None, help="name of the results file (without extension)")
     parser.add_argument("--episode-time-steps", type=int, default=24, help="time steps per episode")
+    parser.add_argument(
+        "--start-step",
+        type=int,
+        default=0,
+        help="first time step of the episode window (0 = sequential windows; > 0 pins every reset to one fixed window)",
+    )
+    parser.add_argument(
+        "--solar-generation",
+        dest="solar_generation",
+        action="store_true",
+        help="simulate rooftop PV (needs the optional PySAM dependency; default off)",
+    )
+    parser.add_argument(
+        "--no-solar-generation",
+        dest="solar_generation",
+        action="store_false",
+        help="do not simulate rooftop PV (default)",
+    )
+    parser.set_defaults(solar_generation=False)
     parser.add_argument("--eval-episodes", type=int, default=2, help="episodes used to evaluate the trained policy")
     parser.add_argument("--energy-weight", type=float, default=1.0, help="reward weight on energy [kWh]")
     parser.add_argument("--comfort-weight", type=float, default=0.5, help="reward weight on comfort violation [degC]")
@@ -81,15 +110,18 @@ def evaluate_policy(env: CityLearnHVACEnv, model: Any, episodes: int) -> Dict[st
     energies: List[float] = []
     violations: List[int] = []
     violation_degrees: List[float] = []
+    indoor_temperatures: List[float] = []
     steps = 0
     for _ in range(max(1, int(episodes))):
         observation, _ = env.reset()
+        indoor_temperatures.append(float(observation[_INDOOR_INDEX]))
         episode_energy = 0.0
         episode_violation_degrees = 0.0
         episode_violations = 0
         while True:
             action, _ = model.predict(observation, deterministic=True)
             observation, _, terminated, truncated, info = env.step(action)
+            indoor_temperatures.append(float(observation[_INDOOR_INDEX]))
             episode_energy += float(info["energy_kwh"])
             episode_violation_degrees += float(info["comfort_violation_c"])
             episode_violations += int(bool(info["comfort_violation"]))
@@ -107,6 +139,12 @@ def evaluate_policy(env: CityLearnHVACEnv, model: Any, episodes: int) -> Dict[st
         "comfort_violations_mean": float(np.mean(violations)),
         "comfort_violations_total": int(np.sum(violations)),
         "comfort_violation_c_mean": float(np.mean(violation_degrees)),
+        # Slice 2: the CityLearn LSTM dynamics extrapolate wildly under
+        # sustained extreme actions (survey saw -14 degC / +53 degC), so the
+        # indoor range is reported with every evaluation as a validity check
+        # on the regime the controller actually visited.
+        "indoor_temperature_min_c": float(np.min(indoor_temperatures)),
+        "indoor_temperature_max_c": float(np.max(indoor_temperatures)),
     }
 
 
@@ -117,15 +155,18 @@ def evaluate_rule_based(env: CityLearnHVACEnv, episodes: int) -> Dict[str, Any]:
     energies: List[float] = []
     violations: List[int] = []
     violation_degrees: List[float] = []
+    indoor_temperatures: List[float] = []
     steps = 0
     for _ in range(max(1, int(episodes))):
         observation, _ = env.reset()
+        indoor_temperatures.append(float(observation[_INDOOR_INDEX]))
         episode_energy = 0.0
         episode_violation_degrees = 0.0
         episode_violations = 0
         while True:
             action = controller.act(observation)
             observation, _, terminated, truncated, info = env.step(action)
+            indoor_temperatures.append(float(observation[_INDOOR_INDEX]))
             episode_energy += float(info["energy_kwh"])
             episode_violation_degrees += float(info["comfort_violation_c"])
             episode_violations += int(bool(info["comfort_violation"]))
@@ -143,6 +184,8 @@ def evaluate_rule_based(env: CityLearnHVACEnv, episodes: int) -> Dict[str, Any]:
         "comfort_violations_mean": float(np.mean(violations)),
         "comfort_violations_total": int(np.sum(violations)),
         "comfort_violation_c_mean": float(np.mean(violation_degrees)),
+        "indoor_temperature_min_c": float(np.min(indoor_temperatures)),
+        "indoor_temperature_max_c": float(np.max(indoor_temperatures)),
     }
 
 
@@ -156,9 +199,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         dataset=args.dataset,
         building=args.building,
         episode_time_steps=args.episode_time_steps,
+        start_step=args.start_step,
         seed=args.seed,
         energy_weight=args.energy_weight,
         comfort_weight=args.comfort_weight,
+        solar_generation=args.solar_generation,
     )
 
     model = SAC(
@@ -187,6 +232,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         "dataset": args.dataset,
         "building": args.building,
         "episode_time_steps": args.episode_time_steps,
+        "start_step": int(args.start_step),
+        "solar_generation": bool(args.solar_generation),
         "timesteps": int(args.timesteps),
         "seed": int(args.seed),
         "energy_weight": args.energy_weight,

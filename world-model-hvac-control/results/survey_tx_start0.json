@@ -1,0 +1,53 @@
+{
+  "config": {
+    "buildings": [
+      "resstock-amy2018-2021-release-1-102188"
+    ],
+    "datasets": [
+      "tx_travis_county_neighborhood"
+    ],
+    "episode_steps": 24,
+    "noise_floor_kwh": 0.001,
+    "seed": 0,
+    "start_step": 0
+  },
+  "rows": [
+    {
+      "active_actions": [
+        "electrical_storage",
+        "cooling_or_heating_device"
+      ],
+      "building": "resstock-amy2018-2021-release-1-102188",
+      "cooling_demand_kwh__full_cool": 147.42501831054688,
+      "cooling_demand_kwh__full_heat": 0.0,
+      "cooling_demand_kwh__none": 0.0,
+      "cooling_nominal_power_kw": 7.371250629425049,
+      "cooling_setpoint_max_c": 23.33333396911621,
+      "cooling_setpoint_min_c": 23.33333396911621,
+      "dataset": "tx_travis_county_neighborhood",
+      "episode_steps": 24,
+      "heating_actuated": true,
+      "heating_demand_kwh__full_cool": 85.06291079521179,
+      "heating_demand_kwh__full_heat": 92.08914351463318,
+      "heating_demand_kwh__none": 85.06291079521179,
+      "heating_nominal_power_kw": 4.035650253295898,
+      "heating_setpoint_max_c": 23.33333396911621,
+      "heating_setpoint_min_c": 23.33333396911621,
+      "indoor_temperature_max_c": 27.068172454833984,
+      "indoor_temperature_min_c": 4.697740077972412,
+      "net_electricity_kwh__full_cool": 16.347597122192383,
+      "net_electricity_kwh__full_heat": 13.011996269226074,
+      "net_electricity_kwh__none": 8.976346015930176,
+      "net_electricity_responsive": true,
+      "net_electricity_spread_kwh": 7.371251106262207,
+      "ok": true,
+      "seed": 0,
+      "start_step": 0,
+      "steps__full_cool": 23,
+      "steps__full_heat": 23,
+      "steps__none": 23,
+      "thermal_demand_responsive": true,
+      "thermal_demand_spread_kwh": 147.42501831054688
+    }
+  ]
+}
