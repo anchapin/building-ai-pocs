@@ -1,0 +1,22 @@
+{
+  "fixture": "two_unit_house",
+  "note": "Hand arithmetic (independent of the checker):",
+  "arithmetic": {
+    "z_unit_a": "5.0 m x 4.0 m rectangle -> 5.0 * 4.0 = 20.0 m2",
+    "z_unit_b": "4.0 m x 4.0 m rectangle -> 4.0 * 4.0 = 16.0 m2",
+    "winA": "2.0 m wide x (2.2 - 1.0) m glass = 2.0 * 1.2 = 2.4 m2",
+    "winB": "1.2 m wide x (2.2 - 1.0) m glass = 1.2 * 1.2 = 1.44 m2",
+    "z_unit_a_wwr": "2.4 m2 / 20.0 m2 = 0.120",
+    "z_unit_b_wwr": "1.44 m2 / 16.0 m2 = 0.090",
+    "ha3_wall_wwr": "2.4 m2 / (5.0 m x 3.0 m = 15.0 m2) = 0.160",
+    "hb3_wall_wwr": "1.44 m2 / (4.0 m x 3.0 m = 12.0 m2) = 0.120"
+  },
+  "zones": {
+    "z_unit_a": {"floor_area_m2": 20.0, "wwr": 0.120},
+    "z_unit_b": {"floor_area_m2": 16.0, "wwr": 0.090}
+  },
+  "walls": {
+    "ha3": {"wwr": 0.160},
+    "hb3": {"wwr": 0.120}
+  }
+}

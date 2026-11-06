@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "project": "two_unit_house",
+  "units": "m",
+  "description": "Two adjacent dwelling units sharing one wall: unit A 5.0 x 4.0 m, unit B 4.0 x 4.0 m.",
+  "walls": [
+    {"id": "ha1", "start": [0.0, 0.0], "end": [5.0, 0.0], "thickness": 0.2, "height": 3.0},
+    {"id": "ha2", "start": [5.0, 0.0], "end": [5.0, 4.0], "thickness": 0.2, "height": 3.0},
+    {"id": "ha3", "start": [5.0, 4.0], "end": [0.0, 4.0], "thickness": 0.2, "height": 3.0},
+    {"id": "ha4", "start": [0.0, 4.0], "end": [0.0, 0.0], "thickness": 0.2, "height": 3.0},
+    {"id": "hb1", "start": [5.0, 0.0], "end": [9.0, 0.0], "thickness": 0.2, "height": 3.0},
+    {"id": "hb2", "start": [9.0, 0.0], "end": [9.0, 4.0], "thickness": 0.2, "height": 3.0},
+    {"id": "hb3", "start": [9.0, 4.0], "end": [5.0, 4.0], "thickness": 0.2, "height": 3.0}
+  ],
+  "openings": [
+    {"id": "dA", "kind": "door", "host_wall": "ha1", "center_offset": 1.0, "width": 0.9, "sill_height": 0.0, "head_height": 2.1, "schedule_tag": "t_door_01"},
+    {"id": "dB", "kind": "door", "host_wall": "hb1", "center_offset": 1.0, "width": 0.9, "sill_height": 0.0, "head_height": 2.1, "schedule_tag": "t_door_01"},
+    {"id": "winA", "kind": "window", "host_wall": "ha3", "center_offset": 2.5, "width": 2.0, "sill_height": 1.0, "head_height": 2.2, "schedule_tag": "t_window_01"},
+    {"id": "winB", "kind": "window", "host_wall": "hb3", "center_offset": 2.0, "width": 1.2, "sill_height": 1.0, "head_height": 2.2, "schedule_tag": "t_window_02"}
+  ],
+  "zones": [
+    {
+      "id": "z_unit_a",
+      "name": "Unit A living room",
+      "wall_loop": ["ha1", "ha2", "ha3", "ha4"],
+      "openings": ["dA", "winA"],
+      "schedule_tag": "t_zone_living"
+    },
+    {
+      "id": "z_unit_b",
+      "name": "Unit B bedroom",
+      "wall_loop": ["hb1", "hb2", "hb3", "ha2"],
+      "openings": ["dB", "winB"],
+      "schedule_tag": "t_zone_bedroom"
+    }
+  ],
+  "schedules": [
+    {"tag_id": "t_door_01", "symbol": "D01", "value": "Single swing door 900 x 2100"},
+    {"tag_id": "t_window_01", "symbol": "W01", "value": "Fixed window 2000 x 1200"},
+    {"tag_id": "t_window_02", "symbol": "W02", "value": "Fixed window 1200 x 1200"},
+    {"tag_id": "t_zone_living", "symbol": "Z10", "value": "Living room, 0.5 m2/person"},
+    {"tag_id": "t_zone_bedroom", "symbol": "Z11", "value": "Bedroom, 0.8 m2/person"}
+  ]
+}
