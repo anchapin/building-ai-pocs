@@ -1,0 +1,16 @@
+{
+  "fixture": "studio_loft",
+  "note": "Hand arithmetic (independent of the checker):",
+  "arithmetic": {
+    "z_studio": "6.0 x 4.0 rectangle (6.0 * 4.0 = 24.0 m2) minus the 2.0 x 2.0 m notch (2.0 * 2.0 = 4.0 m2) -> 20.0 m2",
+    "winL": "3.0 m wide x (2.5 - 0.5) m glass = 3.0 * 2.0 = 6.0 m2",
+    "z_studio_wwr": "6.0 m2 / 20.0 m2 = 0.300",
+    "l1_wall_wwr": "6.0 m2 / (6.0 m x 3.0 m = 18.0 m2) = 0.333"
+  },
+  "zones": {
+    "z_studio": {"floor_area_m2": 20.0, "wwr": 0.300}
+  },
+  "walls": {
+    "l1": {"wwr": 0.333}
+  }
+}

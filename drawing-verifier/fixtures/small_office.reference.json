@@ -1,0 +1,16 @@
+{
+  "fixture": "small_office",
+  "note": "Hand arithmetic (independent of the checker):",
+  "arithmetic": {
+    "z_office": "6.0 m x 4.0 m rectangle -> 6.0 * 4.0 = 24.0 m2",
+    "w3_windows": "win1 + win2 = (1.5 m wide x (2.1 - 0.9) m glass) x 2 = 1.8 x 2 = 3.6 m2",
+    "z_office_wwr": "3.6 m2 glazing / 24.0 m2 floor = 0.150",
+    "w3_wall_wwr": "3.6 m2 glazing / (6.0 m length x 3.0 m height = 18.0 m2) = 0.200"
+  },
+  "zones": {
+    "z_office": {"floor_area_m2": 24.0, "wwr": 0.150}
+  },
+  "walls": {
+    "w3": {"wwr": 0.200}
+  }
+}

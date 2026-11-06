@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "project": "studio_loft",
+  "units": "m",
+  "description": "INJECTED ERROR: window winL widened to 5.8 m, pushing the wall and zone window-to-wall ratios above the plausible band.",
+  "walls": [
+    {"id": "l1", "start": [0.0, 0.0], "end": [6.0, 0.0], "thickness": 0.2, "height": 3.0},
+    {"id": "l2", "start": [6.0, 0.0], "end": [6.0, 2.0], "thickness": 0.2, "height": 3.0},
+    {"id": "l3", "start": [6.0, 2.0], "end": [4.0, 2.0], "thickness": 0.2, "height": 3.0},
+    {"id": "l4", "start": [4.0, 2.0], "end": [4.0, 4.0], "thickness": 0.2, "height": 3.0},
+    {"id": "l5", "start": [4.0, 4.0], "end": [0.0, 4.0], "thickness": 0.2, "height": 3.0},
+    {"id": "l6", "start": [0.0, 4.0], "end": [0.0, 0.0], "thickness": 0.2, "height": 3.0}
+  ],
+  "openings": [
+    {"id": "dL", "kind": "door", "host_wall": "l6", "center_offset": 1.0, "width": 0.9, "sill_height": 0.0, "head_height": 2.1, "schedule_tag": "t_door_01"},
+    {"id": "winL", "kind": "window", "host_wall": "l1", "center_offset": 2.9, "width": 5.8, "sill_height": 0.5, "head_height": 2.5, "schedule_tag": "t_window_01"}
+  ],
+  "zones": [
+    {
+      "id": "z_studio",
+      "name": "Studio loft",
+      "wall_loop": ["l1", "l2", "l3", "l4", "l5", "l6"],
+      "openings": ["dL", "winL"],
+      "schedule_tag": "t_zone_studio"
+    }
+  ],
+  "schedules": [
+    {"tag_id": "t_door_01", "symbol": "D01", "value": "Single swing door 900 x 2100"},
+    {"tag_id": "t_window_01", "symbol": "W01", "value": "Fixed window 3000 x 2000"},
+    {"tag_id": "t_zone_studio", "symbol": "Z20", "value": "Studio, 0.7 m2/person"}
+  ]
+}

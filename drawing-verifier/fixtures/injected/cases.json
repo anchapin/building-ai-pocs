@@ -1,0 +1,77 @@
+{
+  "description": "Injected-error test set.  Each case is a full variant of a clean fixture with exactly one error injected; the checker must report the listed error classes for that variant.",
+  "cases": [
+    {
+      "variant": "small_office_missing_door.json",
+      "base": "small_office.json",
+      "injected_error": "delete a door (d1 removed from the model)",
+      "expected_classes": ["zone_opening_missing"]
+    },
+    {
+      "variant": "small_office_scaled_wall.json",
+      "base": "small_office.json",
+      "injected_error": "scale a wall x2 (wall w3 doubled in length)",
+      "expected_classes": ["zone_not_closed"]
+    },
+    {
+      "variant": "small_office_swapped_symbol.json",
+      "base": "small_office.json",
+      "injected_error": "swap a schedule symbol (t_window_01 given the symbol of t_door_01)",
+      "expected_classes": ["schedule_symbol_duplicate"]
+    },
+    {
+      "variant": "small_office_unclosed_loop.json",
+      "base": "small_office.json",
+      "injected_error": "unclose a zone loop (wall w4 shifted 0.5 m)",
+      "expected_classes": ["zone_not_closed"]
+    },
+    {
+      "variant": "small_office_orphan_door.json",
+      "base": "small_office.json",
+      "injected_error": "door with no host wall (d1 points at a non-existent wall)",
+      "expected_classes": ["opening_host_missing"]
+    },
+    {
+      "variant": "small_office_duplicate_tag.json",
+      "base": "small_office.json",
+      "injected_error": "duplicate schedule tag (t_door_01 defined twice)",
+      "expected_classes": ["schedule_duplicate_tag"]
+    },
+    {
+      "variant": "two_unit_house_dangling_tag.json",
+      "base": "two_unit_house.json",
+      "injected_error": "dangling schedule reference (zone z_unit_a cites an undefined tag)",
+      "expected_classes": ["schedule_tag_missing"]
+    },
+    {
+      "variant": "two_unit_house_overlapping_windows.json",
+      "base": "two_unit_house.json",
+      "injected_error": "overlapping windows on one wall (winA2 overlaps winA on ha3)",
+      "expected_classes": ["opening_overlap"]
+    },
+    {
+      "variant": "studio_loft_window_too_long.json",
+      "base": "studio_loft.json",
+      "injected_error": "window longer than its host wall (winL 7.0 m on a 6.0 m wall)",
+      "expected_classes": ["opening_outside_wall"]
+    },
+    {
+      "variant": "studio_loft_over_glazed.json",
+      "base": "studio_loft.json",
+      "injected_error": "window-to-wall ratio above the plausible band",
+      "expected_classes": ["wwr_out_of_band"]
+    },
+    {
+      "variant": "studio_loft_bad_coordinate.json",
+      "base": "studio_loft.json",
+      "injected_error": "malformed fixture: non-numeric coordinate",
+      "expected_classes": ["schema_invalid"]
+    },
+    {
+      "variant": "studio_loft_missing_host_field.json",
+      "base": "studio_loft.json",
+      "injected_error": "malformed fixture: opening without a host wall reference",
+      "expected_classes": ["schema_invalid"]
+    }
+  ]
+}
