@@ -1,4 +1,4 @@
-# REPORT — drawing-verifier, SLICE 1 + SLICE 2 (symbolic checker)
+# REPORT — drawing-verifier, SLICE 1 + SLICE 2 + SLICE 3 (symbolic checker)
 
 **Conditional** — the symbolic-checker half of the POC is demonstrated
 and measured on this slice's hand-built fixtures; the VLM second-reader half
@@ -14,6 +14,11 @@ performed in this slice.
   VLM and did **not** run any Matchline extraction.
 * Not in this slice: any VLM wiring, any Matchline extraction run, any
   integration with Fluxion or Matchline, any other POC in this repo.
+* Slice 3 scope (the addendum at the end of this file, section 13 onwards):
+  checker hardening only — a shared-wall zone-membership check (check 6), a
+  shared-wall door added to a clean fixture, three new injected cases (27 in
+  total) and six clean fixtures.  Slice 3 did **not** wire the VLM and did
+  **not** run any Matchline extraction.
 
 ---
 
@@ -443,3 +448,230 @@ $ echo $?
 (The CLI exits 1 on a model with findings, e.g.
 `python3 drawing-verifier/checker.py drawing-verifier/fixtures/injected/small_office_dropped_door.json`
 prints the two count-mismatch findings and exits 1.)
+
+---
+
+# SLICE 3 ADDENDUM — shared-wall zone membership
+
+(Slices 1 and 2 above are unchanged; this addendum only adds slice 3.)
+
+## 13. What slice 3 added
+
+Slice 2 left one gap open and named it in §9: *"An opening hosted on a wall
+shared by several zones is not checked for zone membership (no unambiguous
+owner), so a wrong zone assignment for such an opening is not reported."*
+Check 5 deliberately stayed quiet there because the owner of a shared wall is
+ambiguous.  Slice 3 does not guess the owner — it **defines the membership
+rule** and checks the model against it.
+
+### Check 6 — `shared_wall_zone_membership`
+
+New function `checker.check_shared_wall_zone_membership(model)`, registered
+in `checker.CHECKS` after `schedule_geometry_consistency`:
+
+```python
+CHECKS = (
+    ("zone_closure", check_zone_closure),
+    ("wall_adjacency", check_wall_adjacency),
+    ("window_to_wall_ratio", check_window_to_wall_ratio),
+    ("schedule_cross_check", check_schedules),
+    ("schedule_geometry_consistency", check_schedule_geometry_consistency),
+    ("shared_wall_zone_membership", check_shared_wall_zone_membership),
+)
+```
+
+It runs only when the model is schema-valid (unchanged behaviour: a
+`schema_invalid` model reports the schema findings and no semantic checks
+run).  Check 5's behaviour is unchanged — including the
+"no unambiguous owner" quiet rule — and is still pinned by
+`tests/test_schedule_consistency.py::test_shared_wall_openings_are_not_reported_as_unlisted`.
+(Its part-(b) code now calls the shared `_wall_ownership_maps` helper; the
+logic is identical.)
+The `wall_owners` / `listed_in` maps are now built by a shared helper
+(`checker._wall_ownership_maps`) used by check 5 and check 6, so both look at
+exactly the same membership data.
+
+**The convention (also documented in `README.md`):** a shared-wall opening is
+listed in **exactly one** adjacent zone for takeoff — the zone it "belongs"
+to.  The check therefore requires listing in **at least one** adjacent zone
+and forbids listing by **any** non-adjacent zone.  Listing the opening in
+**both** adjacent zones is **tolerated**, not flagged: a shared wall between
+two spaces is a legitimate modelling choice, and inventing a false flag for
+it would be worse than saying nothing.
+
+Two error classes:
+
+* `shared_wall_opening_unlisted` — the opening is hosted on a wall shared by
+  **two or more** zones and is listed in the `openings` of **none** of those
+  adjacent zones: the door survives in the geometry but belongs to no zone.
+* `shared_wall_opening_wrong_zone` — the opening is listed in the `openings`
+  of a zone that does **not** border its host wall (one finding per offending
+  zone).  This applies **regardless of the owner count**, so it also closes
+  the hole where a single-owner opening is listed both by its (correct) owner
+  — check 5 is quiet there — and by a zone that does not border its host
+  wall.
+
+The single-owner *unlisted* case remains check 5's `zone_opening_not_listed`;
+check 6 does not duplicate it.  Openings whose host wall does not exist are
+left to check 2 (`opening_host_missing`) — their membership is undefined.
+
+## 14. The clean-fixture addition
+
+`fixtures/classroom_block.json` (the fixture that already had a shared wall
+`c3` between `z_classroom` and `z_corridor`) now carries an internal door on
+that shared wall:
+
+```json
+{"id": "d_internal", "kind": "door", "host_wall": "c3", "center_offset": 4.0,
+ "width": 0.9, "sill_height": 0.0, "head_height": 2.1, "schedule_tag": "t_door_01"}
+```
+
+It is listed in `z_classroom`'s `openings` only (the convention above).
+Schedule quantities were updated so that check 5 stays green:
+`t_door_01` count 2 → **3** (three doors carry the mark: `d_cls`, `d_cor`,
+`d_internal`) and `t_zone_classroom` count 3 → **4** (the zone lists four
+openings); `t_zone_corridor` is unchanged (2) because the door is not listed
+there.
+
+`fixtures/three_room_apartment.json` was extended the same way, because the
+wrong-zone fault needs a zone that does **not** border the shared wall:
+`d_internal` on wall `p7` (owned by `z_living` and `z_kitchen`), listed in
+`z_living` only, with `t_door_01` count 3 → **4** and `t_zone_living`
+count 4 → **5**.  `z_bath` does not border `p7`, which is what the
+wrong-zone injected case uses.
+
+**The hand-built reference models did not change.**  A door carries no glass
+area (`opening_glass_area` is 0 for doors) and the floor areas are computed
+from the wall loops, which were not touched; the re-measured geometry error
+below is bit-for-bit the slice-2 measurement (worst 0.10 %, everything else
+<= 0.05 %).  No `*.reference.json` file was edited.
+
+All six clean fixtures still produce **0 findings**.
+
+## 15. Re-measured headline numbers (slice 3)
+
+`python3 drawing-verifier/run_headline.py`:
+
+| Metric | Slice 1 | Slice 2 | **Slice 3** | POC Go bar | Holds? |
+| --- | --- | --- | --- | --- | --- |
+| Injected errors caught | 12 / 12 = 100 % | 24 / 24 = 100 % | **27 / 27 = 100 %** | >= 80 % | yes |
+| False-flag rate on clean fixtures | 0 / 3 = 0.0 % | 0 / 6 = 0.0 % | **0 / 6 = 0.0 %** | < 10 % | yes |
+| Worst geometry error vs hand-built model | 0.10 % | 0.10 % | **0.10 %** | < 5 % | yes |
+
+Per-error-class catch table (slice 3):
+
+| Error class | Injected | Caught | Catch rate |
+| --- | --- | --- | --- |
+| `opening_host_missing` | 1 | 1 | 100 % |
+| `opening_outside_wall` | 1 | 1 | 100 % |
+| `opening_overlap` | 1 | 1 | 100 % |
+| `schedule_duplicate_tag` | 1 | 1 | 100 % |
+| `schedule_geometry_count_mismatch` | 7 | 7 | 100 % |
+| `schedule_symbol_duplicate` | 2 | 2 | 100 % |
+| `schedule_tag_missing` | 1 | 1 | 100 % |
+| `schema_invalid` | 3 | 3 | 100 % |
+| `shared_wall_opening_unlisted` | 1 | 1 | 100 % |
+| `shared_wall_opening_wrong_zone` | 2 | 2 | 100 % |
+| `wwr_out_of_band` | 1 | 1 | 100 % |
+| `zone_not_closed` | 3 | 3 | 100 % |
+| `zone_opening_missing` | 1 | 1 | 100 % |
+| `zone_opening_not_listed` | 1 | 1 | 100 % |
+| `zone_schedule_count_mismatch` | 6 | 6 | 100 % |
+| **total** | **27** | **27** | **100 %** |
+
+No prior number regressed: the injected set grew from 24 to 27 cases, the
+catch rate stays at 100 %, the false-flag rate stays at 0.0 % and the worst
+geometry error stays at 0.10 %.
+
+The three new injected cases (all registered in
+`fixtures/injected/cases.json`):
+
+| Variant | Base | Injected fault | Expected class |
+| --- | --- | --- | --- |
+| `classroom_block_shared_door_unlisted` | `classroom_block` | the shared-wall door `d_internal` is listed in no zone at all | `shared_wall_opening_unlisted` |
+| `three_room_apartment_shared_door_wrong_zone` | `three_room_apartment` | the shared-wall door `d_internal` (wall `p7`) is additionally listed in `z_bath`, which does not border `p7` | `shared_wall_opening_wrong_zone` |
+| `two_unit_house_door_wrong_zone` | `two_unit_house` | the single-owner door `dA` (wall `ha1`) is additionally listed in `z_unit_b`, which does not border `ha1` | `shared_wall_opening_wrong_zone` |
+
+**Note on how the faults are made "quiet":** in the two cases that add or
+remove a zone reference, the corresponding zone quantity mark
+(`t_zone_classroom`, `t_zone_bath`, `t_zone_bedroom`) is adjusted to match
+the new zone list.  Without that, check 5 (`zone_schedule_count_mismatch`)
+would catch the case and it would not be discriminating.  With it, the model
+is self-consistent in every other respect and **check 6 is the only check
+that fires** — which is exactly what the discriminating tests assert (0
+findings with check 6 removed, exactly the one expected class with check 6
+present).
+
+## 16. Still not covered (updated §9)
+
+**Now covered by slice 3 (moved out of the §9 "still NOT covered" list):**
+
+* an opening hosted on a wall shared by several zones is now checked for
+  zone membership: it must be listed in at least one adjacent zone
+  (`shared_wall_opening_unlisted`) and must not be listed by a non-adjacent
+  zone (`shared_wall_opening_wrong_zone`).
+
+**Still NOT covered (stated plainly):**
+
+* **An opening deleted from the geometry, from the zone references AND from
+  the schedule at the same time is still invisible.**  Every count in the
+  model then agrees with every other count; there is nothing left to
+  disagree with.  Only a drawing-side reader (the deferred VLM second
+  reader) could catch it.
+* The same is true for an opening that was **never in the schedule** (a
+  schedule table that carries no quantities at all): the count check has
+  nothing to compare against and stays silent by design.
+* A zone whose schedule mark has no `count` is not judged at all, so a zone
+  opening list can drift silently in that case.
+* The count check compares *quantities*, not *positions*: a door that was
+  deleted and a spurious one added, keeping the count equal, is not
+  detected by check 5 (it may still be caught by the geometry checks, e.g.
+  if the spurious door is misplaced).
+* The check compares the model against itself (schedule vs geometry, zone
+  membership vs wall ownership).  It does not compare either of them against
+  the drawing.
+* Check 6 does not judge *which* adjacent zone owns a shared-wall opening
+  (both adjacent zones are acceptable, and the choice between them is a
+  modelling decision, not an error).
+
+## 17. Label reassessment (slice 3)
+
+The label stays **Conditional**.
+
+Slice 3 strengthens the symbolic half a little further (sixth check, 27/27
+injected errors caught, 0/6 false flags), but the two facts that keep the POC
+conditional are unchanged:
+
+1. **the VLM half of the POC is still unmeasured** — no reader was
+   selected, downloaded or run, `checker.SecondReader` is still a protocol
+   and `checker.NoVLMSecondReader` is still a stub; no agreement number
+   exists and none is invented; and
+2. **the checker has still never seen a real extraction** — every number in
+   this addendum is a self-consistency measurement on hand-built fixtures,
+   not on Matchline output.
+
+## 18. Verification commands run (slice 3)
+
+```sh
+$ python3 -m pytest drawing-verifier/tests/ -q
+74 passed in 0.33s
+
+$ python3 drawing-verifier/run_headline.py
+...
+HEADLINE  catch rate 100.0% (27/27)   false-flag rate 0.0% (0/6)   worst geometry error 0.10%
+
+$ python3 drawing-verifier/checker.py drawing-verifier/fixtures/classroom_block.json
+model: drawing-verifier/fixtures/classroom_block.json
+findings: 0
+no findings
+$ echo $?
+0
+
+$ python3 drawing-verifier/checker.py drawing-verifier/fixtures/injected/classroom_block_shared_door_unlisted.json
+model: drawing-verifier/fixtures/injected/classroom_block_shared_door_unlisted.json
+findings: 1
+[error] shared_wall_opening_unlisted: d_internal: opening 'd_internal' is hosted on wall 'c3', which is shared by zones ['z_classroom', 'z_corridor'], but it is listed in none of their opening lists -- it belongs to no zone
+$ echo $?
+1
+```
+

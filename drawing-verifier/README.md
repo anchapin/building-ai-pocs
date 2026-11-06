@@ -1,8 +1,9 @@
 # VLM + Neuro-Symbolic Drawing Verifier
 
-**Status:** Slice 2 in progress — the symbolic checker now has five checks
-(the fifth cross-checks the schedule quantities against the geometry), and is
-measured on six hand-built clean fixtures and a 24-case injected-error set.
+**Status:** Slice 3 complete — the symbolic checker now has six checks
+(the sixth checks the zone membership of openings hosted on a wall shared by
+several zones), and is measured on six hand-built clean fixtures and a
+27-case injected-error set.
 The VLM second reader is **not** wired (deferred; see `REPORT.md`).
 
 Hardens drawing-to-BEM (Matchline) by catching hallucinations and injected
@@ -95,7 +96,7 @@ Rules the schema validator enforces (`checker.validate_model`):
 Validation failures are reported as findings with the error class
 `schema_invalid`, with the offending element id (e.g. `l1`, `winL`).
 
-## 2. The five checks
+## 2. The six checks
 
 All checks run in `checker.py` and return structured findings
 `{error_class, element_id, reason, severity}`.
@@ -169,6 +170,36 @@ together with its zone reference — the case slice 1 could not see.
 Schedule entries without a `count` take no part in this check, so a schedule
 table that carries no quantities produces no findings.
 
+### Check 6 — Shared-wall zone membership (`shared_wall_zone_membership`)
+
+An opening hosted on a wall that belongs to **several** zones has no
+unambiguous owner, so check 5 stays quiet on it.  Check 6 defines the
+membership rule instead of guessing, and closes the gap named in
+`REPORT.md` §9.
+
+**The convention** (also stated in `REPORT.md`): a shared-wall opening is
+listed in **exactly one** adjacent zone for takeoff — the zone it "belongs"
+to.  The check therefore requires
+
+* listing in **at least one** adjacent zone, and
+* listing in **no** non-adjacent zone.
+
+Listing the opening in **both** adjacent zones is **tolerated** (not
+flagged): a shared wall between two spaces is a legitimate modelling choice
+and inventing a false flag for it would be worse than saying nothing.
+
+* `shared_wall_opening_unlisted` — the opening is hosted on a wall shared by
+  two or more zones and is listed in the `openings` of **none** of those
+  adjacent zones: it belongs to no zone (its zone references were dropped).
+* `shared_wall_opening_wrong_zone` — the opening is listed in the `openings`
+  of a zone that does **not** border its host wall (one finding per
+  offending zone).  This holds for single-owner walls too, where check 5's
+  `zone_opening_not_listed` stays quiet because the owner *does* list the
+  opening.
+
+Openings whose host wall does not exist are left to check 2
+(`opening_host_missing`); their membership is undefined.
+
 ## 3. Running it
 
 ```sh
@@ -199,9 +230,10 @@ selection (an Alex decision) — see `REPORT.md`.
 
 ```
 drawing-verifier/
-  checker.py            schema validation, the five checks, SecondReader stub
+  checker.py            schema validation, the six checks, SecondReader stub
   run_headline.py       one-command headline table
   fixtures/             6 clean fixtures + reference models + injected-error set
   tests/                pytest suite
-  REPORT.md             slice-1 report + slice-2 addendum (label: Conditional)
+  REPORT.md             slice-1 report + slice-2 addendum + slice-3 addendum
+                        (label: Conditional)
 ```
