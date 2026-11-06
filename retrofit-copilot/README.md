@@ -1,8 +1,10 @@
 # Retrofit Copilot
 
-**Status:** Slice 1 done (EnergyPlus baseline + synthetic measured data + bounded
-calibration). No Go / no-go verdict yet — see `REPORT.md`. The agent system, the
-5 ECMs, the ranking, and the verdict belong to later slices.
+**Status:** Slice 2 done — **verdict: Go**. The simulation-grounded ranking
+(E2 > E1 > E4 > E3 > E5) reproduces the ground-truth ranking exactly, top 3 in
+order, while the LLM-prior-only ranking gets it wrong (E3 first, E2 last).
+See `REPORT.md` for the full tables, the prior quoted verbatim, and the audit
+trail.
 
 Drawing → calibrated baseline → neuro-symbolic agent ranking energy-conservation
 measures, simulation-grounded. Standalone POC — no Fluxion or Matchline
@@ -11,6 +13,42 @@ integration.
 See the repo README for the POC rules: 25–40 hours, standalone, fixed go/no-go
 gate, REPORT.md leading with exactly one label (Go, Go (software only),
 Conditional, or No-go).
+
+## Reproduce slice 2 (CPU-only)
+
+```sh
+sh retrofit-copilot/scripts/fetch_energyplus.sh   # EnergyPlus 26.2.0, ~242 MB download
+python3 -m venv .venv && .venv/bin/pip install -q -r retrofit-copilot/requirements.txt
+.venv/bin/python retrofit-copilot/src/run_ecms.py --all   # 10 ECM runs + headline table + ecm_results.json
+python3 -m pytest retrofit-copilot/tests/ -q   # 55 passed
+```
+
+The ECM pipeline runs each of the 5 ECMs on the calibrated model and on the
+true model (12 runs total including the two baselines, ~35 s each under load)
+and writes the headline table to `retrofit-copilot/runs/ecm_headline_table.md`
+plus `ecm_results.json`. It writes the LLM-prior ranking to
+`retrofit-copilot/runs/llm_prior_ranking.json` BEFORE running any ECM
+simulation. Runs are scratch (gitignored); the numbers are recorded in
+`REPORT.md`.
+
+## Slice-2 headline (EnergyPlus 26.2.0, 5ZoneAirCooled, Chicago TMY3)
+
+Simulation-grounded ranking by annual facility kWh saved — agent (calibrated)
+and ground truth (true model) agree exactly, top 3 in order:
+
+| rank | ECM | kWh saved (agent) | kWh saved (truth) |
+|---|---|---|---|
+| 1 | E2 Glazing upgrade (low-e) | 6357.0 (10.06%) | 6172.0 (9.78%) |
+| 2 | E1 Opaque envelope insulation | 4790.3 (7.58%) | 5164.6 (8.18%) |
+| 3 | E4 Heating electrification (fuel switch) | 4282.5 (6.77%) | 4267.1 (6.76%) |
+| 4 | E3 HVAC plant efficiency upgrade | 3819.2 (6.04%) | 3802.9 (6.03%) |
+| 5 | E5 Thermostat deadband widening (setback) | 3751.1 (5.93%) | 3776.3 (5.98%) |
+
+LLM-prior-only ranking (written before the simulations): E3 > E1 > E5 > E4 >
+E2 — wrong at both ends. E4 saves site kWh but costs more and emits more
+under the PLACEHOLDER factors (see `REPORT.md`); a cost- or carbon-ranked
+decision would order it differently. Guideline 14 re-confirmed on fresh
+re-runs (full-year CV(RMSE) 1.63%, monthly NMBE within ±0.57%).
 
 ## Reproduce slice 1 (CPU-only)
 
