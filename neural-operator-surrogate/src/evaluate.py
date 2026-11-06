@@ -1,4 +1,4 @@
-"""Evaluation harness for the neural-operator surrogate POC (slice 1).
+"""Evaluation harness for the neural-operator surrogate POC (slices 1-3).
 
 One command prints the headline table:
 
@@ -12,11 +12,23 @@ every arm, with the sample counts:
   * heat-balance residual (%)     (physics consistency of the rollout)
   * peak-load error (W and %)     (reported separately from the mean error)
 
-The plain-MLP baseline (arm (a)) and the physics-informed PI-DeepONet-style
-arm (b, slice 2) are both evaluated here, on the same splits and with the
-same metrics.  There is NO EnergyPlus baseline on this machine, so this
-script deliberately does not compute (and does not claim) a speed-up
-factor.
+The arms (all trained on the same data, splits and seed):
+
+  * 'MLP (plain)'            - plain-MLP baseline (issue #3 arm (a)),
+  * 'PINN (PI-DeepONet)'     - physics-informed arm, physics loss with the
+                                TRUE per-series RC parameters (arm (b)),
+  * 'PINN (nominal params)'  - the same arm with the NOMINAL (train-median)
+                                RC parameters in the physics loss: the
+                                parameter-mismatch experiment,
+  * 'SharedEnc-RC'           - NeuralBES-style shared-encoder differentiable
+                                RC model (issue #3 arm (c)), true base
+                                parameters,
+  * 'SharedEnc-RC (nominal base)' - the same arm with the nominal base
+                                parameters,
+  * 'RC reference'           - the 2R2C ground truth itself.
+
+The speedup vs EnergyPlus is NOT computed here (see `benchmark_speedup.py`
+and REPORT.md).
 
 Usage:
     python src/evaluate.py --seed 42 [--data-dir data] [--out-dir data]
@@ -36,8 +48,9 @@ import torch
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from gen_data import DEFAULT_DATA_DIR, iter_series, load_split  # noqa: E402
-from models import (PINNZone, Standardizer, ZoneMLP, predict_windows,  # noqa: E402
-                    rollout_pinn, series_features, window_features)
+from models import (PINNZone, SharedEncoderRC, Standardizer, ZoneMLP,  # noqa: E402
+                    median_params, predict_windows, rollout_pinn,
+                    rollout_shared, series_features, window_features)
 from rc_model import DT, RCParams, balance_residual_pct  # noqa: E402
 
 SPLITS = ("val", "test_id", "test_weather", "test_setpoint", "test_both")
@@ -59,6 +72,9 @@ GATE_HB_RESID_PCT = 5.0       # < 5% heat-balance residual
 
 ARM_MLP = "MLP (plain)"
 ARM_PINN = "PINN (PI-DeepONet)"
+ARM_PINN_NOM = "PINN (nominal params)"
+ARM_SHARED = "SharedEnc-RC"
+ARM_SHARED_NOM = "SharedEnc-RC (nominal base)"
 ARM_REF = "RC reference (ground truth)"
 
 
@@ -87,6 +103,30 @@ def load_pinn(data_dir: str, filename: str = "model_pinn.pt"):
     return model, std, std_b, ckpt
 
 
+def load_shared(data_dir: str, filename: str = "model_shared.pt"):
+    """Load a trained shared-encoder RC arm (None if it has not been trained)."""
+    path = os.path.join(data_dir, filename)
+    if not os.path.exists(path):
+        return None
+    ckpt = torch.load(path, map_location="cpu", weights_only=False)
+    model = SharedEncoderRC(ckpt["input_dim"], tuple(ckpt["hidden"]),
+                             int(ckpt.get("latent", 32)))
+    model.load_state_dict(ckpt["state_dict"])
+    model.eval()
+    std = Standardizer.from_dict(ckpt["standardizer"])
+    return model, std, ckpt
+
+
+def split_params_list(splits_meta: Dict, split: str) -> List[Dict[str, float]]:
+    """The true RC parameters of every series of a split."""
+    return [dict(m["params"]) for m in splits_meta["splits"][split]["series"]]
+
+
+def nominal_params(splits_meta: Dict) -> Dict[str, float]:
+    """Nominal (train-median) RC parameters: the mismatch experiment."""
+    return median_params(split_params_list(splits_meta, "train"))
+
+
 def rollout_mlp(model, std, s: Dict[str, np.ndarray], window: int,
                 target: str = "level") -> np.ndarray:
     """Free-running rollout of the MLP (only the first `window` steps are given)."""
@@ -112,6 +152,60 @@ def rollout_pinn_series(model, std, std_b, s: Dict[str, np.ndarray],
     out = rollout_pinn(model, std, std_b, feats[None, ...], wall0, [params],
                        window, branch_offset=branch_offset)
     return out[0].astype(np.float64)
+
+
+def rollout_shared_series(model, std, s: Dict[str, np.ndarray],
+                          window: int, params: Dict[str, float]) -> np.ndarray:
+    """Free-running rollout of the shared-encoder RC arm on one series."""
+    feats = series_features(s["t_zone"], s["t_out"], s["t_set"], s["q_int"])
+    wall0 = np.array([s["t_wall"][window - 1]], dtype=np.float64)
+    out = rollout_shared(model, std, feats[None, ...], wall0, [params], window)
+    return out[0].astype(np.float64)
+
+
+def build_surrogate_arms(data_dir: str, splits_meta: Dict) -> List[Dict]:
+    """Every trained surrogate arm present in `data_dir` (arm descriptors).
+
+    Each descriptor carries the model, its standardiser, the RC-parameter
+    mode it was trained with ("true" = per-series true parameters, which
+    the rollout must reproduce; "nominal" = the train-median parameters
+    for every series) and its display label.
+    """
+    arms: List[Dict] = []
+    for filename, label, kind in (
+            ("model_pinn.pt", ARM_PINN, "pinn"),
+            ("model_pinn_nominal.pt", ARM_PINN_NOM, "pinn"),
+            ("model_shared.pt", ARM_SHARED, "shared"),
+            ("model_shared_nominal.pt", ARM_SHARED_NOM, "shared")):
+        path = os.path.join(data_dir, filename)
+        if not os.path.exists(path):
+            continue
+        if kind == "pinn":
+            model, std, std_b, ckpt = load_pinn(data_dir, filename)
+            arms.append({"label": label, "kind": kind, "model": model,
+                         "std": std, "std_b": std_b, "ckpt": ckpt,
+                         "params_mode": str(ckpt.get("rc_params_mode", "true")),
+                         "file": filename})
+        else:
+            model, std, ckpt = load_shared(data_dir, filename)
+            arms.append({"label": label, "kind": kind, "model": model,
+                         "std": std, "ckpt": ckpt,
+                         "params_mode": str(ckpt.get("rc_params_mode", "true")),
+                         "file": filename})
+    return arms
+
+
+def rollout_surrogate(arm: Dict, s: Dict[str, np.ndarray], window: int,
+                      params_true: Dict[str, float],
+                      params_nominal: Dict[str, float]) -> np.ndarray:
+    """Free-running rollout of one surrogate arm on one series."""
+    params = params_true if arm["params_mode"] == "true" else params_nominal
+    if arm["kind"] == "pinn":
+        return rollout_pinn_series(arm["model"], arm["std"], arm["std_b"], s,
+                                   window, params,
+                                   branch_offset=int(arm["ckpt"].get(
+                                       "branch_offset", 0)))
+    return rollout_shared_series(arm["model"], arm["std"], s, window, params)
 
 
 def wall_states(params: RCParams, t_pre: np.ndarray, w0: float,
@@ -256,10 +350,11 @@ q_int_seg, t_out_seg)
 
 def evaluate_split(model, std, data_dir: str, split: str, window: int,
          splits_meta: Dict, target: str = "level",
-         pinn: Tuple = None) -> List[Dict]:
+         arms: List[Dict] = None) -> List[Dict]:
     flat = load_split(data_dir, split)
     series = iter_series(flat)
     meta = {int(m["series_id"]): m for m in splits_meta["splits"][split]["series"]}
+    nom = nominal_params(splits_meta)
     rows = []
     for i, s in enumerate(series):
         sid = int(meta[i]["series_id"])
@@ -267,14 +362,10 @@ def evaluate_split(model, std, data_dir: str, split: str, window: int,
         t_hat = rollout_mlp(model, std, s, window, target=target)
         rows.append({"arm": ARM_MLP, "split": split, "series": sid,
  **series_metrics(params, s, t_hat, window)})
-        if pinn is not None:
-            p_model, p_std, p_std_b, p_ckpt = pinn
-            t_pinn = rollout_pinn_series(p_model, p_std, p_std_b, s, window,
-                                         params.to_dict(),
-                                         branch_offset=int(p_ckpt.get(
-                                             "branch_offset", 0)))
-            rows.append({"arm": ARM_PINN, "split": split, "series": sid,
- **series_metrics(params, s, t_pinn, window)})
+        for arm in (arms or []):
+            t_arm = rollout_surrogate(arm, s, window, params.to_dict(), nom)
+            rows.append({"arm": arm["label"], "split": split, "series": sid,
+ **series_metrics(params, s, t_arm, window)})
         rows.append({"arm": ARM_REF, "split": split, "series": sid,
  **reference_metrics(params, s, window)})
     return rows
@@ -282,11 +373,12 @@ def evaluate_split(model, std, data_dir: str, split: str, window: int,
 
 def evaluate_split_aligned(model, std, data_dir: str, split: str, window: int,
          splits_meta: Dict, target: str = "level",
-         pinn: Tuple = None) -> List[Dict]:
+         arms: List[Dict] = None) -> List[Dict]:
     """Same as `evaluate_split`, but with the physics-aligned metrics."""
     flat = load_split(data_dir, split)
     series = iter_series(flat)
     meta = {int(m["series_id"]): m for m in splits_meta["splits"][split]["series"]}
+    nom = nominal_params(splits_meta)
     rows = []
     for i, s in enumerate(series):
         sid = int(meta[i]["series_id"])
@@ -294,14 +386,10 @@ def evaluate_split_aligned(model, std, data_dir: str, split: str, window: int,
         t_hat = rollout_mlp(model, std, s, window, target=target)
         rows.append({"arm": ARM_MLP, "split": split, "series": sid,
  **aligned_series_metrics(params, s, t_hat, window)})
-        if pinn is not None:
-            p_model, p_std, p_std_b, p_ckpt = pinn
-            t_pinn = rollout_pinn_series(p_model, p_std, p_std_b, s, window,
-                                         params.to_dict(),
-                                         branch_offset=int(p_ckpt.get(
-                                             "branch_offset", 0)))
-            rows.append({"arm": ARM_PINN, "split": split, "series": sid,
- **aligned_series_metrics(params, s, t_pinn, window)})
+        for arm in (arms or []):
+            t_arm = rollout_surrogate(arm, s, window, params.to_dict(), nom)
+            rows.append({"arm": arm["label"], "split": split, "series": sid,
+ **aligned_series_metrics(params, s, t_arm, window)})
         rows.append({"arm": ARM_REF, "split": split, "series": sid,
  **aligned_series_metrics(params, s, s["t_zone"].astype(np.float64), window)})
     return rows
@@ -346,40 +434,72 @@ r["n_steps"], r["rmse_t"], r["mae_t"], r["rmse_q"], r["mae_q"],
 r["hb_resid_pct"], r["peak_q_err_w"], r["peak_q_err_pct"]))
 
 
-def gate_summary(summary: List[Dict], aligned: List[Dict]) -> List[str]:
-    """Per-split gate verdicts (issue #3) of the PINN arm against the MLP."""
+def gate_summary(summary: List[Dict], aligned: List[Dict],
+                 arm_labels: List[str]) -> List[str]:
+    """Per-split gate verdicts (issue #3) of every surrogate arm vs the MLP."""
     by = {(r["arm"], r["split"]): r for r in summary}
     ab = {(r["arm"], r["split"]): r for r in aligned}
     lines = []
     lines.append("GATE SUMMARY (issue #3)")
-    lines.append(f"  extrapolation gate: PINN RMSE_T must be <= "
+    lines.append(f"  extrapolation gate: the surrogate's RMSE_T must be <= "
                  f"{100 * (1 - GATE_EXTRAP_RMSE_REL):.0f}% of the MLP RMSE_T "
                  f"(>= {100 * GATE_EXTRAP_RMSE_REL:.0f}% reduction)")
-    lines.append(f"  heat-balance gate : PINN heat-balance residual must be "
-                 f"< {GATE_HB_RESID_PCT:.1f}% (physics-aligned metric, "
+    lines.append(f"  heat-balance gate : the surrogate's heat-balance residual "
+                 f"must be < {GATE_HB_RESID_PCT:.1f}% (physics-aligned metric, "
                  f"identical for every arm)")
     lines.append("  peak-load error is reported separately from the mean error")
-    lines.append("")
-    lines.append(f"  {'split':<34} {'RMSE_T MLP':>11} {'RMSE_T PINN':>12} "
-                 f"{'reduction':>10} {'>=20% gate':>11} {'HBresid PINN':>13} "
-                 f"{'<5% gate':>10} {'PeakQerr PINN':>14}")
+    for label in arm_labels:
+        lines.append("")
+        lines.append(f"  arm: {label}")
+        lines.append(f"  {'split':<34} {'RMSE_T MLP':>11} {'RMSE_T arm':>12} "
+                     f"{'reduction':>10} {'>=20% gate':>11} {'HBresid arm':>13} "
+                     f"{'<5% gate':>10} {'PeakQerr arm':>14}")
+        for split in SPLITS:
+            mlp = by.get((ARM_MLP, split))
+            arm = by.get((label, split))
+            aarm = ab.get((label, split))
+            if mlp is None or arm is None or aarm is None:
+                continue
+            red = (100.0 * (1.0 - arm["rmse_t"] / mlp["rmse_t"])
+                   if mlp["rmse_t"] else float("nan"))
+            extrap = split in EXTRAPOLATION_SPLITS
+            gate_txt = ("n/a (in-dist)" if not extrap
+                        else ("MET" if red >= 100 * GATE_EXTRAP_RMSE_REL
+                              else "NOT MET"))
+            hb_gate = ("MET" if aarm["hb_resid_pct"] < GATE_HB_RESID_PCT
+                       else "NOT MET")
+            lines.append(f"  {SPLIT_LABEL.get(split, split):<34} "
+                         f"{mlp['rmse_t']:>11.4f} {arm['rmse_t']:>12.4f} "
+                         f"{red:>9.2f}% {gate_txt:>11} "
+                         f"{aarm['hb_resid_pct']:>13.3f} "
+                         f"{hb_gate:>10} {aarm['peak_q_err_pct']:>14.3f}")
+    return lines
+
+
+def mismatch_summary(summary: List[Dict], aligned: List[Dict]) -> List[str]:
+    """Parameter-mismatch experiment: PINN with nominal vs true RC parameters."""
+    by = {(r["arm"], r["split"]): r for r in summary}
+    ab = {(r["arm"], r["split"]): r for r in aligned}
+    lines = []
+    lines.append("PARAMETER-MISMATCH EXPERIMENT (physics loss / rollout with "
+                 "NOMINAL train-median RC parameters vs the TRUE per-series "
+                 "parameters)")
+    lines.append(f"  {'split':<34} {'RMSE_T true':>12} {'RMSE_T nominal':>14} "
+                 f"{'delta %':>9} {'HBresid true':>13} {'HBresid nominal':>15}")
     for split in SPLITS:
-        mlp = by.get((ARM_MLP, split))
-        pinn = by.get((ARM_PINN, split))
-        apinn = ab.get((ARM_PINN, split))
-        if mlp is None or pinn is None or apinn is None:
+        t = by.get((ARM_PINN, split))
+        n = by.get((ARM_PINN_NOM, split))
+        at = ab.get((ARM_PINN, split))
+        an = ab.get((ARM_PINN_NOM, split))
+        if t is None or n is None:
             continue
-        red = (100.0 * (1.0 - pinn["rmse_t"] / mlp["rmse_t"])
-               if mlp["rmse_t"] else float("nan"))
-        extrap = split in EXTRAPOLATION_SPLITS
-        gate_txt = ("n/a (in-dist)" if not extrap
-                    else ("MET" if red >= 100 * GATE_EXTRAP_RMSE_REL else "NOT MET"))
-        hb_gate = "MET" if apinn["hb_resid_pct"] < GATE_HB_RESID_PCT else "NOT MET"
+        delta = (100.0 * (n["rmse_t"] - t["rmse_t"]) / t["rmse_t"]
+                 if t["rmse_t"] else float("nan"))
         lines.append(f"  {SPLIT_LABEL.get(split, split):<34} "
-                     f"{mlp['rmse_t']:>11.4f} {pinn['rmse_t']:>12.4f} "
-                     f"{red:>9.2f}% {gate_txt:>11} "
-                     f"{apinn['hb_resid_pct']:>13.3f} "
-                     f"{hb_gate:>10} {apinn['peak_q_err_pct']:>14.3f}")
+                     f"{t['rmse_t']:>12.4f} {n['rmse_t']:>14.4f} "
+                     f"{delta:>8.2f}% "
+                     f"{(at['hb_resid_pct'] if at else float('nan')):>13.3f} "
+                     f"{(an['hb_resid_pct'] if an else float('nan')):>15.3f}")
     return lines
 
 
@@ -400,23 +520,30 @@ def main() -> None:
     # were trained with the old level default. Never assume: a delta
     # model rolled out as level (or vice versa) diverges or misreports.
     target = str(ckpt.get("target", "level"))
-    pinn = load_pinn(args.data_dir)
     with open(os.path.join(args.data_dir, "splits.json")) as fh:
         splits_meta = json.load(fh)
 
-    arms = [ARM_REF, ARM_MLP] + ([ARM_PINN] if pinn is not None else [])
+    surrogate_arms = build_surrogate_arms(args.data_dir, splits_meta)
+    arm_labels = [a["label"] for a in surrogate_arms]
+    arms = [ARM_REF, ARM_MLP] + arm_labels
 
     lines: List[str] = []
     lines.append("=" * 148)
-    lines.append("Neural-operator surrogate POC - slice 2 headline table")
+    lines.append("Neural-operator surrogate POC - slice 3 headline table")
     lines.append(f"seed={args.seed}  model_seed={ckpt.get('seed')}  window={window}  "
        f"target=next-step zone temperature [degC] (parameterisation={target})")
     lines.append(f"data_dir={args.data_dir}  data_seed={splits_meta.get('seed')}  "
        f"steps/series={splits_meta.get('steps')}")
     lines.append("arms: 'MLP (plain)' = plain-MLP baseline (issue #3 arm (a)); "
        "'PINN (PI-DeepONet)' = physics-informed arm trained with a "
-       "multi-step rollout loss + the heat-balance residual (issue #3 "
-       "arm (b)); 'RC reference' = the 2R2C ground truth itself")
+       "multi-step rollout loss + the heat-balance residual, physics loss "
+       "with the TRUE per-series RC parameters (issue #3 arm (b)); "
+       "'PINN (nominal params)' = the same arm with the NOMINAL "
+       "(train-median) RC parameters in the physics loss (parameter-mismatch "
+       "experiment); 'SharedEnc-RC' = NeuralBES-style shared-encoder "
+       "differentiable RC model (issue #3 arm (c)); 'SharedEnc-RC (nominal "
+       "base)' = the same arm on the nominal base parameters; 'RC reference' "
+       "= the 2R2C ground truth itself")
     lines.append("-" * 148)
     lines.append(HEADER)
     lines.append("-" * 148)
@@ -425,14 +552,14 @@ def main() -> None:
     aligned: List[Dict] = []
     for split in SPLITS:
         rows = evaluate_split(model, std, args.data_dir, split, window,
-                              splits_meta, target=target, pinn=pinn)
+                              splits_meta, target=target, arms=surrogate_arms)
         for arm in arms:
             agg = aggregate(rows, arm, split)
             summary.append(agg)
             lines.append(format_row(agg))
         lines.append("-" * 148)
 
-    if pinn is not None:
+    if surrogate_arms:
         # Physics-aligned metrics: the implied HVAC load of a surrogate
         # rollout is evaluated on the PRE-step zone temperature and the
         # mass node is propagated with the PRE-step air temperature, as
@@ -450,19 +577,23 @@ def main() -> None:
         for split in SPLITS:
             arows = evaluate_split_aligned(model, std, args.data_dir, split,
                                             window, splits_meta, target=target,
-                                            pinn=pinn)
+                                            arms=surrogate_arms)
             for arm in arms:
                 agg = aggregate(arows, arm, split)
                 aligned.append(agg)
                 lines.append(format_row(agg))
             lines.append("-" * 148)
 
-    lines.extend(gate_summary(summary, aligned))
+    lines.extend(gate_summary(summary, aligned, arm_labels))
+    if ARM_PINN_NOM in arm_labels:
+        lines.append("")
+        lines.extend(mismatch_summary(summary, aligned))
 
-    lines.append("NOT claimed in this slice: (1) no Go/Conditional/No-go verdict - that label "
-       "belongs to the full POC, after all three arms and the speed-up gate exist;")
-    lines.append("        (2) speed-up vs EnergyPlus is measured, not claimed here - see REPORT.md "
-       "(5-zone annual rollout ~1x on this machine; the >=50x gate is NOT met).")
+    lines.append("NOT claimed in this slice: (1) the Go/Conditional/No-go verdict is "
+       "not printed by this script - it is in REPORT.md (the closing slice);")
+    lines.append("        (2) speed-up vs EnergyPlus is not computed here - see REPORT.md "
+       "and src/benchmark_speedup.py (the >=50x gate is measured on a vectorised "
+       "rollout, or reported as not re-attempted with the reason).")
     lines.append("=" * 148)
     text = "\n".join(lines)
     print(text)
@@ -471,8 +602,8 @@ def main() -> None:
     with open(os.path.join(args.out_dir, "headline_table.txt"), "w") as fh:
         fh.write(text + "\n")
     with open(os.path.join(args.out_dir, "headline_table.json"), "w") as fh:
-        json.dump({"summary": summary, "aligned": aligned}, fh, indent=2,
-                  sort_keys=True)
+        json.dump({"summary": summary, "aligned": aligned,
+                   "arms": arm_labels}, fh, indent=2, sort_keys=True)
 
 
 if __name__ == "__main__":

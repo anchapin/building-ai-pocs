@@ -1,3 +1,46 @@
+# Neural-operator surrogate POC — VERDICT: No-go
+
+**Label: No-go.** This is the full-POC verdict (slice 3 closes the POC).
+A clean No-go is a successful outcome: the POC answered its question, and
+the answer is that neither the physics-informed arm nor the shared-encoder
+arm earns a Go on the issue's three gates. The slice notes below hold the
+evidence; this section is the verdict and nothing else.
+
+## The three gates (issue #3)
+
+| Gate | Result |
+|---|---|
+| Surrogate beats MLP on extrapolation (unseen weather + unseen setpoint) by ≥20% RMSE | **PARTIAL.** PINN with NOMINAL parameters meets it on all three unseen splits (weather −32.5%, setpoint −61.8%, both −29.3%). PINN with TRUE parameters meets it only on setpoints (−65.8%; weather −18.3%, both −7.7%). SharedEnc-RC (nominal base) also prints MET — but see the disqualification below: its numbers are the nominal-RC baseline, not learning. |
+| Heat-balance residual <5% on held-out rollouts | **NOT MET anywhere, by any honest arm.** Best honest value is PINN-true in-distribution, 7.8%; PINN-nominal 8.7% in-distribution; 51–73% on unseen weather/both. |
+| ≥50× speedup vs EnergyPlus | **NOT MET.** Standing measurement ~1× (0.9–1.2×, slice 2). No vectorised/compiled rollout was built in this slice, so the gate was not re-tested. |
+
+## Why No-go, not Conditional
+
+- Two of the three gates fail decisively: heat balance by 1.5–14×, speedup by ~50×. A Conditional would need a credible single condition; this needs two fundamental fixes (a physics-consistency mechanism that actually delivers HB <5% on held-out rollouts, and a vectorised rollout that reaches ≥50×), both unproven and both new research, not follow-on slices.
+- The shared-encoder arm (c) — the arm this slice was supposed to add — contributes nothing beyond its own baseline. With TRUE base parameters it is disqualified as a tautology (supervisor-proved: an untrained SharedEncoderRC reproduces the RC reference to RMSE_T 0.0000 on every split — it contains the exact generative model, so its 100% extrapolation "win" and ~0% heat-balance residual are not results). With NOMINAL base parameters it matches the untrained nominal RC almost exactly (trained val 0.6057 / weather 1.3672 / both 1.2038 °C vs untrained nominal RC 0.6254 / 1.3605 / 1.2025 °C) — the encoder learns ~nothing, and further training makes the rollout worse (val 0.606 → 1.074 by epoch 59 while the one-step loss falls: the same one-step-training-destabilises-rollouts lesson as slice 1's delta divergence).
+- Peak-load error, reported separately as the issue requires, stays unusable for sizing on the hard splits: PINN −43% to −50% on unseen weather/both.
+- The one genuine positive — PINN-nominal beats the MLP on every unseen split — does not rescue the verdict: it still violates heat balance everywhere and runs at ~1× EnergyPlus speed, so it is neither physics-consistent nor faster. It is kept as a research note (below), not as a surrogate to adopt.
+
+## What failed
+
+1. The physics-residual loss does not deliver heat-balance consistency on held-out rollouts (best 7.8% in-distribution, 51–73% OOD). The metric conflates trajectory error with physics violation (slice 2), but on its own terms the <5% gate is not met, and no arm comes close OOD.
+2. The speedup gate was never plausibly reachable with a Python-loop rollout (~1× measured); the vectorised/compiled rollout that could change it was identified in slice 2 and not built in slice 3 (the worker re-downloaded EnergyPlus 26.2.0 and hit the step cap before running the benchmark; `benchmark_speedup.py` is untouched).
+3. The shared-encoder arm's design is degenerate with true parameters (see above) and inert with nominal ones. The NeuralBES-style variant is killed for this component.
+4. Per the issue's No-go text, the physics-loss variant is killed as a surrogate for this component. Note the nuance: the issue's literal No-go trigger (PINN ≤ MLP OOD) is NOT what happened — PINN-nominal beats the MLP OOD on all splits. The kill is on the Go bar instead: a surrogate that fails heat balance and speed is not adoptable however it extrapolates.
+
+## What would change the recommendation
+
+- A physics-consistency mechanism that reaches HB <5% on held-out rollouts (not just in-distribution), demonstrated on the same harness — the current residual loss does not.
+- A vectorised/compiled rollout measured at ≥50× vs EnergyPlus on the same 5ZoneAirCooled comparison.
+- Both together, in a new spike, not a slice 4: the POC's effort box is spent, and the remaining work is new research (plus a real-building test, since all of this is on self-consistent RC ground truth — see the optimistic-setting caveat in the slice-2 note, which still stands).
+
+## What survives as research notes (not adoption)
+
+- PINN with nominal (train-median) parameters extrapolates better than PINN with true parameters: weather −17%, both −23% RMSE_T vs the true-parameter arm, and it meets the ≥20% extrapolation gate on all three unseen splits. The "correct" prior does worse OOD than the approximate one — the Jiang et al. (2025) warning, replicated in the other direction. Any funded follow-on that uses physics priors should test nominal-vs-true parameters as a first experiment.
+- Multi-step (rollout) loss is what fixed the MLP's free-running error in-distribution (3.84 → 0.64 °C); one-step training alone destabilises rollouts (slice 1 delta divergence; slice-3 shared-nominal val rollout 0.606 → 1.074 across epochs while one-step loss falls). Rollout-aware training is necessary, just not sufficient for the HB gate.
+
+---
+
 # Neural-operator surrogate POC — slice 1 note
 
 This is a **slice note, not the POC verdict**. No Go / Go (software only) /
@@ -248,3 +291,158 @@ wall (60 epochs, best epoch 30), offset-1 94.5 s (best epoch 30).
   RC parameters in the physics loss vs per-series true parameters.
 - Revisit the speedup only with a vectorised/compiled rollout; do not
   re-measure the Python-loop rollout and expect a different number.
+---
+
+# Neural-operator surrogate POC — slice 3 note
+
+This slice closes the POC. The verdict is at the top of this file
+(**No-go**); what follows is what slice 3 built, what it measured, and
+what it explicitly does not claim.
+
+## What slice 3 built
+
+All work lives in `neural-operator-surrogate/` (standalone, CPU-only, no
+Fluxion integration, no EnergyPlus claim beyond the measured speedup,
+no ASHRAE 140 claim):
+
+- `src/models.py` — `SharedEncoderRC`, a NeuralBES-style shared-encoder
+  differentiable RC model (issue #3 arm (c)): one encoder shared by every
+  time step maps the state-history window to a latent code; two heads
+  produce multiplicative (log-space) corrections of four RC parameters
+  (UA_win, UA_inf, C_air, R_wall) and a learned heat-flow correction
+  (tanh, ±2000 W). The zone temperature is obtained by integrating the
+  differentiable 2R2C equations with the corrected parameters — the
+  physics is hard-wired in the architecture, not a soft loss penalty.
+  Heads are zero-initialised, so an untrained model is exactly the base
+  RC model. Plus `median_params` (per-parameter train-median = nominal
+  parameters) and `shared_rollout_torch` / `rollout_shared`.
+- `src/train.py` — `--arm shared` (60 epochs, seed 42, `level` target)
+  and `--rc-params {true,nominal}` for both the PINN and shared arms;
+  best-epoch selection by val rollout RMSE (as in slice 2); checkpoints
+  record `rc_params_mode`.
+- `src/evaluate.py` — headline table extended with `PINN (nominal
+  params)`, `SharedEnc-RC`, and `SharedEnc-RC (nominal base)` rows on
+  every split, a gate summary covering all four surrogate arms, and a
+  PARAMETER-MISMATCH table (PINN nominal vs true, per split).
+- `tests/test_shared.py` — 5 new tests (25 total, all passing): the
+  untrained-shared-is-RC-reference property, the nominal-variant-is-a-
+  real-test property, rollout determinism/finiteness/warm-start,
+  checkpoint round-trip of `rc_params_mode`, `median_params` medians.
+- `neural-operator-surrogate/data/` holds the trained checkpoints
+  (gitignored, as before): `model_shared.pt`,
+  `model_shared_nominal.pt`, `model_pinn_nominal.pt` (trained by the
+  supervisor to complete the mismatch experiment — the worker hit the
+  step cap during the EnergyPlus re-download before training it),
+  plus the slice-1/2 checkpoints. EnergyPlus 26.2.0 was re-downloaded
+  into gitignored `data/energyplus/` (official Ubuntu 24.04 tarball);
+  the benchmark was not run — see "Speedup" below.
+
+## Headline table (seed 42; evaluate re-run is byte-identical)
+
+Free-running rollout RMSE_T [°C] (physics-aligned heat-balance residual
+in brackets). Full table, MAE/RMSE_Q/peak-load error, and the gate
+summary are in the `evaluate.py --seed 42` output.
+
+| split | MLP | PINN (true) | PINN (nominal) | SharedEnc-RC | SharedEnc-RC (nominal) |
+|---|---|---|---|---|---|
+| val | 3.8384 [37.1%] | 0.6429 [7.8%] | 0.5701 [8.7%] | 0.0000 [0.000%] † | 0.6057 [9.0%] |
+| test_id | 3.8502 [35.5%] | 0.6391 [7.6%] | 0.5713 [8.6%] | 0.0000 [0.000%] † | 0.6129 [8.9%] |
+| test_weather (UNSEEN) | 6.7486 [53.6%] | 5.5170 [71.3%] | 4.5548 [51.5%] | 0.0001 [0.001%] † | 1.3672 [16.8%] |
+| test_setpoint (UNSEEN) | 4.3799 [33.0%] | 1.4995 [11.4%] | 1.6718 [11.9%] | 0.0001 [0.000%] † | 0.5337 [7.8%] |
+| test_both (UNSEEN) | 6.1342 [49.2%] | 5.6610 [72.5%] | 4.3366 [55.8%] | 0.0001 [0.001%] † | 1.2038 [15.3%] |
+
+† DISQUALIFIED — tautology, not a result. Supervisor-proved: an
+untrained SharedEncoderRC rolled out with TRUE base parameters
+reproduces the RC reference to RMSE_T 0.0000 on every split (the
+zero-init heads vanish, so the rollout IS the 2R2C ground truth). Its
+100% extrapolation "win" and ~0% heat-balance residual are structural
+and are excluded from every gate judgement in this report. The honest
+shared-encoder numbers are the nominal-base column.
+
+## The honest shared-encoder numbers (nominal base)
+
+Trained SharedEnc-RC (nominal base) vs the untrained nominal RC with
+the same parameters — the comparison that isolates what the encoder
+learned:
+
+| split | untrained nominal RC | trained SharedEnc-RC (nominal) |
+|---|---|---|
+| val | 0.6254 | 0.6057 |
+| test_id | 0.6320 | 0.6129 |
+| test_weather | 1.3605 | 1.3672 (worse) |
+| test_setpoint | 0.5505 | 0.5337 |
+| test_both | 1.2025 | 1.2038 (worse) |
+
+The encoder learns ~nothing: ±3% on the in-distribution splits, worse
+on two of three unseen splits. Training history shows why: best epoch
+is 0 (val rollout 0.606) and the rollout degrades to 1.074 by epoch 59
+while the one-step loss falls 0.263 → 0.026. One-step training
+destabilises the rollout; the best checkpoint is the least-trained one.
+
+## Parameter-mismatch experiment (PINN, nominal vs true)
+
+| split | RMSE_T true | RMSE_T nominal | delta | HBresid true | HBresid nominal |
+|---|---|---|---|---|---|
+| val | 0.6429 | 0.5701 | −11.3% | 7.792 | 8.732 |
+| test_id | 0.6391 | 0.5713 | −10.6% | 7.555 | 8.648 |
+| test_weather | 5.5170 | 4.5548 | −17.4% | 71.265 | 51.546 |
+| test_setpoint | 1.4995 | 1.6718 | +11.5% | 11.439 | 11.887 |
+| test_both | 5.6610 | 4.3366 | −23.4% | 72.509 | 55.830 |
+
+The nominal-parameter PINN extrapolates BETTER than the
+true-parameter PINN on weather and both (and meets the ≥20%
+extrapolation gate on all three unseen splits — the only honest arm to
+do so). Heat balance still fails for both (8.7–8.6% in-distribution,
+51–56% OOD for nominal). The physics prior with the "correct"
+parameters does worse OOD than with approximate ones.
+
+## Training facts
+
+- SharedEnc-RC (true): 60 epochs, seed 42, 261.8 s wall, best epoch 55,
+  30,149 parameters, val rollout RMSE 1.2e-05 °C (tautology — see above).
+- SharedEnc-RC (nominal): 60 epochs, seed 42, 257.9 s wall, best epoch
+  0, val rollout RMSE 0.6057 °C.
+- PINN (nominal): 60 epochs, seed 42, 94.0 s wall, best epoch 43, val
+  rollout RMSE 0.5701 °C (trained by the supervisor; the worker's
+  transcript shows it planned this run in `/tmp/run_c.sh` but hit the
+  60-step cap during the EnergyPlus re-download first).
+- Determinism: `gen_data.py --seed 42`, `train.py --seed 42`,
+  `evaluate.py --seed 42` twice: byte-identical headline tables.
+  Tests: 25 passed (`pytest neural-operator-surrogate/tests/ -q`).
+
+## Speedup (not re-measured)
+
+The ≥50× gate is NOT MET and was not re-tested: no vectorised/compiled
+rollout was built in this slice (`benchmark_speedup.py` untouched).
+The standing measurement from slice 2 (~1×, 0.9–1.2×) is the number;
+do not cite it as new evidence from this slice. The worker
+re-downloaded EnergyPlus 26.2.0 into gitignored `data/energyplus/`
+(the tarball extracts with non-fatal `tar` ownership warnings on this
+VM — `Cannot change ownership to uid 1001` — the binary itself works;
+see the worker transcript steps 57–60) and hit the step cap before
+running the benchmark.
+
+## NOT claimed in this slice
+
+1. No SharedEnc-RC (true base) win of any kind — disqualified, see above.
+2. No ≥50× speedup (not re-tested; standing ~1×).
+3. No <5% heat-balance gate met on any split by any honest arm.
+4. No claim that physics priors help in practice: the nominal-vs-true
+   result cuts the other way, and everything is still on
+   self-consistent RC ground truth (the optimistic-setting caveat from
+   slice 2 stands).
+5. The verdict (No-go) is in the verdict section at the top of this
+   file. This slice note records the evidence for it.
+
+## What slice 3 did not do (and why)
+
+- No vectorised/compiled rollout: the worker spent its steps on the
+  arm, the mismatch wiring, and the EnergyPlus re-download, and hit
+  the 60-step cap before the benchmark. The supervisor did not attempt
+  it either — it is a new research task, not supervisor-completion
+  fallout, and the verdict does not depend on it (the HB gate already
+  fails decisively).
+- No new tests for the mismatch table itself beyond the checkpoint
+  round-trip: the table is a pure function of the evaluated
+  checkpoints, and `evaluate.py` was re-run twice byte-identically by
+  the supervisor.

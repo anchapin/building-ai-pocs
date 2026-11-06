@@ -1,6 +1,6 @@
 # Differentiable Neural-Operator Surrogate
 
-**Status:** Slice 2 done (PINN / PI-DeepONet arm + information-matched ablation + EnergyPlus speedup measurement). No Go/no-go verdict yet — see `REPORT.md`.
+**Status:** POC CLOSED — verdict **No-go** (slice 3: shared-encoder arm + parameter-mismatch experiment + verdict). See `REPORT.md`.
 
 Differentiable neural-operator / PINN surrogate for a slow BEM component, standalone — clean digital comparison vs the SS-DFA POC.
 
@@ -41,3 +41,28 @@ and the caveats are in `REPORT.md`. EnergyPlus itself is not committed;
 to re-measure the speedup, extract the official EnergyPlus 26.2.0 Linux
 tarball and run
 `.venv/bin/python neural-operator-surrogate/src/benchmark_speedup.py --eplus-dir <install root>`.
+
+## Reproduce slice 3 (CPU-only)
+
+```sh
+.venv/bin/python neural-operator-surrogate/src/train.py --seed 42 --arm shared
+.venv/bin/python neural-operator-surrogate/src/train.py --seed 42 --arm shared --rc-params nominal
+.venv/bin/python neural-operator-surrogate/src/train.py --seed 42 --arm pinn --rc-params nominal   # parameter-mismatch experiment
+.venv/bin/python neural-operator-surrogate/src/evaluate.py --seed 42   # headline table with shared + nominal rows, gate summary, mismatch table
+.venv/bin/python neural-operator-surrogate/src/evaluate.py --seed 42   # determinism rerun: byte-identical output
+.venv/bin/python -m pytest neural-operator-surrogate/tests/ -q          # 25 passed
+```
+
+Slice-3 headline (seed 42, free-running rollout): PINN with NOMINAL
+parameters meets the ≥20% extrapolation gate on all three unseen splits
+(weather 4.55 °C vs MLP 6.75 °C; setpoint 1.67 °C vs 4.38 °C; both 4.34 °C
+vs 6.13 °C) — the only honest arm to do so. Heat-balance residual <5%
+gate NOT MET anywhere (best honest 7.8% in-distribution, 51–73% on unseen
+weather/both); speedup ≥50× NOT MET (standing ~1×, not re-tested — no
+vectorised rollout was built). SharedEnc-RC with TRUE base parameters
+prints 0.0000 °C / ~0% everywhere but is DISQUALIFIED as a tautology: an
+untrained shared encoder reproduces the RC reference exactly, so it
+contains the generative model rather than learning it. With NOMINAL base
+parameters it matches the untrained nominal RC (val 0.606 vs 0.625 °C) —
+the encoder learns ~nothing. Verdict: **No-go**. Full table, the
+mismatch experiment, and the reasoning are in `REPORT.md`.
