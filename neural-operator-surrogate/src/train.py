@@ -56,10 +56,11 @@ import torch
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from gen_data import DEFAULT_DATA_DIR, iter_series, load_split  # noqa: E402
-from models import (PINNZone, Standardizer, build_branch, build_windows,  # noqa: E402
-                    count_parameters, make_model, make_pinn, pinn_rollout_torch,
+from models import (PINNZone, SharedEncoderRC, Standardizer, build_branch,  # noqa: E402
+                    build_windows, count_parameters, make_model, make_pinn,
+                    make_shared, median_params, pinn_rollout_torch,
                     predict_windows, rc_param_tensors, rollout_pinn,
-                    series_features)
+                    rollout_shared, series_features, shared_rollout_torch)
 from rc_model import RCParams  # noqa: E402
 
 
@@ -112,6 +113,32 @@ def load_arm_series(data_dir: str, split: str) -> Tuple[List[Dict], List[Dict]]:
     return out_series, out_params
 
 
+def nominal_params_for(data_dir: str) -> Dict[str, float]:
+    """Nominal (train-median) RC parameters of the zone under study.
+
+    Used by the parameter-mismatch experiment: a surrogate that only knows
+    a *nominal* zone instead of the true per-series parameters.
+    """
+    _, tr_params = load_arm_series(data_dir, "train")
+    return median_params(tr_params)
+
+
+def resolve_params(params_mode: str, data_dir: str,
+                   series_params: List[Dict[str, float]]) -> List[Dict[str, float]]:
+    """RC parameters used by the physics loss / rollout of an arm.
+
+    `params_mode` is "true" (the per-series true parameters, the
+    assumption of slices 1-2) or "nominal" (the train-median parameters
+    for every series -- the parameter-mismatch experiment).
+    """
+    if params_mode == "true":
+        return list(series_params)
+    if params_mode == "nominal":
+        nominal = nominal_params_for(data_dir)
+        return [dict(nominal) for _ in series_params]
+    raise ValueError(f"unknown rc-params mode: {params_mode}")
+
+
 def train_pinn(args) -> None:
     """Train the physics-informed (PI-DeepONet-style) arm.
 
@@ -138,6 +165,11 @@ def train_pinn(args) -> None:
     t_start = time.time()
     tr_series, tr_params = load_arm_series(args.data_dir, "train")
     va_series, va_params = load_arm_series(args.data_dir, "val")
+    # "true" = per-series true RC parameters (assumption of slices 1-2);
+    # "nominal" = the train-median parameters for every series (the
+    # parameter-mismatch experiment of slice 3).
+    tr_params = resolve_params(args.rc_params, args.data_dir, tr_params)
+    va_params = resolve_params(args.rc_params, args.data_dir, va_params)
 
     # one-step windows (identical construction to the MLP arm)
     xs, ys, bs = [], [], []
@@ -272,6 +304,9 @@ def train_pinn(args) -> None:
                                     args.window, branch_offset=args.branch_offset)
 
     os.makedirs(args.out_dir, exist_ok=True)
+    suffix = "" if args.rc_params == "true" else "_nominal"
+    ckpt_file = f"model_pinn{suffix}.pt"
+    metrics_file = f"train_metrics_pinn{suffix}.json"
     ckpt = {
         "arm": "pinn",
         "state_dict": model.state_dict(),
@@ -282,10 +317,11 @@ def train_pinn(args) -> None:
         "seed": args.seed,
         "target": "level",
         "branch_offset": args.branch_offset,
+        "rc_params_mode": args.rc_params,
         "standardizer": std.to_dict(),
         "standardizer_branch": std_b.to_dict(),
     }
-    torch.save(ckpt, os.path.join(args.out_dir, "model_pinn.pt"))
+    torch.save(ckpt, os.path.join(args.out_dir, ckpt_file))
 
     metrics = {
         "arm": "pinn",
@@ -293,6 +329,7 @@ def train_pinn(args) -> None:
         "target": "next-step zone temperature [degC]",
         "target_parameterisation": "level",
         "branch_offset": args.branch_offset,
+        "rc_params_mode": args.rc_params,
         "window": args.window,
         "hidden": list(args.hidden),
         "parameters": count_parameters(model),
@@ -310,16 +347,243 @@ def train_pinn(args) -> None:
         "val_rollout_rmse_c": va_roll,
         "history": history,
     }
-    with open(os.path.join(args.out_dir, "train_metrics_pinn.json"), "w") as fh:
+    with open(os.path.join(args.out_dir, metrics_file), "w") as fh:
         json.dump(metrics, fh, indent=2, sort_keys=True)
 
     print(f"[train:pinn] parameters={metrics['parameters']}  "
-          f"best_epoch={best_epoch}  wall_time={wall_time:.1f}s")
+          f"best_epoch={best_epoch}  wall_time={wall_time:.1f}s  "
+          f"rc_params={args.rc_params}")
     print(f"[train:pinn] one-step RMSE  train={tr_rmse:.4f}  val={va_rmse:.4f}  "
           f"test_id={te_rmse:.4f} degC")
     print(f"[train:pinn] free-running val rollout RMSE={va_roll:.4f} degC")
-    print(f"[train:pinn] wrote {os.path.join(args.out_dir, 'model_pinn.pt')} "
-          f"and train_metrics_pinn.json")
+    print(f"[train:pinn] wrote {os.path.join(args.out_dir, ckpt_file)} "
+          f"and {metrics_file}")
+
+
+# --------------------------------------------------------------------------
+# shared-encoder differentiable RC arm (issue #3 arm (c)) — slice 3
+# --------------------------------------------------------------------------
+
+def shared_one_step_rmse(model, std, data_dir: str, split: str, window: int,
+                         params_mode: str = "true") -> float:
+    """Teacher-forced one-step RMSE [degC] of the shared-encoder arm."""
+    model.eval()
+    series, params = load_arm_series(data_dir, split)
+    params = resolve_params(params_mode, data_dir, params)
+    num = 0.0
+    den = 0
+    with torch.no_grad():
+        for s, prm in zip(series, params):
+            feats = series_features(s["t_zone"], s["t_out"], s["t_set"],
+                                    s["q_int"])
+            n = len(feats)
+            ks = np.arange(window, n)
+            slices = np.stack([feats[k - window: k + 1] for k in ks])
+            wall0 = np.array([s["t_wall"][k - 1] for k in ks], dtype=np.float64)
+            p = rc_param_tensors([prm] * len(ks))
+            pred, _ = shared_rollout_torch(
+                model, std, torch.as_tensor(slices, dtype=torch.float32),
+                torch.as_tensor(wall0, dtype=torch.float64), p, window)
+            truth = slices[:, window, 3]
+            num += float(np.sum((pred[:, window].numpy() - truth) ** 2))
+            den += len(ks)
+    return float(np.sqrt(num / max(den, 1)))
+
+
+def shared_val_rollout_rmse(model, std, series_list, params_list,
+                            window: int) -> float:
+    """Free-running rollout RMSE [degC] of the shared-encoder arm."""
+    model.eval()
+    feats = np.stack([
+        series_features(s["t_zone"], s["t_out"], s["t_set"], s["q_int"])
+        for s in series_list])
+    wall0 = np.array([s["t_wall"][window - 1] for s in series_list],
+                     dtype=np.float64)
+    pred = rollout_shared(model, std, feats, wall0, params_list, window)
+    err = pred[:, window:] - feats[:, window:, 3]
+    return float(np.sqrt(np.mean(err ** 2)))
+
+
+def train_shared(args) -> None:
+    """Train the shared-encoder differentiable RC model (issue #3 arm (c)).
+
+    Loss (both terms in degC):
+
+        L = w_one  * MSE_one_step  (teacher-forced single RC step)
+          + w_roll * MSE_rollout   (multi-step free-running rollout)
+
+    There is deliberately NO heat-balance-residual term: the physics is
+    *structural* in this arm (the network predicts RC parameter
+    corrections and a small heat flow; the differentiable 2R2C integrator
+    produces the temperature), so the residual of the model's own
+    equations is identically zero.  The heat-balance gate is therefore
+    decided on the trajectory against the TRUE physics, as for every arm.
+    """
+    torch.manual_seed(args.seed)
+    np.random.seed(args.seed)
+    torch.set_num_threads(args.threads)
+
+    if args.target != "level":
+        raise SystemExit("the shared-encoder arm only supports --target level "
+                         "(the shared default).")
+
+    t_start = time.time()
+    tr_series, tr_params = load_arm_series(args.data_dir, "train")
+    va_series, va_params = load_arm_series(args.data_dir, "val")
+    tr_params = resolve_params(args.rc_params, args.data_dir, tr_params)
+    va_params = resolve_params(args.rc_params, args.data_dir, va_params)
+
+    xs = []
+    for s in tr_series:
+        x, _ = build_windows(s["t_zone"], s["t_out"], s["t_set"], s["q_int"],
+                             args.window)
+        xs.append(x)
+    x_tr = np.concatenate(xs)
+    std = Standardizer.fit_x(x_tr)   # input statistics only (no target)
+
+    model = make_shared(int(x_tr.shape[1]), tuple(args.hidden), args.latent,
+                        seed=args.seed)
+    opt = torch.optim.Adam(model.parameters(), lr=args.lr)
+    loss_fn = torch.nn.MSELoss()
+
+    tr_feats = [series_features(s["t_zone"], s["t_out"], s["t_set"], s["q_int"])
+                for s in tr_series]
+    tr_len = [len(f) for f in tr_feats]
+
+    n = len(x_tr)
+    rng = np.random.default_rng(args.seed)
+    horizon = args.shared_horizon
+    best_val = float("inf")
+    best_state = None
+    best_epoch = -1
+    history: List[Dict] = []
+
+    for epoch in range(args.epochs):
+        model.train()
+        perm = rng.permutation(n)
+        epoch_loss = 0.0
+        n_batches = 0
+        for i in range(0, n, args.batch_size):
+            idx = perm[i: i + args.batch_size]
+            # ---- one-step (teacher forced) ----
+            starts1 = []
+            for _ in range(len(idx)):
+                si = int(rng.integers(len(tr_series)))
+                kk = int(rng.integers(args.window, tr_len[si]))
+                starts1.append((si, kk))
+            feats1 = np.stack([tr_feats[si][kk - args.window: kk + 1]
+                               for si, kk in starts1])
+            wall1 = np.array([tr_series[si]["t_wall"][kk - 1]
+                              for si, kk in starts1], dtype=np.float64)
+            p1 = rc_param_tensors([tr_params[si] for si, _ in starts1])
+            f1 = torch.as_tensor(feats1, dtype=torch.float32)
+            w1 = torch.as_tensor(wall1, dtype=torch.float64)
+            pred1, _ = shared_rollout_torch(model, std, f1, w1, p1, args.window)
+            l_one = loss_fn(pred1[:, args.window], f1[:, args.window, 3])
+
+            # ---- multi-step (rollout) ----
+            starts = []
+            for _ in range(args.shared_rollout_per_series):
+                for si in range(len(tr_series)):
+                    lo = args.window
+                    hi = tr_len[si] - horizon
+                    starts.append((si, int(rng.integers(lo, hi))))
+            feats = np.stack([tr_feats[si][kk - args.window: kk + horizon]
+                              for si, kk in starts])
+            wall0 = np.array([tr_series[si]["t_wall"][kk - 1]
+                              for si, kk in starts], dtype=np.float64)
+            pt = rc_param_tensors([tr_params[si] for si, _ in starts])
+            fb = torch.as_tensor(feats, dtype=torch.float32)
+            wb = torch.as_tensor(wall0, dtype=torch.float64)
+            pred, _ = shared_rollout_torch(model, std, fb, wb, pt, args.window)
+            truth = fb[:, args.window:, 3]
+            l_roll = torch.mean((pred[:, args.window:] - truth) ** 2)
+
+            opt.zero_grad()
+            loss = args.w_one * l_one + args.w_roll * l_roll
+            loss.backward()
+            opt.step()
+            epoch_loss += float(loss.item())
+            n_batches += 1
+        epoch_loss /= max(n_batches, 1)
+
+        v_rmse = shared_val_rollout_rmse(model, std, va_series, va_params,
+                                         args.window)
+        history.append({"epoch": epoch, "train_loss": epoch_loss,
+                        "val_rollout_rmse_c": v_rmse})
+        if v_rmse < best_val:
+            best_val = v_rmse
+            best_epoch = epoch
+            best_state = {k: v.detach().clone()
+                          for k, v in model.state_dict().items()}
+        if epoch % 10 == 0 or epoch == args.epochs - 1:
+            print(f"[train:shared] epoch {epoch:3d} loss={epoch_loss:.6f} "
+                  f"val_rollout_rmse={v_rmse:.4f} degC")
+
+    if best_state is not None:
+        model.load_state_dict(best_state)
+    wall_time = time.time() - t_start
+
+    tr_rmse = shared_one_step_rmse(model, std, args.data_dir, "train",
+                                   args.window, args.rc_params)
+    va_rmse = shared_one_step_rmse(model, std, args.data_dir, "val",
+                                   args.window, args.rc_params)
+    te_rmse = shared_one_step_rmse(model, std, args.data_dir, "test_id",
+                                   args.window, args.rc_params)
+    va_roll = shared_val_rollout_rmse(model, std, va_series, va_params,
+                                       args.window)
+
+    os.makedirs(args.out_dir, exist_ok=True)
+    suffix = "" if args.rc_params == "true" else "_nominal"
+    ckpt_file = f"model_shared{suffix}.pt"
+    metrics_file = f"train_metrics_shared{suffix}.json"
+    ckpt = {
+        "arm": "shared",
+        "state_dict": model.state_dict(),
+        "window": args.window,
+        "hidden": list(args.hidden),
+        "latent": args.latent,
+        "input_dim": int(x_tr.shape[1]),
+        "seed": args.seed,
+        "target": "level",
+        "rc_params_mode": args.rc_params,
+        "standardizer": std.to_dict(),
+    }
+    torch.save(ckpt, os.path.join(args.out_dir, ckpt_file))
+
+    metrics = {
+        "arm": "shared",
+        "seed": args.seed,
+        "target": "next-step zone temperature [degC]",
+        "target_parameterisation": "level",
+        "rc_params_mode": args.rc_params,
+        "window": args.window,
+        "hidden": list(args.hidden),
+        "latent": args.latent,
+        "parameters": count_parameters(model),
+        "epochs": args.epochs,
+        "best_epoch": best_epoch,
+        "wall_time_s": wall_time,
+        "shared_horizon": horizon,
+        "w_one": args.w_one,
+        "w_roll": args.w_roll,
+        "train_rmse_c": tr_rmse,
+        "val_rmse_c": va_rmse,
+        "test_id_rmse_c": te_rmse,
+        "val_rollout_rmse_c": va_roll,
+        "history": history,
+    }
+    with open(os.path.join(args.out_dir, metrics_file), "w") as fh:
+        json.dump(metrics, fh, indent=2, sort_keys=True)
+
+    print(f"[train:shared] parameters={metrics['parameters']}  "
+          f"best_epoch={best_epoch}  wall_time={wall_time:.1f}s  "
+          f"rc_params={args.rc_params}")
+    print(f"[train:shared] one-step RMSE  train={tr_rmse:.4f}  val={va_rmse:.4f}  "
+          f"test_id={te_rmse:.4f} degC")
+    print(f"[train:shared] free-running val rollout RMSE={va_roll:.4f} degC")
+    print(f"[train:shared] wrote {os.path.join(args.out_dir, ckpt_file)} "
+          f"and {metrics_file}")
 
 
 def pinn_val_rollout_rmse(model, std, std_b, series_list, params_list,
@@ -355,11 +619,21 @@ def main() -> None:
                          "module docstring)")
     ap.add_argument("--threads", type=int, default=1)
     # ---- PINN arm (slice 2) -------------------------------------------
-    ap.add_argument("--arm", type=str, default="mlp", choices=["mlp", "pinn"],
+    ap.add_argument("--arm", type=str, default="mlp",
+                    choices=["mlp", "pinn", "shared"],
                     help="'mlp' = plain-MLP baseline (slice 1); 'pinn' = "
                          "physics-informed PI-DeepONet-style arm with a "
                          "multi-step rollout loss and a heat-balance "
-                         "residual loss (slice 2)")
+                         "residual loss (slice 2); 'shared' = NeuralBES-style "
+                         "shared-encoder differentiable RC model (slice 3, "
+                         "issue #3 arm (c))")
+    ap.add_argument("--rc-params", type=str, default="true",
+                    choices=["true", "nominal"],
+                    help="RC parameters used by the physics loss / rollout: "
+                         "'true' = the per-series true parameters (the "
+                         "assumption of slices 1-2); 'nominal' = the "
+                         "train-median parameters for every series (the "
+                         "parameter-mismatch experiment of slice 3)")
     ap.add_argument("--pinn-horizon", type=int, default=24,
                     help="rollout horizon (steps) of the multi-step loss")
     ap.add_argument("--pinn-rollout-per-series", type=int, default=2,
@@ -382,10 +656,23 @@ def main() -> None:
                          "drivers, i.e. exactly the information the "
                          "plain-MLP window contains (information-matched "
                          "comparison)")
+    # ---- shared-encoder RC arm (slice 3) ------------------------------
+    ap.add_argument("--latent", type=int, default=32,
+                    help="size of the shared-encoder latent code (arm (c))")
+    ap.add_argument("--shared-horizon", type=int, default=24,
+                    help="rollout horizon (steps) of the multi-step loss of "
+                         "the shared-encoder arm")
+    ap.add_argument("--shared-rollout-per-series", type=int, default=2,
+                    help="number of random rollout windows drawn per "
+                         "training series and per optimiser step (arm (c))")
     args = ap.parse_args()
 
     if args.arm == "pinn":
         train_pinn(args)
+        return
+
+    if args.arm == "shared":
+        train_shared(args)
         return
 
     torch.manual_seed(args.seed)

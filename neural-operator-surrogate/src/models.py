@@ -385,3 +385,257 @@ def rollout_pinn(model: PINNZone, std_trunk: Standardizer,
                                       wall0, p, window,
                                       branch_offset=branch_offset)
     return pred.numpy()
+
+
+# --------------------------------------------------------------------------
+# slice 3: NeuralBES-style shared-encoder differentiable RC model
+#           (issue #3 arm (c))
+# --------------------------------------------------------------------------
+
+# The RC parameters the shared encoder is allowed to correct (multiplicative,
+# in log space).  The order is fixed and used by the parameter head.
+SHARED_CORR_NAMES = ("UA_win", "UA_inf", "C_air", "R_wall")
+
+# Scale [W] of the learned heat-flow correction term.
+SHARED_FLOW_SCALE = 2000.0
+
+
+class SharedEncoderRC(nn.Module):
+    """NeuralBES-style shared encoder + RC-parameterised rollout (arm (c)).
+
+    A single encoder -- *shared* by every time step and every zone -- maps
+    the window of past state/driving inputs to a latent code.  Two heads on
+    top of the latent produce
+
+      * multiplicative corrections (log space) of four RC parameters
+        (window conductance, infiltration conductance, air capacitance,
+        air<->mass resistance), and
+      * a small learned heat-flow correction [W].
+
+    The zone temperature is then obtained by *integrating* the
+    differentiable 2R2C equations with the corrected parameters: the
+    physics is hard-wired in the architecture instead of being a soft
+    penalty in the loss (that is the difference to arm (b), where the
+    network predicts the temperature and the physics only penalises it).
+
+    The heads are initialised at zero, so an untrained model is exactly the
+    *base* RC model (identity corrections, zero neural heat flow).
+    """
+
+    def __init__(self, n_inputs: int, hidden: Sequence[int] = (128, 128),
+                 latent: int = 32, flow_scale: float = SHARED_FLOW_SCALE):
+        super().__init__()
+        self.hidden = tuple(hidden)
+        self.latent_dim = int(latent)
+        self.flow_scale = float(flow_scale)
+        self.encoder = _mlp_stack(n_inputs, hidden)
+        self.proj = nn.Linear(hidden[-1], latent)
+        self.param_head = nn.Linear(latent, len(SHARED_CORR_NAMES))
+        self.flow_head = nn.Linear(latent, 1)
+        nn.init.zeros_(self.param_head.weight)
+        nn.init.zeros_(self.param_head.bias)
+        nn.init.zeros_(self.flow_head.weight)
+        nn.init.zeros_(self.flow_head.bias)
+
+    def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Returns (log-corrections (B, 4), neural heat flow (B,) [W])."""
+        h = self.proj(self.encoder(x))
+        log_corr = self.param_head(h)
+        q_neural = self.flow_scale * torch.tanh(self.flow_head(h).squeeze(-1))
+        return log_corr, q_neural
+
+
+def make_shared(input_dim: int, hidden: Sequence[int] = (128, 128),
+                latent: int = 32, seed: int = 42) -> SharedEncoderRC:
+    """Deterministically initialised shared-encoder RC model."""
+    torch.manual_seed(seed)
+    return SharedEncoderRC(input_dim, tuple(hidden), latent)
+
+
+def shared_rollout_torch(model: SharedEncoderRC, std: Standardizer,
+                         feats: torch.Tensor, wall0: torch.Tensor,
+                         p: Dict[str, torch.Tensor], window: int,
+                         dt: float = 3600.0):
+    """Differentiable free-running rollout of the shared-encoder RC model.
+
+    Parameters
+    ----------
+    feats : (B, n, N_FEATURES) float tensor of *physical* features.  The
+        zone-temperature column holds the truth for the first `window`
+        steps (the warm start) and is overwritten by the predictions.
+    wall0 : (B,) float64 tensor with the mass-node state *before* the
+        first modelled step.
+    p : base RC parameters (see `rc_param_tensors`); either the per-series
+        true parameters or one nominal set for every series.
+
+    Returns
+    -------
+    pred : (B, n) float tensor of zone temperatures [degC].
+    q_neural : (B, n) float tensor with the learned heat-flow correction
+        [W] of every step (zero on the warm-start steps).
+    """
+    b, n, _ = feats.shape
+    dtype = torch.float32
+    x_mean = torch.as_tensor(std.x_mean, dtype=dtype)
+    x_std = torch.as_tensor(std.x_std, dtype=dtype)
+
+    hist = feats[:, :window].clone()
+    pred = feats[:, :, 3].clone()
+    q_trace = torch.zeros(b, n, dtype=dtype)
+    wall = wall0.clone().to(torch.float64)
+
+    p64 = {k: v.to(torch.float64) for k, v in p.items()}
+    for k in range(window, n):
+        x = (hist.reshape(b, -1) - x_mean) / x_std
+        log_corr, q_neural = model(x)
+        log_corr = log_corr.to(torch.float64)
+        q_neural = q_neural.to(torch.float64)
+
+        ua_win = p64["UA_win"] * torch.exp(log_corr[:, 0])
+        ua_inf = p64["UA_inf"] * torch.exp(log_corr[:, 1])
+        c_air = p64["C_air"] * torch.exp(log_corr[:, 2])
+        r_wall = p64["R_wall"] * torch.exp(log_corr[:, 3])
+
+        a_pre = hist[:, -1, 3].to(torch.float64)
+        t_out = feats[:, k, 0].to(torch.float64)
+        t_set = feats[:, k, 1].to(torch.float64)
+        q_int = feats[:, k, 2].to(torch.float64)
+
+        q_aw = (a_pre - wall) / r_wall
+        q_win = ua_win * (t_out - a_pre)
+        q_inf = ua_inf * (t_out - a_pre)
+        err = t_set - a_pre
+        t_sup = torch.clamp(t_set + p64["K_sup"] * err,
+                             p64["T_sup_cool_min"], p64["T_sup_heat_max"])
+        q_sup = torch.clamp((t_sup - a_pre) / p64["R_air"],
+                            -p64["Q_cool_max"], p64["Q_heat_max"])
+
+        t_next = a_pre + (dt / c_air) * (
+            -q_aw + q_win + q_inf + q_int + q_sup + q_neural)
+        pred[:, k] = t_next.to(dtype)
+        q_trace[:, k] = q_neural.to(dtype)
+
+        # mass node: propagate with the *pre-step* air state
+        wall = wall + (dt / p64["C_wall"]) * q_aw
+
+        new_row = feats[:, k].clone()
+        new_row[:, 3] = pred[:, k]
+        hist = torch.cat([hist[:, 1:], new_row.unsqueeze(1)], dim=1)
+
+    return pred, q_trace
+
+
+def rollout_shared(model: SharedEncoderRC, std: Standardizer,
+                   feats_np: np.ndarray, wall0_np: np.ndarray,
+                   params_list: Sequence[Dict[str, float]],
+                   window: int) -> np.ndarray:
+    """Free-running rollout of the shared-encoder RC model (numpy I/O)."""
+    model.eval()
+    feats = torch.as_tensor(np.asarray(feats_np), dtype=torch.float32)
+    wall0 = torch.as_tensor(np.asarray(wall0_np), dtype=torch.float64)
+    p = rc_param_tensors(params_list)
+    with torch.no_grad():
+        pred, _ = shared_rollout_torch(model, std, feats, wall0, p, window)
+    return pred.numpy()
+
+
+def median_params(params_list: Sequence[Dict[str, float]]) -> Dict[str, float]:
+    """Nominal RC parameters: the per-parameter median of a set of series.
+
+    Used by the parameter-mismatch experiment: the physics loss of a
+    surrogate that only knows a *nominal* zone (the train-median
+    parameters) instead of the true per-series parameters.
+    """
+    if not len(params_list):
+        raise ValueError("no parameters given")
+    keys = list(params_list[0].keys())
+    return {k: float(np.median([float(p[k]) for p in params_list]))
+            for k in keys}
+
+
+def rollout_pinn_numpy(model: PINNZone, std_trunk: Standardizer,
+                       std_branch: Standardizer, feats_np: np.ndarray,
+                       wall0_np: np.ndarray,
+                       params_list: Sequence[Dict[str, float]],
+                       window: int, branch_offset: int = 0) -> np.ndarray:
+    """Vectorised (numpy) twin of `rollout_pinn` -- same maths, no torch.
+
+    The slice-2 speedup measurement (~1x) was dominated by the per-step
+    torch call of a Python loop over 8760 steps.  This twin performs the
+    identical computation with plain numpy array operations (float64),
+    which removes the framework overhead per step while keeping the
+    trajectory of the *same* trained model.  `tests/test_speedup.py`
+    asserts that it agrees with the torch rollout.
+
+    The zone states are still propagated sequentially in time (the model
+    is autoregressive), but every operation is a single small matmul on a
+    batch of zones.
+    """
+    model.eval()
+    feats = np.asarray(feats_np, dtype=np.float64)
+    b, n, _ = feats.shape
+
+    def stack_of(net: nn.Sequential) -> list:
+        """[(W, b), (W2, b2), ...] of the Linear layers of an MLP stack."""
+        ws, bs = [], []
+        for layer in net:
+            if isinstance(layer, nn.Linear):
+                ws.append(layer.weight.detach().numpy().astype(np.float64))
+                bs.append(layer.bias.detach().numpy().astype(np.float64))
+        return ws, bs
+
+    tw, tb = stack_of(model.trunk)
+    bw, bb = stack_of(model.branch)
+    bias = float(model.bias.detach().numpy().reshape(-1)[0])
+    scale = 1.0 / math.sqrt(tw[-1].shape[0])
+
+    x_mean = np.asarray(std_trunk.x_mean, dtype=np.float64)
+    x_std = np.asarray(std_trunk.x_std, dtype=np.float64)
+    b_mean = np.asarray(std_branch.x_mean, dtype=np.float64)
+    b_std = np.asarray(std_branch.x_std, dtype=np.float64)
+    y_mean = float(std_trunk.y_mean)
+    y_std = float(std_trunk.y_std)
+
+    p = {k: np.asarray(v, dtype=np.float64) for k, v in
+         rc_param_tensors(params_list).items()}
+
+    def mlp(ws, bs, xin: np.ndarray) -> np.ndarray:
+        h = xin
+        for i, (w, bbias) in enumerate(zip(ws, bs)):
+            h = h @ w.T + bbias
+            if i < len(ws) - 1:
+                h = h / (1.0 + np.exp(-h))   # SiLU
+        return h
+
+    pred = feats[:, :, 3].copy()
+    wall = np.asarray(wall0_np, dtype=np.float64).copy()
+    hist = feats[:, :window].copy()
+    for k in range(window, n):
+        x = (hist.reshape(b, -1) - x_mean) / x_std
+        kb = max(k - branch_offset, 0)
+        br = (feats[:, kb][:, [0, 1, 2, 4, 5]] - b_mean) / b_std
+        t = mlp(tw, tb, x)
+        brh = mlp(bw, bb, br)
+        out = (t * brh).sum(axis=-1) * scale + bias
+        t_next = out * y_std + y_mean
+        pred[:, k] = t_next
+
+        a_pre = hist[:, -1, 3]
+        t_out = feats[:, k, 0]
+        t_set = feats[:, k, 1]
+        q_int = feats[:, k, 2]
+        q_aw = (a_pre - wall) / p["R_wall"]
+        q_win = p["UA_win"] * (t_out - a_pre)
+        q_inf = p["UA_inf"] * (t_out - a_pre)
+        err = t_set - a_pre
+        t_sup = np.clip(t_set + p["K_sup"] * err,
+                        p["T_sup_cool_min"], p["T_sup_heat_max"])
+        q_sup = np.clip((t_sup - a_pre) / p["R_air"],
+                        -p["Q_cool_max"], p["Q_heat_max"])
+        wall = wall + (3600.0 / p["C_wall"]) * q_aw
+
+        new_row = feats[:, k].copy()
+        new_row[:, 3] = t_next
+        hist[:, :-1] = hist[:, 1:]
+        hist[:, -1] = new_row
+    return pred
