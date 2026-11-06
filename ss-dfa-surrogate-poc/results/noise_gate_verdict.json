@@ -1,0 +1,20 @@
+{
+  "ssdfa": {
+    "ratio": 0.9991690583931606,
+    "diverged": false,
+    "passes_gate": true,
+    "worst_7b_tag": "7b_drift",
+    "worst_7b_ratio": 1.0110661396367446,
+    "worst_7b_diverged": false,
+    "passes_gate_strict": true
+  },
+  "lstm": {
+    "ratio": 1.002487295071895,
+    "diverged": false,
+    "passes_gate": true,
+    "worst_7b_tag": "7b_noise0.03",
+    "worst_7b_ratio": 2.3923069436022235,
+    "worst_7b_diverged": false,
+    "passes_gate_strict": false
+  }
+}

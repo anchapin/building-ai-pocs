@@ -1,0 +1,112 @@
+{
+  "seed": 20261105,
+  "n_steps": 8760,
+  "dt_sub_seconds": 300.0,
+  "latitude_deg": 45.0,
+  "params": {
+    "base": {
+      "Cz": 4200000.0,
+      "Cm": 40000000.0,
+      "UA_ext": 180.0,
+      "Uiw": 120.0,
+      "A_eff": 5.0
+    },
+    "insul_half": {
+      "Cz": 4200000.0,
+      "Cm": 40000000.0,
+      "UA_ext": 360.0,
+      "Uiw": 120.0,
+      "A_eff": 5.0
+    },
+    "insul_double": {
+      "Cz": 4200000.0,
+      "Cm": 40000000.0,
+      "UA_ext": 90.0,
+      "Uiw": 120.0,
+      "A_eff": 5.0
+    },
+    "mass_double": {
+      "Cz": 4200000.0,
+      "Cm": 80000000.0,
+      "UA_ext": 180.0,
+      "Uiw": 120.0,
+      "A_eff": 5.0
+    }
+  },
+  "hvac": {
+    "K_h": 900.0,
+    "K_c": 900.0,
+    "Q_h_max": 8000.0,
+    "Q_c_max": 8000.0,
+    "T_heat_set_occ": 21.0,
+    "T_heat_set_unocc": 17.0,
+    "T_cool_set_occ": 24.5,
+    "T_cool_set_unocc": 28.0,
+    "eta_heat": 0.85,
+    "cop_a": 4.0,
+    "cop_b": 0.08,
+    "cop_min": 1.8
+  },
+  "weather": {
+    "t_annual_mean": 11.0,
+    "t_annual_amp": 13.5,
+    "diurnal_amp": 6.0,
+    "synoptic_ar": 0.986,
+    "synoptic_sigma": 0.34,
+    "cloud_ar": 0.75,
+    "cloud_sigma": 0.28,
+    "cloud_mean": 0.72,
+    "ghi_clear": 1080.0
+  },
+  "years": {
+    "1": [
+      20261206,
+      0.0,
+      1.0
+    ],
+    "2": [
+      20261307,
+      0.8,
+      0.9
+    ],
+    "3": [
+      20261408,
+      -0.6,
+      1.15
+    ]
+  },
+  "variant_years": [
+    3
+  ],
+  "splits": {
+    "train": "year1_base",
+    "validation": "year2_base",
+    "test": "year3_base"
+  },
+  "ood_variants": [
+    "insul_half",
+    "insul_double",
+    "mass_double"
+  ],
+  "columns": [
+    "t_out",
+    "ghi",
+    "q_int",
+    "occupied",
+    "q_heat",
+    "q_cool",
+    "t_zone",
+    "e_heat",
+    "e_cool"
+  ],
+  "units": {
+    "t_out": "degC",
+    "ghi": "W/m2",
+    "q_int": "W",
+    "q_heat": "W",
+    "q_cool": "W",
+    "t_zone": "degC",
+    "e_heat": "kWh/h",
+    "e_cool": "kWh/h"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "mlp": {
+    "best_cfg": {
+      "hidden": "(256, 256)",
+      "lr": "0.001"
+    },
+    "best_cfg_idx": 1
+  },
+  "lstm": {
+    "best_cfg": {
+      "hidden": "96",
+      "layers": "1",
+      "lr": "0.001"
+    },
+    "best_cfg_idx": 1
+  },
+  "ssdfa": {
+    "best_cfg": {
+      "n_res": "160",
+      "spectral_radius": "0.9",
+      "input_scale": "1.0",
+      "gain": "1.0",
+      "sparsity": "0.1",
+      "readout_with_input": "True",
+      "lr": "0.01",
+      "lr_deep": "0.001"
+    },
+    "best_cfg_idx": 0
+  }
+}

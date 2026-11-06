@@ -1,0 +1,75 @@
+{
+  "best_cfg": {
+    "hidden": "(256, 256)",
+    "lr": "0.001"
+  },
+  "best_cfg_idx": 1,
+  "runs": [
+    {
+      "kind": "mlp",
+      "cfg": {
+        "hidden": [
+          256,
+          256
+        ],
+        "lr": 0.001
+      },
+      "seed": 11,
+      "val_loss": 0.001833791268866632,
+      "best_epoch": 18,
+      "epochs_run": 27,
+      "wall_s": 14.782784461975098,
+      "train_wall_s": 14.782784461975098,
+      "recurrent_steps": 0,
+      "optimizer_steps": 918,
+      "n_trainable": 103683,
+      "n_total": 103683,
+      "peak_rss_mb": 329.04296875,
+      "cfg_idx": null
+    },
+    {
+      "kind": "mlp",
+      "cfg": {
+        "hidden": [
+          256,
+          256
+        ],
+        "lr": 0.001
+      },
+      "seed": 22,
+      "val_loss": 0.0019013286950305486,
+      "best_epoch": 27,
+      "epochs_run": 36,
+      "wall_s": 13.900920629501343,
+      "train_wall_s": 13.900920629501343,
+      "recurrent_steps": 0,
+      "optimizer_steps": 1224,
+      "n_trainable": 103683,
+      "n_total": 103683,
+      "peak_rss_mb": 329.04296875,
+      "cfg_idx": null
+    },
+    {
+      "kind": "mlp",
+      "cfg": {
+        "hidden": [
+          256,
+          256
+        ],
+        "lr": 0.001
+      },
+      "seed": 33,
+      "val_loss": 0.0016735206552586713,
+      "best_epoch": 34,
+      "epochs_run": 43,
+      "wall_s": 19.779266357421875,
+      "train_wall_s": 19.779266357421875,
+      "recurrent_steps": 0,
+      "optimizer_steps": 1462,
+      "n_trainable": 103683,
+      "n_total": 103683,
+      "peak_rss_mb": 329.04296875,
+      "cfg_idx": null
+    }
+  ]
+}
