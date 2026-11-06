@@ -20,7 +20,7 @@ A clean negative result is a successful outcome — it saves a proposal cycle. N
 | `neural-operator-surrogate/` | Differentiable neural-operator / PINN surrogate for a slow BEM component, standalone. | Not started |
 | `drawing-verifier/` | VLM + neuro-symbolic verifier hardening drawing-to-BEM (Matchline). | In progress (slice 3: shared-wall zone membership; label Conditional) |
 | `world-model-hvac-control/` | Diffusion / world-model HVAC control for grid-interactive buildings. | Not started |
-| `federated-calibration/` | Federated, physics-informed calibration across simulated buildings. | In progress (slice 1: harness + held-out baselines, no verdict yet) |
+| `federated-calibration/` | Federated, physics-informed calibration across simulated buildings. | No-go (verdict 2026-11-06: FedAvg never beats one-shot parameter averaging by ≥15%; IID control fires the No-go trigger) |
 | `local-first-building-agent/` | Small on-device models as a building agent, benchmarked against a frontier model. | Not started |
 
 Suggested order: drawing verifier first (de-risks the Retrofit Copilot's input), then Retrofit Copilot, then the neural-operator surrogate.

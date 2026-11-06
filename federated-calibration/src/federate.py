@@ -141,6 +141,7 @@ class RoundRecord:
     global_params: Dict[str, float]
     client_params: List[Dict[str, float]] = field(default_factory=list)
     client_losses: List[float] = field(default_factory=list)
+    participants: List[int] = field(default_factory=list)
 
     def spread(self) -> float:
         """Max relative spread of the client updates around their mean."""
@@ -152,22 +153,58 @@ class RoundRecord:
         return float(rel.max())
 
 
+def select_participants(clients: Sequence[Client], participation: float,
+                        rng: np.random.Generator) -> List[int]:
+    """Indices of the clients that take part in one round.
+
+    `participation` is the fraction of the client population that is online
+    in a given round (a per-round random subset, the standard
+    partial-participation FedAvg setting).  The subset is drawn *without
+    replacement* from the population, and at least one client always
+    participates (a round with nobody online cannot produce an aggregate).
+    """
+    n = len(clients)
+    if n == 0:
+        raise ValueError("no clients")
+    frac = float(participation)
+    if not (0.0 < frac <= 1.0):
+        raise ValueError("participation must be in (0, 1], got %r" % participation)
+    k = int(np.ceil(frac * n))
+    k = max(1, min(k, n))
+    if k == n:
+        return list(range(n))
+    idx = rng.choice(n, size=k, replace=False)
+    return sorted(int(i) for i in idx)
+
+
 def run_fedavg(clients: Sequence[Client], server: FedAvgServer,
-               rounds: int = 15, local_steps: int = 60, lr: float = 0.05
+               rounds: int = 15, local_steps: int = 60, lr: float = 0.05,
+               participation: float = 1.0, seed: int = 0
                ) -> List[RoundRecord]:
     """Run `rounds` FedAvg rounds over `clients`.
 
-    Each round: every client starts from the current global parameters,
-    runs `local_steps` local SGD steps on its OWN data, and returns its
-    parameters; the server averages them.  No raw series ever cross the
-    client/server boundary.
+    Each round: every *participating* client starts from the current global
+    parameters, runs `local_steps` local SGD steps on its OWN data, and
+    returns its parameters; the server averages them.  No raw series ever
+    cross the client/server boundary.
+
+    `participation` (default 1.0 = everybody, every round) selects a random
+    per-round subset of the client population; the subset is drawn from a
+    seeded generator, so the run stays deterministic.  With
+    `participation < 1` the server averages only over the clients that were
+    online that round (unweighted FedAvg over the participants).
     """
+    rng = np.random.default_rng(seed)
     records: List[RoundRecord] = []
     for r in range(int(rounds)):
-        updates = [c.local_update(server.global_params, steps=local_steps, lr=lr)
-                   for c in clients]
+        idx = (list(range(len(clients))) if participation >= 1.0
+               else select_participants(clients, participation, rng))
+        updates = [clients[i].local_update(server.global_params,
+                                           steps=local_steps, lr=lr)
+                   for i in idx]
         server.aggregate(updates)
         records.append(RoundRecord(round=r,
                                    global_params=dict(server.global_params),
-                                   client_params=[dict(u) for u in updates]))
+                                   client_params=[dict(u) for u in updates],
+                                   participants=list(idx)))
     return records

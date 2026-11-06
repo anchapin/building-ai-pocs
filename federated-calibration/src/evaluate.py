@@ -71,16 +71,19 @@ class Experiment:
 
     def __init__(self, seed: int, hours: int = DEFAULT_HOURS,
                  rounds: int = 15, local_steps: int = 60,
-                 fit_steps: int = 400, lr: float = 0.05):
+                 fit_steps: int = 400, lr: float = 0.05,
+                 heterogeneity: str = "baseline", participation: float = 1.0):
         self.seed = int(seed)
         self.hours = int(hours)
         self.rounds = int(rounds)
         self.local_steps = int(local_steps)
         self.fit_steps = int(fit_steps)
         self.lr = float(lr)
+        self.heterogeneity = str(heterogeneity)
+        self.participation = float(participation)
 
         self.client_buildings, self.heldout_buildings = generate_population(
-            self.seed, self.hours)
+            self.seed, self.hours, heterogeneity=self.heterogeneity)
         self.clients = [Client(b.name, b.client_series())
                         for b in self.client_buildings]
         self.eval_start = max(LOCAL_BUDGETS)
@@ -95,7 +98,8 @@ class Experiment:
         self.server = FedAvgServer(NOMINAL_PARAMS)
         self.records: List[RoundRecord] = run_fedavg(
             self.clients, self.server, rounds=self.rounds,
-            local_steps=self.local_steps, lr=self.lr)
+            local_steps=self.local_steps, lr=self.lr,
+            participation=self.participation, seed=self.seed)
         self.fed_params = dict(self.server.global_params)
 
         # (3) centralised reference: pooled data, single parameter set.
@@ -112,6 +116,20 @@ class Experiment:
         fit = fit_local(building.client_series(), init_params=NOMINAL_PARAMS,
                         steps=self.fit_steps, lr=self.lr, start=0, end=budget)
         return dict(fit.params)
+
+    # ------------------------------------------------------------------
+    # participation bookkeeping (slice 2)
+    # ------------------------------------------------------------------
+    def participants(self) -> List[int]:
+        """Indices of the clients that took part in at least one round."""
+        seen = set()
+        for r in self.records:
+            seen.update(r.participants)
+        return sorted(seen)
+
+    def round_participants(self, rnd: int) -> List[int]:
+        """Indices of the clients that took part in round `rnd`."""
+        return list(self.records[int(rnd)].participants)
 
     def arm_rows(self, building: Building) -> List[Dict[str, object]]:
         """Every arm evaluated on the held-out building `building`."""
@@ -189,6 +207,32 @@ class Experiment:
                          "9 client parameter vectors averaged once (no FedAvg rounds)",
                          mean_iso_params, False))
 
+        # Under partial participation only a subset of the clients is online
+        # in any given round.  Two extra non-federated baselines are then
+        # reported (never in place of the 9-client row):
+        #   * the one-shot average over the clients online in a SINGLE round
+        #     -- what a simultaneous one-shot aggregation can see,
+        #   * the one-shot average over all clients that ever took part --
+        #     what a one-shot aggregation that collects the parameter
+        #     vectors offline, over time, can see.
+        if self.participation < 1.0:
+            part = self.participants()
+            round0 = self.round_participants(0)
+            for label, idx in (("round-1 online clients (%d)" % len(round0),
+                                round0),
+                               ("all %d clients that took part" % len(part),
+                                part)):
+                if not idx:
+                    continue
+                sub_mean = {k: float(np.mean([self.local_fits[i].params[k]
+                                              for i in idx]))
+                            for k in PARAM_NAMES}
+                rows.append(_row(ARM_ISO,
+                                 "zero-shot, parameter-mean of %s" % label,
+                                 "one-shot average of the parameter vectors of "
+                                 "those clients (no FedAvg rounds)",
+                                 sub_mean, False))
+
         rows.append(_row(ARM_FED, "zero-shot, FedAvg over 9 clients",
                          "parameter updates only (no raw series)",
                          self.fed_params, False))
@@ -237,7 +281,7 @@ class Experiment:
                 per_round_rmse.append(rmse_on_window(r.global_params, series,
                                                     self.eval_start,
                                                     self.eval_end))
-        return {
+        diag: Dict[str, object] = {
             "rounds": self.rounds,
             "local_steps": self.local_steps,
             "final_global_params": dict(self.fed_params),
@@ -248,6 +292,16 @@ class Experiment:
             "max_client_update_spread": float(max(spreads)) if spreads else 0.0,
             "global_model_rmse_per_round_on_probe": per_round_rmse,
         }
+        # The slice-1 (default) configuration keeps its exact diagnostics
+        # shape, so the slice-1 artefacts stay byte-identical; the extra
+        # fields appear only for a slice-2 configuration.
+        if self.participation != 1.0 or self.heterogeneity != "baseline":
+            diag["participation"] = self.participation
+            diag["heterogeneity"] = self.heterogeneity
+            diag["participants_per_round"] = [list(r.participants)
+                                              for r in self.records]
+            diag["distinct_participants"] = len(self.participants())
+        return diag
 
 
 # --------------------------------------------------------------------------
@@ -290,10 +344,13 @@ def print_per_building(rows: Sequence[Mapping[str, object]]) -> None:
 
 def run_seed(seed: int, hours: int = DEFAULT_HOURS, rounds: int = 15,
              local_steps: int = 60, fit_steps: int = 400,
-             lr: float = 0.05, verbose: bool = True) -> Dict[str, object]:
+             lr: float = 0.05, verbose: bool = True,
+             heterogeneity: str = "baseline", participation: float = 1.0
+             ) -> Dict[str, object]:
     """Run the whole comparison for one seed and return the result dict."""
     exp = Experiment(seed, hours=hours, rounds=rounds,
-                     local_steps=local_steps, fit_steps=fit_steps, lr=lr)
+                     local_steps=local_steps, fit_steps=fit_steps, lr=lr,
+                     heterogeneity=heterogeneity, participation=participation)
 
     heldout_rows: Dict[str, List[Dict[str, object]]] = {}
     for b in exp.heldout_buildings:
@@ -346,12 +403,18 @@ def run_seed(seed: int, hours: int = DEFAULT_HOURS, rounds: int = 15,
             ", ".join("%.3f" % v for v in
                       diag["global_model_rmse_per_round_on_probe"])))
 
+    config: Dict[str, object] = {
+        "hours": hours, "rounds": rounds, "local_steps": local_steps,
+        "fit_steps": fit_steps, "eval_start": exp.eval_start,
+        "eval_end": exp.eval_end,
+        "local_budgets": list(LOCAL_BUDGETS)}
+    # keep the slice-1 artefact byte-identical for the default configuration
+    if heterogeneity != "baseline" or participation != 1.0:
+        config["heterogeneity"] = heterogeneity
+        config["participation"] = participation
     result: Dict[str, object] = {
         "seed": seed,
-        "config": {"hours": hours, "rounds": rounds, "local_steps": local_steps,
-                   "fit_steps": fit_steps, "eval_start": exp.eval_start,
-                   "eval_end": exp.eval_end,
-                   "local_budgets": list(LOCAL_BUDGETS)},
+        "config": config,
         "heldout": heldout_rows,
         "per_building": [{k: v for k, v in r.items() if not k.startswith("_")}
                          for r in pb],
