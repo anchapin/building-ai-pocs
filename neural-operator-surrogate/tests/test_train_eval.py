@@ -44,7 +44,9 @@ def test_evaluate_honours_checkpoint_target(tmp_path):
     assert "(parameterisation=level)" in out
     with open(os.path.join(data_dir, "headline_table.json")) as fh:
         table = json.load(fh)
-    for row in table:
+    # headline_table.json holds both metric blocks; the gate rows live in
+    # "summary" (the "aligned" block is the physics-aligned second table).
+    for row in table["summary"]:
         assert np.isfinite(row["rmse_t"]) and row["rmse_t"] < 1e6, (
             "level-model rollout diverged: %r" % row)
 
@@ -84,8 +86,9 @@ def test_evaluate_is_deterministic(tmp_path):
 
     with open(os.path.join(data_dir, "headline_table.json")) as fh:
         table = json.load(fh)
-    assert len(table) > 0
-    for row in table:
+    assert len(table["summary"]) > 0
+    assert isinstance(table["aligned"], list)
+    for row in table["summary"]:
         assert row["n_series"] > 0 and row["n_steps"] > 0
         assert np.isfinite(row["rmse_t"]) and np.isfinite(row["rmse_q"])
         assert np.isfinite(row["hb_resid_pct"])
