@@ -28,12 +28,28 @@ def test_is_responsive_noise_floor():
     assert is_responsive(7.37) is True
 
 
-def test_resolve_dataset_schema_prefers_local_copy(poc_dir):
-    resolved = resolve_dataset_schema("baeda_3dem")
-    assert resolved == os.path.join(poc_dir, "data", "datasets", "baeda_3dem")
+def test_resolve_dataset_schema_prefers_local_copy(tmp_path):
+    """A local data set copy wins over the bare name used for the cache."""
+
+    local_dir = tmp_path / "data" / "datasets" / "baeda_3dem"
+    local_dir.mkdir(parents=True)
+    (local_dir / "schema.json").write_text("{}")
+
+    resolved = resolve_dataset_schema("baeda_3dem", root=str(tmp_path))
+    assert resolved == str(local_dir)
     assert os.path.isfile(os.path.join(resolved, "schema.json"))
 
-    assert resolve_dataset_schema("no-such-dataset") == "no-such-dataset"
+    # No local copy -> the bare data set name (CityLearn downloads it once).
+    assert resolve_dataset_schema("no-such-dataset", root=str(tmp_path)) == "no-such-dataset"
+
+    # Without an explicit root the lookup happens next to the module.
+    module_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    default_expected = os.path.join(module_dir, "data", "datasets", "baeda_3dem")
+    default_resolved = resolve_dataset_schema("baeda_3dem")
+    if os.path.isfile(os.path.join(default_expected, "schema.json")):
+        assert default_resolved == default_expected
+    else:
+        assert default_resolved == "baeda_3dem"
 
 
 def test_probe_baeda_net_electricity_unresponsive():

@@ -83,17 +83,23 @@ OBSERVATION_DIM: int = len(OBSERVATION_NAMES)
 _HVAC_ACTION_KEYS = ("cooling_or_heating_device", "cooling_device", "heating_device")
 
 
-def resolve_dataset_schema(dataset: str) -> str:
+def resolve_dataset_schema(dataset: str, root: Optional[str] = None) -> str:
     """Return the CityLearn ``schema`` argument for ``dataset``.
 
-    If a local copy exists in ``<poc>/data/datasets/<dataset>/schema.json``
+    If a local copy exists in ``<root>/data/datasets/<dataset>/schema.json``
     it is used directly (CityLearn accepts a directory path and reads
     ``schema.json`` from it); otherwise the data set name is returned and
     CityLearn downloads it once into its cache directory. Either way the
     data set is never committed to git.
+
+    ``root`` defaults to the directory containing this module (i.e. the
+    ``world-model-hvac-control`` folder); it is exposed so that callers
+    and tests can point the lookup at a different tree.
     """
 
-    local_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "datasets", dataset)
+    if root is None:
+        root = os.path.dirname(os.path.abspath(__file__))
+    local_dir = os.path.join(root, "data", "datasets", dataset)
     if os.path.isfile(os.path.join(local_dir, "schema.json")):
         return local_dir
     return dataset
