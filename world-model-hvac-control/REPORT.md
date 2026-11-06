@@ -1,3 +1,12 @@
+# POC #4 — Diffusion / world-model HVAC control
+
+**Verdict: No-go** (slice 3, 2026-11-06 — see the slice-3 note at the end).
+The world-model + MPC arm fails the issue-#4 gate on both unseen
+buildings/climates in two independent runs, and fails in-distribution too.
+Details, both runs' tables, and what would change the recommendation are in
+the slice-3 note below. A simulated saving is not a real saving, and there
+is no real-building deployment proposed anywhere in this POC.
+
 # POC #4 — Diffusion / world-model HVAC control: slice-1 note
 
 **No verdict yet — slice 1.** Slice 1 builds the simulator + model-free
@@ -334,4 +343,153 @@ Build the diffusion / latent-dynamics world model + MPC/planning controller
 and compare it against the sweep headline above on the same fixed sets and
 June window, under the issue-#4 gates (≥5% energy win on the unseen
 building/climate at equal comfort, ≤1,000 real-environment steps).
-**No verdict yet — verdict after the world-model arm (slice 3).**
+**Done — see the slice-3 note below. Verdict: No-go.**
+
+# POC #4 — Diffusion / world-model HVAC control: slice-3 note + verdict
+
+**Verdict: No-go.** The world-model + MPC controller does not beat
+model-free SAC on any unseen building/climate at equal comfort, and does
+not beat it in-distribution either. The failure is structural, not a
+tuning gap (see diagnostics below).
+
+## What slice 3 built
+
+- `world_model.py` — `WorldModel`: a small MLP latent-dynamics model
+  (observation-history stack + action → next observation, delta targets,
+  standardised inputs/targets) with a held-out one-step-error diagnostic
+  reported next to a persistence baseline; `MPCController`: a CEM
+  shooting planner that uses ONLY the learned model (it holds no
+  environment reference — planning is a pure function of the observation
+  history and the model) with the same cost weights as the SAC reward
+  (`1.0 * energy + 0.5 * comfort`); `collect_transitions`: random-action
+  transition collection with every real env step counted.
+- `run_world_model.py` — full arm: collect ≤1,000 real-env steps per seed
+  (320 train + 80 held-out + 3 × 167 eval = 901), fit, run MPC on the
+  train set + both held-out sets on the fixed June window (start step
+  4368, 167 steps/episode), and write the transfer table against the
+  committed slice-2 SAC sweep JSON (`sac_reference` rows are read from
+  that file, not transcribed — the three SAC rows were verified exact
+  against it by the supervisor).
+- `tests/test_world_model.py` — 6 new env-free tests (batch
+  concat/split, history padding, fit/predict on synthetic data,
+  predict-before-fit raises, MPC plan bounded + deterministic without
+  any env, violation/energy helpers, SAC-reference parsing vs the
+  committed sweep JSON to 4 dp).
+- `results/worldmodel_june_tx_..._s0-1-2.json` — worker headline run;
+  `results/worldmodel_june_tx_..._s0-1-2_supervisor-rerun.json` —
+  supervisor's independent re-run (same command).
+
+## Transfer table — worker headline run (June window, 167 steps/episode, mean ± std over 3 seeds)
+
+| set | MPC energy kWh/ep | SAC energy kWh/ep | % vs SAC | MPC comfort degC/ep | SAC comfort degC/ep | gate (≥5% win at equal comfort) |
+|---|---|---|---|---|---|---|
+| tx (train, in-distribution) | 2.32 ± 0.73 | 1.19 ± 0.11 | +95.2% | 437.4 ± 95.9 | 323.1 ± 94.0 | false |
+| vt (unseen building + climate) | 2.56 ± 0.92 | 1.42 ± 0.53 | +79.5% | 1642.6 ± 123.5 | 347.3 ± 50.9 | false |
+| ca (unseen building + climate) | 1.97 ± 1.16 | 3.40 ± 0.95 | −42.1% | 405.5 ± 83.6 | 171.4 ± 56.6 | false — comfort +136.6%, not equal |
+
+The ca row is the only energy "win", and it is bought with 2.4× the
+comfort violation — the gate requires the win **at equal comfort**, so it
+fails. The vt row fails on both axes. The tx row fails on both axes even
+though it is optimistic (see caveat below).
+
+## Supervisor independent re-run (same command, 2026-11-06)
+
+| set | MPC energy kWh/ep | % vs SAC | MPC comfort degC/ep |
+|---|---|---|---|
+| tx | 3.37 ± 1.67 | +183.4% | 531.1 ± 55.7 |
+| vt | 4.11 ± 2.30 | +188.5% | 1090.6 ± 211.1 |
+| ca | 4.60 ± 2.44 | +35.1% | 348.9 ± 120.4 |
+
+The re-run does **not** reproduce the worker's per-seed numbers: the ca
+−42% "win" disappears entirely (+35.1% instead). The MPC outcome is
+chaotically sensitive to the learned model — tiny fit differences flip
+whole episodes. The verdict does not depend on either run's exact
+numbers: the gate fails in **both** runs on **all three** sets, and the
+re-run is the stronger of the two failures. Both JSONs are committed so
+the variance is auditable.
+
+## Model diagnostics (worker run, held-out 80 steps/seed)
+
+One-step indoor-temperature MAE 2.96 / 3.43 / 3.82 °C (seeds 0/1/2) vs
+persistence 5.48 / 5.77 / 6.30 °C — better than persistence, but far too
+large for a 12-step planning horizon (errors compound). Energy MAE
+0.027 / 0.026 / 0.020 kWh vs persistence 0.023 / 0.021 / 0.019 — at or
+worse than persistence on seeds 0–1. The worker's stack sweep (stack
+1/3/6, hidden 128, 3000 iterations; hidden 256 + stack 3) left indoor
+MAE stuck at ~2.5–3.2 °C regardless of stack, width, or iterations.
+The diagnosis, recorded here because it is the structural finding: the
+CityLearn building dynamics is an LSTM whose hidden state is not
+exposed by the 10-float observation, so a one-frame (or short-stack)
+predictor cannot recover the response to an action — indoor temperature
+changes by up to 27.5 °C in a single step under random actions
+(supervisor check: 167 steps, tx June window, seed 0). The
+planner then exploits model error: the MPC drives indoor temperatures
+to −4.0…+37.8 °C on vt (worker run), which no comfort-weighted cost
+can rescue once the model is wrong by degrees per step.
+
+## Caveats — read before quoting any number
+
+- **Train-window overlap (tx row only).** The headline run used
+  `--train-window june`, so the tx model trained on the same June window
+  it was evaluated on. The tx row is therefore optimistic — and it still
+  loses on both axes. The unseen vt/ca rows are clean (the model never
+  saw vt/ca data). The `--train-window year` arm (four spread-out
+  windows, no eval overlap) was not run: it can only make tx worse and
+  cannot rescue the unseen rows.
+- **Comfort count 154/167.** The `comfort_violations` count is 154 in
+  every episode for every controller, including SAC and do-nothing in
+  the slice-2 sweep — the June window's zero-width comfort band is
+  violated most steps regardless of controller. The discriminating
+  metric is violation **degrees**, not the count.
+- **Run-to-run variance.** See the re-run table above. Do not quote the
+  worker run's ca −42% without the re-run's +35.1% beside it.
+- **Provenance gap.** The results JSON `run` block does not record
+  `--hidden`/`--stack` (hidden is in the per-seed blocks; stack is
+  recorded nowhere). The exact reproduce command, including
+  `--hidden 64`, is in the README; the gap is a follow-up, not a
+  verdict-changer.
+- **`final_loss` definition.** Supervisor fix: the field now records the
+  loss at the final iteration (the worker version recorded the
+  iteration-1900 logged value). The re-run JSON carries the corrected
+  definition; the worker JSON carries the old one.
+- **Test status.** The 6 new env-free tests pass. The 18 pre-existing
+  tests fail intermittently in this environment at fixture setup
+  (`citylearn.UnknownSchemaError` resolving `baeda_3dem` — the GitHub
+  API rate limit on dataset listing; the dataset itself is cached).
+  Proven pre-existing via `git stash` on base 515ea53: the same
+  failures occur with no slice-3 change. The repo has no CI workflows;
+  slice 2 verified the suite green when the API was available.
+
+## Verification (supervisor, 2026-11-06)
+
+- SAC reference rows in the worker JSON verified exact against the
+  committed slice-2 sweep JSON on all three sets (energy + comfort to
+  4 dp); the 167-step episode length and start step 4368 match the
+  sweep exactly.
+- `world_model.py` + `run_world_model.py` reviewed: MPC planning is
+  model-only (no env reference in `MPCController`); env steps counted
+  901/seed ≤ 1,000 budget; comfort/energy helpers use the same
+  definition as the wrapper.
+- Independent re-run of the exact headline command (plus the explicit
+  `--hidden 64`): exit 0, 133 s, env steps 901/seed; table above.
+- `python -m pytest tests/test_world_model.py -q`: **6 passed**.
+  Full suite: pre-existing env-dependent failures as noted above.
+- Supervisor completions to the worker diff (worker hit the 60-step
+  cap mid-diagnosis, report is a think-leak): `final_loss` fix, the 6
+  tests, this REPORT.md section, the README reproduce command +
+  status, the root README status row, deletion of the scratch
+  `_diag_tmp.py`. No change to the worker's headline numbers.
+
+## What would change the recommendation
+
+An observation that exposes the simulator's latent thermal state (or a
+simulator whose dynamics are observable from the state the controller
+sees), or a world-model architecture that predicts the comfort-relevant
+quantities directly with validated accuracy — either would be a **new**
+POC, not a continuation of this one. More training steps inside the
+1,000-step budget, a bigger MLP, or a longer stack will not fix an
+unobservable state: the stack sweep already showed that. The model-free
+SAC baseline remains the stronger controller on these sets, and the
+sample-efficiency premise of the POC (≤1,000 real steps beating a
+10,000-step SAC) is refuted on the measured sets.
+

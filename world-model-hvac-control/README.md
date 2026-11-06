@@ -1,6 +1,6 @@
 # Diffusion / World-Model HVAC Control
 
-**Status:** Slice 2 done (2026-11-06) — findings F1–F3 resolved, train/held-out sets fixed, 3-seed SAC baseline sweep run. **No verdict yet** (the Go / No-go label comes after the world-model + MPC arm is built and compared in slice 3).
+**Status:** Slice 3 done (2026-11-06) — world model + MPC built and compared on the same fixed sets and June window. **Verdict: No-go** (see `REPORT.md` slice-3 note): the world-model arm fails the ≥5%-at-equal-comfort gate on both unseen sets in two independent runs, and in-distribution too.
 
 Diffusion / world-model HVAC control for grid-interactive buildings, tested in simulation. See the repo README for the POC rules: 25–40 hours, standalone, fixed go/no-go gate, REPORT.md leading with exactly one label (Go, Go (software only), Conditional, or No-go).
 
@@ -39,6 +39,35 @@ default `XDG_CACHE_HOME` to that worktree-local cache, so runs do not depend
 on the shared-egress GitHub API rate limit. The datasets themselves live
 under `data/datasets/` (extracted from the CityLearn v3.2.0 release tarball);
 delete that directory to re-fetch them.
+
+## Reproduce (slice-3 world model + MPC)
+
+```sh
+.venv/bin/python run_world_model.py --seeds 0,1,2 --train-steps 320 --heldout-steps 80 \
+    --train-window june --train-iterations 2000 --hidden 64 --horizon 12 \
+    --num-samples 64 --num-iterations 4 \
+    --eval-start-step 4368 --eval-episode-steps 168 \
+    --eval-on vt_chittenden_county_neighborhood:resstock-amy2018-2021-release-1-112208 \
+    --eval-on ca_alameda_county_neighborhood:resstock-amy2018-2021-release-1-102040 \
+    --out results
+.venv/bin/python -m pytest tests/ -q
+```
+
+Headline (worker run, 3 seeds, 901 real env steps/seed ≤ 1,000 budget):
+
+| set | MPC energy kWh/ep | SAC energy kWh/ep | MPC comfort degC/ep | SAC comfort degC/ep |
+|---|---|---|---|---|
+| tx (train) | 2.32 ± 0.73 | 1.19 ± 0.11 | 437.4 ± 95.9 | 323.1 ± 94.0 |
+| vt (unseen) | 2.56 ± 0.92 | 1.42 ± 0.53 | 1642.6 ± 123.5 | 347.3 ± 50.9 |
+| ca (unseen) | 1.97 ± 1.16 | 3.40 ± 0.95 | 405.5 ± 83.6 | 171.4 ± 56.6 |
+
+No set meets the ≥5%-at-equal-comfort gate. A supervisor re-run of the
+same command gives different per-seed numbers (ca +35.1% instead of
+−42.1%) — the MPC outcome is chaotically sensitive to the learned
+model — but the gate fails in both runs on all three sets. Both JSONs
+are committed under `results/`; full tables and diagnostics are in
+`REPORT.md` (slice-3 note). `--train-window year` (no eval-window
+overlap) was not run; it can only make the train row worse.
 
 ## Reproduce (slice-2 sweep)
 
@@ -121,9 +150,17 @@ resolve the energy metric before the full baseline sweep.
 - `run_sweep.py` — multi-seed SAC sweep: trains on the train set at >=3
   seeds and evaluates SAC, rule-based, and do-nothing controllers on the
   train set and every held-out set, on one fixed window per set.
+- `world_model.py` — learned latent-dynamics MLP + CEM shooting MPC
+  planner (model-only planning, no env reference) + transition
+  collection with env-step counting (slice 3).
+- `run_world_model.py` — world-model arm: fit on ≤1,000 real-env steps,
+  MPC eval on the train + held-out sets, transfer table vs the committed
+  SAC sweep JSON (slice 3).
 - `tests/` — env contract tests, harness tests (results-JSON schema, headline
   table, determinism: same seed → identical results), survey tests
-  (baeda non-response, same-window monotonic response), sweep tests.
+  (baeda non-response, same-window monotonic response), sweep tests,
+  world-model tests (slice 3: synthetic-data model/MPC tests + SAC
+  reference parsing).
 
 ## What slice 3 does
 
@@ -132,3 +169,4 @@ and compare it against the slice-2 sweep headline on the same fixed sets
 and window, under the issue-#4 gates (>=5% energy win on the unseen
 building/climate at equal comfort, <=1,000 real-environment steps). The
 verdict (Go / Go (software only) / Conditional / No-go) is written then.
+**Done — verdict: No-go (see `REPORT.md` slice-3 note).**

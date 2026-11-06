@@ -1,0 +1,567 @@
+{
+  "headline": {
+    "ca_alameda_county_neighborhood:resstock-amy2018-2021-release-1-102040": {
+      "comfort_violation_c_per_episode": {
+        "mean": 348.94653638203937,
+        "n": 3,
+        "std": 120.43227120083156,
+        "values": [
+          351.0473394393921,
+          495.3837203979492,
+          200.40854930877686
+        ]
+      },
+      "comfort_violations_per_episode": {
+        "mean": 154.0,
+        "n": 3,
+        "std": 0.0,
+        "values": [
+          154.0,
+          154.0,
+          154.0
+        ]
+      },
+      "energy_kwh_per_episode": {
+        "mean": 4.601102272669475,
+        "n": 3,
+        "std": 2.441961612550322,
+        "values": [
+          7.500765323638916,
+          4.7756876945495605,
+          1.5268537998199463
+        ]
+      },
+      "sac_reference": {
+        "comfort_violation_c_per_episode": {
+          "mean": 171.38208071390787,
+          "n": 3,
+          "std": 56.62835372441159,
+          "values": [
+            143.13568496704102,
+            250.40336418151855,
+            120.60719299316406
+          ]
+        },
+        "energy_kwh_per_episode": {
+          "mean": 3.404449224472046,
+          "n": 3,
+          "std": 0.9464691483479463,
+          "values": [
+            4.618347644805908,
+            3.285909414291382,
+            2.3090906143188477
+          ]
+        }
+      },
+      "vs_sac": {
+        "comfort_equal": false,
+        "comfort_percent_difference": 103.60736369197431,
+        "energy_percent_difference": 35.14968117590307,
+        "gate_energy_win_at_equal_comfort": false
+      }
+    },
+    "tx_travis_county_neighborhood:resstock-amy2018-2021-release-1-102188": {
+      "comfort_violation_c_per_episode": {
+        "mean": 531.1104345321655,
+        "n": 3,
+        "std": 55.746244737587,
+        "values": [
+          604.9155797958374,
+          518.2092390060425,
+          470.2064847946167
+        ]
+      },
+      "comfort_violations_per_episode": {
+        "mean": 154.0,
+        "n": 3,
+        "std": 0.0,
+        "values": [
+          154.0,
+          154.0,
+          154.0
+        ]
+      },
+      "energy_kwh_per_episode": {
+        "mean": 3.371558507283529,
+        "n": 3,
+        "std": 1.6655787746142223,
+        "values": [
+          3.4487853050231934,
+          5.371757507324219,
+          1.2941327095031738
+        ]
+      },
+      "sac_reference": {
+        "comfort_violation_c_per_episode": {
+          "mean": 323.09665552775067,
+          "n": 3,
+          "std": 94.01304564159747,
+          "values": [
+            282.2722644805908,
+            453.088529586792,
+            233.92917251586914
+          ]
+        },
+        "energy_kwh_per_episode": {
+          "mean": 1.18951149781545,
+          "n": 3,
+          "std": 0.1091813708822219,
+          "values": [
+            1.1532471179962158,
+            1.3376226425170898,
+            1.0776647329330444
+          ]
+        }
+      },
+      "vs_sac": {
+        "comfort_equal": false,
+        "comfort_percent_difference": 64.38128511873396,
+        "energy_percent_difference": 183.4405983864326,
+        "gate_energy_win_at_equal_comfort": false
+      }
+    },
+    "vt_chittenden_county_neighborhood:resstock-amy2018-2021-release-1-112208": {
+      "comfort_violation_c_per_episode": {
+        "mean": 1090.6008841196697,
+        "n": 3,
+        "std": 211.05719544158129,
+        "values": [
+          1284.1688737869263,
+          1190.5814304351807,
+          797.0523481369019
+        ]
+      },
+      "comfort_violations_per_episode": {
+        "mean": 154.0,
+        "n": 3,
+        "std": 0.0,
+        "values": [
+          154.0,
+          154.0,
+          154.0
+        ]
+      },
+      "energy_kwh_per_episode": {
+        "mean": 4.106924255688985,
+        "n": 3,
+        "std": 2.296696896500646,
+        "values": [
+          4.008967876434326,
+          6.9674906730651855,
+          1.3443142175674438
+        ]
+      },
+      "sac_reference": {
+        "comfort_violation_c_per_episode": {
+          "mean": 347.29453404744464,
+          "n": 3,
+          "std": 50.942246694182764,
+          "values": [
+            296.87874031066895,
+            417.0709686279297,
+            327.93389320373535
+          ]
+        },
+        "energy_kwh_per_episode": {
+          "mean": 1.4234265287717183,
+          "n": 3,
+          "std": 0.5296731002365624,
+          "values": [
+            1.6141735315322876,
+            0.7007237076759338,
+            1.9553823471069336
+          ]
+        }
+      },
+      "vs_sac": {
+        "comfort_equal": false,
+        "comfort_percent_difference": 214.02765583712883,
+        "energy_percent_difference": 188.52379611281168,
+        "gate_energy_win_at_equal_comfort": false
+      }
+    }
+  },
+  "per_seed": {
+    "0": {
+      "env_steps": {
+        "budget": 1000,
+        "evaluation_rollouts": 501,
+        "total": 901,
+        "training_collection": 400,
+        "within_budget": true
+      },
+      "sets": {
+        "ca_alameda_county_neighborhood:resstock-amy2018-2021-release-1-102040": {
+          "comfort_violation_c_mean": 351.0473394393921,
+          "comfort_violations_mean": 154.0,
+          "comfort_violations_total": 154,
+          "energy_kwh_mean": 7.500765323638916,
+          "energy_kwh_total": 7.500765323638916,
+          "episodes": 1,
+          "indoor_temperature_max_c": 30.796287536621094,
+          "indoor_temperature_min_c": 11.471567153930664,
+          "mean_action": 0.29367144809600837,
+          "model_predictions": 8016,
+          "model_rollouts": 42752,
+          "steps": 167
+        },
+        "tx_travis_county_neighborhood:resstock-amy2018-2021-release-1-102188": {
+          "comfort_violation_c_mean": 604.9155797958374,
+          "comfort_violations_mean": 154.0,
+          "comfort_violations_total": 154,
+          "energy_kwh_mean": 3.4487853050231934,
+          "energy_kwh_total": 3.4487853050231934,
+          "episodes": 1,
+          "indoor_temperature_max_c": 41.81022644042969,
+          "indoor_temperature_min_c": 14.110241889953613,
+          "mean_action": -0.09932730159538235,
+          "model_predictions": 8016,
+          "model_rollouts": 42752,
+          "steps": 167
+        },
+        "vt_chittenden_county_neighborhood:resstock-amy2018-2021-release-1-112208": {
+          "comfort_violation_c_mean": 1284.1688737869263,
+          "comfort_violations_mean": 154.0,
+          "comfort_violations_total": 154,
+          "energy_kwh_mean": 4.008967876434326,
+          "energy_kwh_total": 4.008967876434326,
+          "episodes": 1,
+          "indoor_temperature_max_c": 39.39543533325195,
+          "indoor_temperature_min_c": -2.878664970397949,
+          "mean_action": -0.39150228185166497,
+          "model_predictions": 8016,
+          "model_rollouts": 42752,
+          "steps": 167
+        }
+      },
+      "wall_time_s": 47.225000619888306,
+      "world_model": {
+        "architecture": "MLP latent dynamics (obs, action) -> next obs",
+        "fit": {
+          "final_loss": 0.015612618997693062,
+          "iterations": 2000,
+          "n_transitions": 320,
+          "stack": 3
+        },
+        "heldout_one_step_error": {
+          "mae": 0.6034464155861314,
+          "n": 80,
+          "per_observation": {
+            "comfort_band": {
+              "mae": 2.7294702775737532e-09,
+              "persistence_mae": 0.0
+            },
+            "cooling_demand_kwh": {
+              "mae": 0.5051408910336971,
+              "persistence_mae": 0.7653150022029876
+            },
+            "cooling_set_point": {
+              "mae": 0.18680029176729454,
+              "persistence_mae": 0.1888888359069824
+            },
+            "day_of_year": {
+              "mae": 0.07714498712840152,
+              "persistence_mae": 0.0375
+            },
+            "heating_demand_kwh": {
+              "mae": 3.4589227056130763e-09,
+              "persistence_mae": 0.0
+            },
+            "heating_set_point": {
+              "mae": 0.18889838591567482,
+              "persistence_mae": 0.1888888359069824
+            },
+            "hour_of_day": {
+              "mae": 1.9053574089864935,
+              "persistence_mae": 1.825
+            },
+            "indoor_dry_bulb_temperature": {
+              "mae": 3.142747589223575,
+              "persistence_mae": 5.4833983182907104
+            },
+            "net_electricity_consumption_kwh": {
+              "mae": 0.028374594742719805,
+              "persistence_mae": 0.023016670346260072
+            },
+            "outdoor_dry_bulb_temperature": {
+              "mae": 8.750649094224627e-10,
+              "persistence_mae": 0.0
+            }
+          },
+          "persistence_mae": 0.8512007662653923,
+          "rmse": 2.1770133781788132
+        },
+        "hidden": 64,
+        "n_actions": 1,
+        "obs_dim": 10,
+        "stack": 3,
+        "train_env_steps": 400
+      }
+    },
+    "1": {
+      "env_steps": {
+        "budget": 1000,
+        "evaluation_rollouts": 501,
+        "total": 901,
+        "training_collection": 400,
+        "within_budget": true
+      },
+      "sets": {
+        "ca_alameda_county_neighborhood:resstock-amy2018-2021-release-1-102040": {
+          "comfort_violation_c_mean": 495.3837203979492,
+          "comfort_violations_mean": 154.0,
+          "comfort_violations_total": 154,
+          "energy_kwh_mean": 4.7756876945495605,
+          "energy_kwh_total": 4.7756876945495605,
+          "episodes": 1,
+          "indoor_temperature_max_c": 29.55194854736328,
+          "indoor_temperature_min_c": 8.991726875305176,
+          "mean_action": 0.050878928926868176,
+          "model_predictions": 8016,
+          "model_rollouts": 42752,
+          "steps": 167
+        },
+        "tx_travis_county_neighborhood:resstock-amy2018-2021-release-1-102188": {
+          "comfort_violation_c_mean": 518.2092390060425,
+          "comfort_violations_mean": 154.0,
+          "comfort_violations_total": 154,
+          "energy_kwh_mean": 5.371757507324219,
+          "energy_kwh_total": 5.371757507324219,
+          "episodes": 1,
+          "indoor_temperature_max_c": 41.26985168457031,
+          "indoor_temperature_min_c": 11.221857070922852,
+          "mean_action": -0.1974930939335438,
+          "model_predictions": 8016,
+          "model_rollouts": 42752,
+          "steps": 167
+        },
+        "vt_chittenden_county_neighborhood:resstock-amy2018-2021-release-1-112208": {
+          "comfort_violation_c_mean": 1190.5814304351807,
+          "comfort_violations_mean": 154.0,
+          "comfort_violations_total": 154,
+          "energy_kwh_mean": 6.9674906730651855,
+          "energy_kwh_total": 6.9674906730651855,
+          "episodes": 1,
+          "indoor_temperature_max_c": 39.52804183959961,
+          "indoor_temperature_min_c": 7.51838493347168,
+          "mean_action": -0.17517921362284147,
+          "model_predictions": 8016,
+          "model_rollouts": 42752,
+          "steps": 167
+        }
+      },
+      "wall_time_s": 41.49386525154114,
+      "world_model": {
+        "architecture": "MLP latent dynamics (obs, action) -> next obs",
+        "fit": {
+          "final_loss": 0.017429839819669724,
+          "iterations": 2000,
+          "n_transitions": 320,
+          "stack": 3
+        },
+        "heldout_one_step_error": {
+          "mae": 0.6545801313097419,
+          "n": 80,
+          "per_observation": {
+            "comfort_band": {
+              "mae": 2.578626898119829e-09,
+              "persistence_mae": 0.0
+            },
+            "cooling_demand_kwh": {
+              "mae": 0.5601866312061062,
+              "persistence_mae": 0.7653150022029876
+            },
+            "cooling_set_point": {
+              "mae": 0.20481067362757713,
+              "persistence_mae": 0.1888888359069824
+            },
+            "day_of_year": {
+              "mae": 0.07462713270150985,
+              "persistence_mae": 0.0375
+            },
+            "heating_demand_kwh": {
+              "mae": 7.563676394056529e-10,
+              "persistence_mae": 0.0
+            },
+            "heating_set_point": {
+              "mae": 0.2049853890479308,
+              "persistence_mae": 0.1888888359069824
+            },
+            "hour_of_day": {
+              "mae": 1.649834651337157,
+              "persistence_mae": 1.825
+            },
+            "indoor_dry_bulb_temperature": {
+              "mae": 3.8088160004745517,
+              "persistence_mae": 5.7692883014678955
+            },
+            "net_electricity_consumption_kwh": {
+              "mae": 0.04254082749797313,
+              "persistence_mae": 0.02063705027103424
+            },
+            "outdoor_dry_bulb_temperature": {
+              "mae": 3.869618359075844e-09,
+              "persistence_mae": 0.0
+            }
+          },
+          "persistence_mae": 0.8795518025755882,
+          "rmse": 2.3120540346861445
+        },
+        "hidden": 64,
+        "n_actions": 1,
+        "obs_dim": 10,
+        "stack": 3,
+        "train_env_steps": 400
+      }
+    },
+    "2": {
+      "env_steps": {
+        "budget": 1000,
+        "evaluation_rollouts": 501,
+        "total": 901,
+        "training_collection": 400,
+        "within_budget": true
+      },
+      "sets": {
+        "ca_alameda_county_neighborhood:resstock-amy2018-2021-release-1-102040": {
+          "comfort_violation_c_mean": 200.40854930877686,
+          "comfort_violations_mean": 154.0,
+          "comfort_violations_total": 154,
+          "energy_kwh_mean": 1.5268537998199463,
+          "energy_kwh_total": 1.5268537998199463,
+          "episodes": 1,
+          "indoor_temperature_max_c": 29.919544219970703,
+          "indoor_temperature_min_c": 12.014288902282715,
+          "mean_action": 0.2285666051780816,
+          "model_predictions": 8016,
+          "model_rollouts": 42752,
+          "steps": 167
+        },
+        "tx_travis_county_neighborhood:resstock-amy2018-2021-release-1-102188": {
+          "comfort_violation_c_mean": 470.2064847946167,
+          "comfort_violations_mean": 154.0,
+          "comfort_violations_total": 154,
+          "energy_kwh_mean": 1.2941327095031738,
+          "energy_kwh_total": 1.2941327095031738,
+          "episodes": 1,
+          "indoor_temperature_max_c": 44.968101501464844,
+          "indoor_temperature_min_c": 13.559858322143555,
+          "mean_action": -0.15204258211456173,
+          "model_predictions": 8016,
+          "model_rollouts": 42752,
+          "steps": 167
+        },
+        "vt_chittenden_county_neighborhood:resstock-amy2018-2021-release-1-112208": {
+          "comfort_violation_c_mean": 797.0523481369019,
+          "comfort_violations_mean": 154.0,
+          "comfort_violations_total": 154,
+          "energy_kwh_mean": 1.3443142175674438,
+          "energy_kwh_total": 1.3443142175674438,
+          "episodes": 1,
+          "indoor_temperature_max_c": 38.52323913574219,
+          "indoor_temperature_min_c": 3.952023506164551,
+          "mean_action": -0.29865614206440927,
+          "model_predictions": 8016,
+          "model_rollouts": 42752,
+          "steps": 167
+        }
+      },
+      "wall_time_s": 41.419893980026245,
+      "world_model": {
+        "architecture": "MLP latent dynamics (obs, action) -> next obs",
+        "fit": {
+          "final_loss": 0.016761571168899536,
+          "iterations": 2000,
+          "n_transitions": 320,
+          "stack": 3
+        },
+        "heldout_one_step_error": {
+          "mae": 0.7866606603944004,
+          "n": 80,
+          "per_observation": {
+            "comfort_band": {
+              "mae": 2.490525635723273e-09,
+              "persistence_mae": 0.0
+            },
+            "cooling_demand_kwh": {
+              "mae": 0.6019698465791485,
+              "persistence_mae": 0.7653150022029876
+            },
+            "cooling_set_point": {
+              "mae": 0.19926048697870172,
+              "persistence_mae": 0.1888888359069824
+            },
+            "day_of_year": {
+              "mae": 0.07980157923444375,
+              "persistence_mae": 0.0375
+            },
+            "heating_demand_kwh": {
+              "mae": 0.09761020785393848,
+              "persistence_mae": 0.0
+            },
+            "heating_set_point": {
+              "mae": 0.19840634088691292,
+              "persistence_mae": 0.1888888359069824
+            },
+            "hour_of_day": {
+              "mae": 1.8152123465864876,
+              "persistence_mae": 1.825
+            },
+            "indoor_dry_bulb_temperature": {
+              "mae": 4.834983275757592,
+              "persistence_mae": 6.30028235912323
+            },
+            "net_electricity_consumption_kwh": {
+              "mae": 0.03936251649552313,
+              "persistence_mae": 0.01921361982822418
+            },
+            "outdoor_dry_bulb_temperature": {
+              "mae": 1.0807311934257768e-09,
+              "persistence_mae": 0.0
+            }
+          },
+          "persistence_mae": 0.9325088652968406,
+          "rmse": 2.6591067510644546
+        },
+        "hidden": 64,
+        "n_actions": 1,
+        "obs_dim": 10,
+        "stack": 3,
+        "train_env_steps": 400
+      }
+    }
+  },
+  "run": {
+    "algo": "world model (MLP latent dynamics) + CEM shooting MPC",
+    "comfort_weight": 0.5,
+    "energy_weight": 1.0,
+    "env_step_budget": 1000,
+    "eval_episode_steps": 168,
+    "eval_sets": [
+      "tx_travis_county_neighborhood:resstock-amy2018-2021-release-1-102188",
+      "vt_chittenden_county_neighborhood:resstock-amy2018-2021-release-1-112208",
+      "ca_alameda_county_neighborhood:resstock-amy2018-2021-release-1-102040"
+    ],
+    "eval_start_step": 4368,
+    "heldout_steps_per_seed": 80,
+    "horizon": 12,
+    "library": "numpy + torch",
+    "num_iterations": 4,
+    "num_samples": 64,
+    "sac_reference_file": "sweep_sac_tx_travis_county_neighborhood_resstock-amy2018-2021-release-1-102188_s0-1-2.json",
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "train_building": "resstock-amy2018-2021-release-1-102188",
+    "train_dataset": "tx_travis_county_neighborhood",
+    "train_steps_per_seed": 320,
+    "train_window": "june"
+  },
+  "runtime": {
+    "python": "3.12.3",
+    "timestamp": "2026-11-06T18:30:36",
+    "wall_time_s": 130.2095868587494
+  }
+}
