@@ -1,0 +1,9 @@
+# Neural-operator surrogate POC - slice 1 environment.
+#
+# torch is pinned to the CPU build (no GPU, no CUDA wheels):
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.15.0+cpu
+numpy>=1.26
+scipy>=1.11
+pytest>=8.0
