@@ -1,0 +1,53 @@
+{
+  "config": {
+    "buildings": [
+      "resstock-amy2018-2021-release-1-112208"
+    ],
+    "datasets": [
+      "vt_chittenden_county_neighborhood"
+    ],
+    "episode_steps": 24,
+    "noise_floor_kwh": 0.001,
+    "seed": 0,
+    "start_step": 0
+  },
+  "rows": [
+    {
+      "active_actions": [
+        "electrical_storage",
+        "cooling_or_heating_device"
+      ],
+      "building": "resstock-amy2018-2021-release-1-112208",
+      "cooling_demand_kwh__full_cool": 83.70247650146484,
+      "cooling_demand_kwh__full_heat": 0.0,
+      "cooling_demand_kwh__none": 0.0,
+      "cooling_nominal_power_kw": 4.185123920440674,
+      "cooling_setpoint_max_c": 18.449073791503906,
+      "cooling_setpoint_min_c": 18.0,
+      "dataset": "vt_chittenden_county_neighborhood",
+      "episode_steps": 24,
+      "heating_actuated": true,
+      "heating_demand_kwh__full_cool": 196.87690687179565,
+      "heating_demand_kwh__full_heat": 218.07242155075073,
+      "heating_demand_kwh__none": 196.87690687179565,
+      "heating_nominal_power_kw": 16.730566024780273,
+      "heating_setpoint_max_c": 18.449073791503906,
+      "heating_setpoint_min_c": 18.0,
+      "indoor_temperature_max_c": 27.984779357910156,
+      "indoor_temperature_min_c": 1.2948341369628906,
+      "net_electricity_kwh__full_cool": 4.558140754699707,
+      "net_electricity_kwh__full_heat": 17.10358238220215,
+      "net_electricity_kwh__none": 0.3730168342590332,
+      "net_electricity_responsive": true,
+      "net_electricity_spread_kwh": 16.730565547943115,
+      "ok": true,
+      "seed": 0,
+      "start_step": 0,
+      "steps__full_cool": 23,
+      "steps__full_heat": 23,
+      "steps__none": 23,
+      "thermal_demand_responsive": true,
+      "thermal_demand_spread_kwh": 83.70247650146484
+    }
+  ]
+}

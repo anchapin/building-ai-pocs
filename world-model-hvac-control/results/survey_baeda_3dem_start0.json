@@ -1,0 +1,53 @@
+{
+  "config": {
+    "buildings": [
+      "Building_1"
+    ],
+    "datasets": [
+      "baeda_3dem"
+    ],
+    "episode_steps": 24,
+    "noise_floor_kwh": 0.001,
+    "seed": 0,
+    "start_step": 0
+  },
+  "rows": [
+    {
+      "active_actions": [
+        "cooling_storage",
+        "cooling_device"
+      ],
+      "building": "Building_1",
+      "cooling_demand_kwh__full_cool": 0.0,
+      "cooling_demand_kwh__full_heat": 0.0,
+      "cooling_demand_kwh__none": 0.0,
+      "cooling_nominal_power_kw": 7.575827598571777,
+      "cooling_setpoint_max_c": 30.0,
+      "cooling_setpoint_min_c": 30.0,
+      "dataset": "baeda_3dem",
+      "episode_steps": 24,
+      "heating_actuated": false,
+      "heating_demand_kwh__full_cool": 0.0,
+      "heating_demand_kwh__full_heat": 0.0,
+      "heating_demand_kwh__none": 0.0,
+      "heating_nominal_power_kw": 0.0,
+      "heating_setpoint_max_c": 30.0,
+      "heating_setpoint_min_c": 30.0,
+      "indoor_temperature_max_c": 29.090843200683594,
+      "indoor_temperature_min_c": 26.823339462280273,
+      "net_electricity_kwh__full_cool": 0.5676419138908386,
+      "net_electricity_kwh__full_heat": 0.5676419138908386,
+      "net_electricity_kwh__none": 0.5676419138908386,
+      "net_electricity_responsive": false,
+      "net_electricity_spread_kwh": 0.0,
+      "ok": true,
+      "seed": 0,
+      "start_step": 0,
+      "steps__full_cool": 23,
+      "steps__full_heat": 23,
+      "steps__none": 23,
+      "thermal_demand_responsive": false,
+      "thermal_demand_spread_kwh": 0.0
+    }
+  ]
+}
