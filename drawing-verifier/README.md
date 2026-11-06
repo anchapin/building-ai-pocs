@@ -1,8 +1,9 @@
 # VLM + Neuro-Symbolic Drawing Verifier
 
-**Status:** Slice 1 in progress — symbolic checker implemented and measured on
-hand-built fixtures. The VLM second reader is **not** wired (deferred; see
-`REPORT.md`).
+**Status:** Slice 2 in progress — the symbolic checker now has five checks
+(the fifth cross-checks the schedule quantities against the geometry), and is
+measured on six hand-built clean fixtures and a 24-case injected-error set.
+The VLM second reader is **not** wired (deferred; see `REPORT.md`).
 
 Hardens drawing-to-BEM (Matchline) by catching hallucinations and injected
 errors before simulation.
@@ -64,9 +65,13 @@ explicit; every file under `fixtures/` validates against it.
 
   "schedules": [
     {
-      "tag_id": "t_door_01",                // unique tag id
-      "symbol": "D01",                      // drawing symbol
-      "value": "Single swing door 900 x 2100"
+      "tag_id": "t_door_01",            // unique tag id
+      "symbol": "D01",                  // drawing symbol
+      "value": "Single swing door 900 x 2100",
+      "kind": "door",                   // optional (slice 2): "opening" |
+                                       // "door" | "window" | "zone"
+      "count": 1                        // optional (slice 2): how many
+                                       // elements carry this tag
     }
   ]
 }
@@ -82,11 +87,15 @@ Rules the schema validator enforces (`checker.validate_model`):
 * an opening must carry a `host_wall` string (the *existence* of that wall is
   a checker finding, not a schema error — see check 2).
 * a zone's `wall_loop` must list at least three wall ids.
+* a schedule entry may carry an optional `kind` (one of `opening`, `door`,
+  `window`, `zone`) and an optional `count` (a positive integer).  `count` is
+  the *quantity* the schedule declares for that mark; entries without a
+  `count` take no part in check 5.
 
 Validation failures are reported as findings with the error class
 `schema_invalid`, with the offending element id (e.g. `l1`, `winL`).
 
-## 2. The four checks
+## 2. The five checks
 
 All checks run in `checker.py` and return structured findings
 `{error_class, element_id, reason, severity}`.
@@ -137,6 +146,29 @@ floor area.
   (e.g. a swapped symbol).
 * `schedule_duplicate_tag` — the same `tag_id` is defined more than once.
 
+### Check 5 — Schedule/geometry quantity consistency (`schedule_geometry_consistency`)
+
+The schedule table is a *second source of truth inside the model*: a schedule
+entry may declare **how many** elements carry its mark (`count`, and
+optionally `kind`).  The geometry says **which** openings exist.  Comparing
+the two catches an opening that was silently deleted from the geometry
+together with its zone reference — the case slice 1 could not see.
+
+* `schedule_geometry_count_mismatch` — the schedule declares a quantity for a
+  tag (e.g. 1 door, 2 windows) and the geometry carries a different number
+  of openings with that tag.  Fires for a deleted, duplicated or re-tagged
+  opening, and for a schedule quantity that disagrees with the geometry.
+* `zone_schedule_count_mismatch` — a zone-level schedule mark (`kind:
+  "zone"`) declares how many openings the zone holds, but the zone's opening
+  list has a different number of entries.
+* `zone_opening_not_listed` — an opening hosted on a wall that belongs to
+  exactly one zone is not listed in that zone's opening list (the opening
+  survives, the zone reference did not).  Walls shared by several zones have
+  no unambiguous owner, so the check stays quiet on them.
+
+Schedule entries without a `count` take no part in this check, so a schedule
+table that carries no quantities produces no findings.
+
 ## 3. Running it
 
 ```sh
@@ -167,9 +199,9 @@ selection (an Alex decision) — see `REPORT.md`.
 
 ```
 drawing-verifier/
-  checker.py            schema validation, the four checks, SecondReader stub
+  checker.py            schema validation, the five checks, SecondReader stub
   run_headline.py       one-command headline table
-  fixtures/             3 clean fixtures + reference models + injected-error set
+  fixtures/             6 clean fixtures + reference models + injected-error set
   tests/                pytest suite
-  REPORT.md             slice-1 report (label: Conditional)
+  REPORT.md             slice-1 report + slice-2 addendum (label: Conditional)
 ```

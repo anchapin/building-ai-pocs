@@ -1,13 +1,14 @@
-"""Symbolic checker for drawing-to-BEM structured geometry (SLICE 1).
+"""Symbolic checker for drawing-to-BEM structured geometry (SLICE 1 + 2).
 
 Pure Python, standard library only.  It reads a structured-geometry JSON file
-(see the schema in ``drawing-verifier/README.md``), runs four symbolic checks
+(see the schema in ``drawing-verifier/README.md``), runs five symbolic checks
 over it, and emits structured findings:
 
   1. zone closure          (loop closes geometrically, encloses non-zero area)
   2. wall adjacency        (openings have a host wall, lie in its span, no overlap)
   3. window-to-wall ratio  (per wall and per zone, flagged outside a stated band)
   4. schedule cross-check  (dangling schedule tags, duplicate symbols / tags)
+  5. schedule/geometry consistency (schedule quantities vs geometry counts)
 
 The module also defines the ``SecondReader`` protocol and a stub reader that
 records "no VLM configured".  The stub is never used to pass or fail anything:
@@ -48,6 +49,15 @@ DEFAULT_WALL_HEIGHT_M = 3.0
 
 #: Minimum area (m^2) for a zone to count as enclosing a non-zero area.
 MIN_ZONE_AREA_M2 = 1e-6
+
+#: Element kinds a schedule entry may declare when it carries a quantity.
+#:
+#: "opening" -- any opening (door or window) carrying the tag
+#: "door"    -- only doors carrying the tag
+#: "window"  -- only windows carrying the tag
+#: "zone"    -- the zone-level mark: the number of openings listed by a zone
+#:              that references the tag
+SCHEDULE_COUNT_KINDS = ("opening", "door", "window", "zone")
 
 FINDING_ERROR = "error"
 FINDING_WARNING = "warning"
@@ -199,6 +209,19 @@ def validate_model(model: Any) -> List[Finding]:
             bad(sid, f"schedule symbol must be a non-empty string, got {sched.get('symbol')!r}")
         if "value" not in sched:
             bad(sid, "schedule entry needs a 'value'")
+        # Optional quantity fields (slice 2).  A schedule entry may declare
+        # what it counts ("kind") and how many ("count"); entries without
+        # them take no part in the count cross-check.
+        if "kind" in sched and sched["kind"] not in SCHEDULE_COUNT_KINDS:
+            bad(
+                sid,
+                f"schedule kind must be one of {list(SCHEDULE_COUNT_KINDS)}, "
+                f"got {sched['kind']!r}",
+            )
+        if "count" in sched:
+            count = sched["count"]
+            if not isinstance(count, int) or isinstance(count, bool) or count <= 0:
+                bad(sid, f"schedule count must be a positive integer, got {count!r}")
 
     return out
 
@@ -352,7 +375,7 @@ def compute_metrics(model: Dict[str, Any]) -> Dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------
-# The four checks
+# The checks
 # ---------------------------------------------------------------------------
 
 
@@ -549,11 +572,127 @@ def check_schedules(model: Dict[str, Any]) -> List[Finding]:
     return findings
 
 
+def check_schedule_geometry_consistency(model: Dict[str, Any]) -> List[Finding]:
+    """Cross-check the schedule quantities against the geometry (slice 2).
+
+    The schedule table is a second source of truth inside the model: it says
+    *how many* doors / windows carry a given mark.  The geometry says *which*
+    openings exist.  Comparing the two catches an opening that was silently
+    deleted from the geometry (together with its zone reference), because the
+    schedule still lists it.
+
+    Three sub-checks:
+
+    * ``schedule_geometry_count_mismatch`` -- a schedule entry declares a
+      quantity (``count``, and optionally ``kind``) that does not match the
+      number of geometry elements carrying that tag.
+    * ``zone_schedule_count_mismatch`` -- a zone-level schedule mark declares
+      how many openings the zone holds, but the zone's opening list has a
+      different number of entries.
+    * ``zone_opening_not_listed`` -- an opening hosted on a wall that belongs
+      to exactly one zone is not listed in that zone's opening list (the
+      opening is there, but the zone forgot it).
+
+    Schedule entries without a ``count`` take no part in the count
+    cross-check, so a schedule table that carries no quantities is silent.
+    """
+    findings: List[Finding] = []
+    openings = model.get("openings", [])
+    zones = model.get("zones", [])
+
+    # --- (a) schedule quantity vs geometry quantity --------------------
+    for sched in model.get("schedules", []):
+        if "count" not in sched:
+            continue
+        tag = sched["tag_id"]
+        expected = sched["count"]
+        kind = sched.get("kind", "opening")
+        if kind == "zone":
+            tagged = [z for z in zones if z.get("schedule_tag") == tag]
+            if not tagged:
+                findings.append(
+                    Finding(
+                        "schedule_geometry_count_mismatch",
+                        tag,
+                        (
+                            f"schedule tag {tag!r} declares a zone quantity "
+                            f"({expected}) but no zone references it"
+                        ),
+                    )
+                )
+            for zone in tagged:
+                actual = len(zone.get("openings", []))
+                if actual != expected:
+                    findings.append(
+                        Finding(
+                            "zone_schedule_count_mismatch",
+                            zone["id"],
+                            (
+                                f"zone {zone['id']!r} lists {actual} opening(s) but its "
+                                f"schedule mark {tag!r} declares {expected}"
+                            ),
+                        )
+                    )
+            continue
+
+        actual = sum(
+            1
+            for op in openings
+            if op.get("schedule_tag") == tag
+            and (kind == "opening" or op.get("kind") == kind)
+        )
+        if actual != expected:
+            findings.append(
+                Finding(
+                    "schedule_geometry_count_mismatch",
+                    tag,
+                    (
+                        f"schedule tag {tag!r} declares {expected} {kind}(s) but the "
+                        f"geometry carries {actual} -- an opening may have been "
+                        "silently deleted, duplicated or re-tagged"
+                    ),
+                )
+            )
+
+    # --- (b) zone opening lists vs the geometry -------------------------
+    wall_owners: Dict[str, List[str]] = {}
+    for zone in zones:
+        for wid in zone.get("wall_loop", []):
+            wall_owners.setdefault(wid, []).append(zone["id"])
+    listed_in: Dict[str, List[str]] = {}
+    for zone in zones:
+        for oid in zone.get("openings", []):
+            listed_in.setdefault(oid, []).append(zone["id"])
+
+    for op in openings:
+        owners = wall_owners.get(op.get("host_wall"), [])
+        if len(owners) != 1:
+            # A wall shared by several zones has no unambiguous owner, so
+            # the check stays quiet rather than guessing.
+            continue
+        zid = owners[0]
+        if op["id"] not in listed_in:
+            findings.append(
+                Finding(
+                    "zone_opening_not_listed",
+                    op["id"],
+                    (
+                        f"opening {op['id']!r} is hosted on wall {op.get('host_wall')!r}, "
+                        f"which belongs to zone {zid!r}, but it is not listed in that "
+                        "zone's opening list"
+                    ),
+                )
+            )
+
+    return findings
+
+
 CHECKS = (
     ("zone_closure", check_zone_closure),
     ("wall_adjacency", check_wall_adjacency),
     ("window_to_wall_ratio", check_window_to_wall_ratio),
     ("schedule_cross_check", check_schedules),
+    ("schedule_geometry_consistency", check_schedule_geometry_consistency),
 )
 
 

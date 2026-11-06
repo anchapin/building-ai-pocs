@@ -35,10 +35,10 @@
     }
   ],
   "schedules": [
-    {"tag_id": "t_door_01", "symbol": "D01", "value": "Single swing door 900 x 2100"},
-    {"tag_id": "t_window_01", "symbol": "W01", "value": "Fixed window 2000 x 1200"},
-    {"tag_id": "t_window_02", "symbol": "W02", "value": "Fixed window 1200 x 1200"},
-    {"tag_id": "t_zone_living", "symbol": "Z10", "value": "Living room, 0.5 m2/person"},
-    {"tag_id": "t_zone_bedroom", "symbol": "Z11", "value": "Bedroom, 0.8 m2/person"}
+    {"tag_id": "t_door_01", "symbol": "D01", "value": "Single swing door 900 x 2100", "kind": "door", "count": 2},
+    {"tag_id": "t_window_01", "symbol": "W01", "value": "Fixed window 2000 x 1200", "kind": "window", "count": 1},
+    {"tag_id": "t_window_02", "symbol": "W02", "value": "Fixed window 1200 x 1200", "kind": "window", "count": 1},
+    {"tag_id": "t_zone_living", "symbol": "Z10", "value": "Living room, 0.5 m2/person", "kind": "zone", "count": 2},
+    {"tag_id": "t_zone_bedroom", "symbol": "Z11", "value": "Bedroom, 0.8 m2/person", "kind": "zone", "count": 2}
   ]
 }

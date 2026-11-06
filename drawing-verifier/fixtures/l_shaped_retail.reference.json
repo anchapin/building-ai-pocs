@@ -1,0 +1,25 @@
+{
+  "fixture": "l_shaped_retail",
+  "note": "Hand arithmetic (independent of the checker):",
+  "arithmetic": {
+    "z_shop": "12.0 m x 8.0 m rectangle (12.0 * 8.0 = 96.0 m2) minus the 4.0 m x 3.0 m notch (4.0 * 3.0 = 12.0 m2) -> 96.0 - 12.0 = 84.0 m2",
+    "win1_win2_win3": "3 windows x (2.0 m wide x (2.4 - 0.4) m glass) = 3 x (2.0 * 2.0) = 3 x 4.0 = 12.0 m2",
+    "win4": "2.0 m wide x (2.3 - 0.9) m glass = 2.0 * 1.4 = 2.8 m2",
+    "win5": "1.5 m wide x (2.3 - 0.9) m glass = 1.5 * 1.4 = 2.1 m2",
+    "win6": "1.5 m wide x (2.3 - 0.9) m glass = 1.5 * 1.4 = 2.1 m2",
+    "z_shop_wwr": "(12.0 + 2.8 + 2.1 + 2.1) m2 = 19.0 m2 glazing / 84.0 m2 floor = 0.2262",
+    "r1_wall_wwr": "12.0 m2 glazing / (12.0 m length x 3.0 m height = 36.0 m2) = 0.3333",
+    "r2_wall_wwr": "2.1 m2 glazing / (5.0 m length x 3.0 m height = 15.0 m2) = 0.1400",
+    "r5_wall_wwr": "2.1 m2 glazing / (8.0 m length x 3.0 m height = 24.0 m2) = 0.0875",
+    "r6_wall_wwr": "2.8 m2 glazing / (8.0 m length x 3.0 m height = 24.0 m2) = 0.1167"
+  },
+  "zones": {
+    "z_shop": {"floor_area_m2": 84.0, "wwr": 0.2262}
+  },
+  "walls": {
+    "r1": {"wwr": 0.3333},
+    "r2": {"wwr": 0.1400},
+    "r5": {"wwr": 0.0875},
+    "r6": {"wwr": 0.1167}
+  }
+}

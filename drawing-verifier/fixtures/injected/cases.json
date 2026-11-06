@@ -72,6 +72,78 @@
       "base": "studio_loft.json",
       "injected_error": "malformed fixture: opening without a host wall reference",
       "expected_classes": ["schema_invalid"]
+    },
+    {
+      "variant": "small_office_dropped_door.json",
+      "base": "small_office.json",
+      "injected_error": "silently delete the door: d1 removed from the geometry AND from the zone opening list, while the schedule still lists 1 door",
+      "expected_classes": ["schedule_geometry_count_mismatch", "zone_schedule_count_mismatch"]
+    },
+    {
+      "variant": "small_office_dropped_window.json",
+      "base": "small_office.json",
+      "injected_error": "silently delete a window: win2 removed from the geometry AND from the zone opening list, while the schedule still lists 2 windows",
+      "expected_classes": ["schedule_geometry_count_mismatch", "zone_schedule_count_mismatch"]
+    },
+    {
+      "variant": "small_office_schedule_count_wrong.json",
+      "base": "small_office.json",
+      "injected_error": "schedule quantity disagrees with the geometry (t_window_01 declares 3 windows, geometry carries 2)",
+      "expected_classes": ["schedule_geometry_count_mismatch"]
+    },
+    {
+      "variant": "small_office_zone_count_wrong.json",
+      "base": "small_office.json",
+      "injected_error": "zone opening list disagrees with its schedule mark (t_zone_office declares 4 openings, zone lists 3)",
+      "expected_classes": ["zone_schedule_count_mismatch"]
+    },
+    {
+      "variant": "two_unit_house_retagged_window.json",
+      "base": "two_unit_house.json",
+      "injected_error": "schedule symbol count mismatch: winB re-tagged from t_window_02 to t_window_01, so both window marks disagree with the geometry",
+      "expected_classes": ["schedule_geometry_count_mismatch"]
+    },
+    {
+      "variant": "two_unit_house_door_kind_swapped.json",
+      "base": "two_unit_house.json",
+      "injected_error": "door re-classified as a window (dB kind door -> window) while the schedule still counts 2 doors",
+      "expected_classes": ["schedule_geometry_count_mismatch"]
+    },
+    {
+      "variant": "two_unit_house_zone_ref_dropped.json",
+      "base": "two_unit_house.json",
+      "injected_error": "zone reference dropped only: dB stays in the geometry but is removed from the zone opening list",
+      "expected_classes": ["zone_schedule_count_mismatch", "zone_opening_not_listed"]
+    },
+    {
+      "variant": "classroom_block_dropped_window.json",
+      "base": "classroom_block.json",
+      "injected_error": "silently delete the corridor window: winC removed from the geometry AND from the zone opening list, while the schedule still lists 1 window",
+      "expected_classes": ["schedule_geometry_count_mismatch", "zone_schedule_count_mismatch"]
+    },
+    {
+      "variant": "l_shaped_retail_extra_window.json",
+      "base": "l_shaped_retail.json",
+      "injected_error": "an extra window is added to the geometry and to the zone list (schedule quantity no longer matches)",
+      "expected_classes": ["schedule_geometry_count_mismatch", "zone_schedule_count_mismatch"]
+    },
+    {
+      "variant": "l_shaped_retail_unclosed_loop.json",
+      "base": "l_shaped_retail.json",
+      "injected_error": "unclose a zone loop in a larger building (wall r6 shortened by 0.5 m)",
+      "expected_classes": ["zone_not_closed"]
+    },
+    {
+      "variant": "l_shaped_retail_duplicate_symbol.json",
+      "base": "l_shaped_retail.json",
+      "injected_error": "duplicate schedule symbol in a larger building (t_window_03 given symbol W01)",
+      "expected_classes": ["schedule_symbol_duplicate"]
+    },
+    {
+      "variant": "studio_loft_negative_count.json",
+      "base": "studio_loft.json",
+      "injected_error": "malformed fixture: schedule quantity is not a positive integer (count = -1)",
+      "expected_classes": ["schema_invalid"]
     }
   ]
 }

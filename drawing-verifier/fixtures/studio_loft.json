@@ -25,8 +25,8 @@
     }
   ],
   "schedules": [
-    {"tag_id": "t_door_01", "symbol": "D01", "value": "Single swing door 900 x 2100"},
-    {"tag_id": "t_window_01", "symbol": "W01", "value": "Fixed window 3000 x 2000"},
-    {"tag_id": "t_zone_studio", "symbol": "Z20", "value": "Studio, 0.7 m2/person"}
+    {"tag_id": "t_door_01", "symbol": "D01", "value": "Single swing door 900 x 2100", "kind": "door", "count": 1},
+    {"tag_id": "t_window_01", "symbol": "W01", "value": "Fixed window 3000 x 2000", "kind": "window", "count": 1},
+    {"tag_id": "t_zone_studio", "symbol": "Z20", "value": "Studio, 0.7 m2/person", "kind": "zone", "count": 2}
   ]
 }

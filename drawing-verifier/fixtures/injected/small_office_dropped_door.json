@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "project": "small_office",
+  "units": "m",
+  "description": "Single-room office, 6.0 m x 4.0 m clear rectangle, one door and two north windows.",
+  "walls": [
+    {"id": "w1", "start": [0.0, 0.0], "end": [6.0, 0.0], "thickness": 0.2, "height": 3.0},
+    {"id": "w2", "start": [6.0, 0.0], "end": [6.0, 4.0], "thickness": 0.2, "height": 3.0},
+    {"id": "w3", "start": [6.0, 4.0], "end": [0.0, 4.0], "thickness": 0.2, "height": 3.0},
+    {"id": "w4", "start": [0.0, 4.0], "end": [0.0, 0.0], "thickness": 0.2, "height": 3.0}
+  ],
+  "openings": [
+    {"id": "win1", "kind": "window", "host_wall": "w3", "center_offset": 1.5, "width": 1.5, "sill_height": 0.9, "head_height": 2.1, "schedule_tag": "t_window_01"},
+    {"id": "win2", "kind": "window", "host_wall": "w3", "center_offset": 4.5, "width": 1.5, "sill_height": 0.9, "head_height": 2.1, "schedule_tag": "t_window_01"}
+  ],
+  "zones": [
+    {
+      "id": "z_office",
+      "name": "Office",
+      "wall_loop": ["w1", "w2", "w3", "w4"],
+      "openings": ["win1", "win2"],
+      "schedule_tag": "t_zone_office"
+    }
+  ],
+  "schedules": [
+    {"tag_id": "t_door_01", "symbol": "D01", "value": "Single swing door 900 x 2100", "kind": "door", "count": 1},
+    {"tag_id": "t_window_01", "symbol": "W01", "value": "Fixed window 1500 x 1200", "kind": "window", "count": 2},
+    {"tag_id": "t_zone_office", "symbol": "Z01", "value": "Office, 0.1 m2/person", "kind": "zone", "count": 3}
+  ]
+}

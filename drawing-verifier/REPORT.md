@@ -1,4 +1,4 @@
-# REPORT — drawing-verifier, SLICE 1 (symbolic checker)
+# REPORT — drawing-verifier, SLICE 1 + SLICE 2 (symbolic checker)
 
 **Conditional** — the symbolic-checker half of the POC is demonstrated
 and measured on this slice's hand-built fixtures; the VLM second-reader half
@@ -8,6 +8,10 @@ performed in this slice.
 * POC: VLM + neuro-symbolic verifier hardening drawing-to-BEM (Matchline).
 * Slice 1 scope: the symbolic checker, its fixtures, its injected-error test
   set, and the geometry-error measurement.
+* Slice 2 scope (this addendum, section 7 onwards): checker hardening only —
+  a schedule/geometry count-consistency cross-check, a larger injected-error
+  set (24 cases) and more clean fixtures (6).  Slice 2 did **not** wire the
+  VLM and did **not** run any Matchline extraction.
 * Not in this slice: any VLM wiring, any Matchline extraction run, any
   integration with Fluxion or Matchline, any other POC in this repo.
 
@@ -19,18 +23,20 @@ performed in this slice.
   schema validation, four symbolic checks (zone closure, wall adjacency,
   window-to-wall ratio, schedule-symbol cross-check), a `SecondReader`
   protocol plus a `NoVLMSecondReader` stub, and a CLI that exits non-zero
-  when findings exist.
+  when findings exist. *(Slice 2 added a fifth check, the
+  schedule/geometry count-consistency cross-check — see section 7.)*
 * `drawing-verifier/fixtures/` — three hand-built clean buildings
   (`small_office`, `two_unit_house`, `studio_loft`), each with a
   hand-built reference model (`*.reference.json`) whose floor areas and WWRs
   were computed by hand arithmetic, plus a 12-case injected-error set
   (`fixtures/injected/`, listed in `fixtures/injected/cases.json`).
+  *(Slice 2: six clean fixtures and 24 injected cases.)*
 * `drawing-verifier/run_headline.py` — one command that reproduces the
   headline table (catch rate, false-flag rate, geometry error).
 * `drawing-verifier/tests/` — 41 pytest tests covering the schema, the four
   checks, the injected-error set end-to-end, the false-flag measurement and
-  the geometry arithmetic.
-* `drawing-verifier/README.md` — the input schema, the four checks, the
+  the geometry arithmetic. *(Slice 2: 58 tests.)*
+* `drawing-verifier/README.md` — the input schema, the checks, the
   stated tolerance (0.05 m) and the stated WWR band (0.05–0.55).
 
 Reproduce everything:
@@ -51,6 +57,10 @@ python3 drawing-verifier/run_headline.py
 **These numbers hold for this slice's fixtures only.** They say nothing about
 Matchline extraction: this slice never ran an extraction, so no claim is made
 about catching errors in a real drawing-to-BEM pipeline.
+
+*(Slice 2 re-measured this table on a larger fixture set — 24/24 caught,
+0/6 false flags, 0.10 % worst geometry error; see the slice-2 addendum in
+section 8.)*
 
 ### 2.1 Per-error-class catch table
 
@@ -119,7 +129,9 @@ Known limits, stated honestly:
   checker sees reference integrity, not drawing intent; if the extraction
   drops a door and the zone list drops it too, nothing flags it. Detecting
   that needs a second source of truth (the drawing) — i.e. the deferred VLM
-  reader, or a drawing-side cross-check.
+  reader, or a drawing-side cross-check. *(Slice 2 closed the part of this
+  gap that can be closed inside the model — see the slice-2 addendum,
+  section 9, for exactly what is now caught and what is still not.)*
 * **A "scaled" wall is caught as a closure failure**, not as a scale error.
   The checker reports the geometric symptom (the loop does not close), not
   the cause (a 2x scale). A closed loop that was uniformly scaled would not
@@ -182,3 +194,252 @@ $ python3 drawing-verifier/run_headline.py
 ...
 HEADLINE  catch rate 100.0% (12/12)   false-flag rate 0.0% (0/3)   worst geometry error 0.10%
 ```
+
+---
+
+# SLICE 2 ADDENDUM — checker hardening
+
+Base commit of this slice: `5bc2090e24e97b255e3a1b3c29c5aee21b13f6c9`
+(`origin/main` as cut for this worktree).  Everything below was done inside
+`drawing-verifier/` only; nothing else in the repo was touched.
+
+## 7. What slice 2 added
+
+### 7.1 A schedule/geometry count-consistency cross-check (new check 5)
+
+Slice 1 stated the gap honestly: *"a door deleted together with its zone
+reference is invisible — the checker sees reference integrity, not drawing
+intent"*.  Slice 2 closes that gap **inside the model**, using the schedule
+table as a second source of truth: a schedule entry may now declare *how
+many* elements carry its mark.
+
+Schema extension (optional, backwards compatible):
+
+```json
+{"tag_id": "t_door_01", "symbol": "D01", "value": "Single swing door 900 x 2100",
+ "kind": "door", "count": 1}
+```
+
+* `kind` — one of `opening` (default), `door`, `window`, `zone`.
+* `count` — a positive integer: the quantity the schedule declares.
+* A schedule entry **without** `count` takes no part in the new check, so a
+  schedule table carrying no quantities stays silent (no false flags).
+* The validator rejects a non-positive or non-integer `count` and an unknown
+  `kind` as `schema_invalid`.
+
+New check function `checker.check_schedule_geometry_consistency`, registered
+in `checker.CHECKS` as `schedule_geometry_consistency`.  It emits three
+error classes:
+
+| Error class | What it compares | Fires when |
+| --- | --- | --- |
+| `schedule_geometry_count_mismatch` | schedule quantity vs the number of geometry openings carrying that tag (filtered by `kind`) | an opening was silently deleted, duplicated, re-tagged or re-classified, or the schedule quantity is wrong |
+| `zone_schedule_count_mismatch` | a zone-level schedule mark (`kind: "zone"`) vs the length of that zone's opening list | the zone's opening list no longer matches the quantity the schedule declares for the zone |
+| `zone_opening_not_listed` | the geometry openings vs the zone opening lists | an opening hosted on a wall that belongs to exactly one zone is not listed in that zone (only the zone reference was dropped) |
+
+Scope notes (how false positives were avoided):
+
+* the global count check only looks at schedule entries that carry a
+  `count`, so it never guesses;
+* `zone_opening_not_listed` stays quiet when the host wall is shared by
+  several zones, because such a wall has no unambiguous owner (asserted by
+  `tests/test_schedule_consistency.py::test_shared_wall_openings_are_not_reported_as_unlisted`);
+* the check is skipped entirely when the model is schema-invalid (the
+  checker reports `schema_invalid` and does not run semantic checks — this
+  behaviour was not changed).
+
+### 7.2 The silently-deleted-opening case, before and after the check
+
+`fixtures/injected/small_office_dropped_door.json` deletes the door `d1`
+from the geometry **and** from the zone's opening list, while the schedule
+still lists one door.  Proof that the new check is what catches it:
+
+```
+$ python3 - <<'EOF'
+import json, sys
+sys.path.insert(0, '.')
+import checker
+model = json.load(open('fixtures/injected/small_office_dropped_door.json'))
+checker.CHECKS = tuple(c for c in checker.CHECKS if c[0] != 'schedule_geometry_consistency')
+r = checker.check_model(model)
+print("WITHOUT the new check: n_findings =", r["n_findings"], "classes =", r["error_classes"])
+checker.CHECKS = tuple(c for c in checker.CHECKS)
+import importlib; importlib.reload(checker)
+r2 = checker.check_model(model)
+print("WITH    the new check: n_findings =", r2["n_findings"], "classes =", r2["error_classes"])
+EOF
+WITHOUT the new check: n_findings = 0 classes = []
+WITH    the new check: n_findings = 2 classes = ['schedule_geometry_count_mismatch', 'zone_schedule_count_mismatch']
+```
+
+The same discriminating test exists as a pytest case
+(`test_dropped_door_with_dropped_zone_ref_is_silent_without_the_check` and
+`test_dropped_window_with_dropped_zone_ref_is_flagged`), so the gap cannot
+silently reopen.
+
+### 7.3 Fixture and error-set growth
+
+| | before (slice 1) | after (slice 2) |
+| --- | --- | --- |
+| clean fixtures (with hand-built reference models) | 3 | **6** |
+| injected-error cases | 12 | **24** |
+| checker checks | 4 | **5** |
+| pytest tests | 41 | **58** |
+
+New clean fixtures (all with a `*.reference.json` holding hand-computed
+floor areas and WWRs, and the arithmetic written out in the file):
+
+| Fixture | Geometry | Zones |
+| --- | --- | --- |
+| `classroom_block.json` | 8.0 x 6.0 m classroom + 8.0 x 2.0 m corridor sharing a wall | `z_classroom` (48.0 m2), `z_corridor` (16.0 m2) |
+| `l_shaped_retail.json` | 12.0 x 8.0 m minus a 4.0 x 3.0 m notch, glazed shopfront | `z_shop` (84.0 m2) |
+| `three_room_apartment.json` | 12.0 x 9.0 m split into living / kitchen / bathroom | `z_living` (63.0 m2), `z_kitchen` (20.0 m2), `z_bath` (25.0 m2) |
+
+New injected cases (12): `small_office_dropped_door`,
+`small_office_dropped_window`, `small_office_schedule_count_wrong`,
+`small_office_zone_count_wrong`, `two_unit_house_retagged_window`,
+`two_unit_house_door_kind_swapped`, `two_unit_house_zone_ref_dropped`,
+`classroom_block_dropped_window`, `l_shaped_retail_extra_window`,
+`l_shaped_retail_unclosed_loop`, `l_shaped_retail_duplicate_symbol`,
+`studio_loft_negative_count`.
+
+The three original clean fixtures were **not** deleted; they were given the
+optional schedule quantities (`kind` / `count`) so that the new check is
+exercised on them as well.  Their geometry and their hand-built reference
+models are unchanged.
+
+## 8. Re-measured headline numbers (slice 2)
+
+`python3 drawing-verifier/run_headline.py`:
+
+| Metric | Slice 1 | **Slice 2** | POC Go bar | Holds? |
+| --- | --- | --- | --- | --- |
+| Injected errors caught | 12 / 12 = 100 % | **24 / 24 = 100 %** | >= 80 % | yes |
+| False-flag rate on clean fixtures | 0 / 3 = 0.0 % | **0 / 6 = 0.0 %** | < 10 % | yes |
+| Worst geometry error vs hand-built model | 0.10 % | **0.10 %** | < 5 % | yes |
+
+Per-error-class catch table (slice 2):
+
+| Error class | Injected | Caught | Catch rate |
+| --- | --- | --- | --- |
+| `opening_host_missing` | 1 | 1 | 100 % |
+| `opening_outside_wall` | 1 | 1 | 100 % |
+| `opening_overlap` | 1 | 1 | 100 % |
+| `schedule_duplicate_tag` | 1 | 1 | 100 % |
+| `schedule_geometry_count_mismatch` | 7 | 7 | 100 % |
+| `schedule_symbol_duplicate` | 2 | 2 | 100 % |
+| `schedule_tag_missing` | 1 | 1 | 100 % |
+| `schema_invalid` | 3 | 3 | 100 % |
+| `wwr_out_of_band` | 1 | 1 | 100 % |
+| `zone_not_closed` | 3 | 3 | 100 % |
+| `zone_opening_missing` | 1 | 1 | 100 % |
+| `zone_opening_not_listed` | 1 | 1 | 100 % |
+| `zone_schedule_count_mismatch` | 6 | 6 | 100 % |
+| **total** | **24** | **24** | **100 %** |
+
+The false-flag measurement now covers **all six** clean fixtures (0 findings
+on each).  The geometry-error measurement now covers 6 fixtures / 13 zones /
+8 walls; the worst deviation is still 0.10 % (the `studio_loft` rounding
+artefact 1/3 vs 0.3333), every other deviation is <= 0.05 %.
+
+## 9. Is the "silently deleted opening" gap closed?
+
+**Partly — and the boundary is now explicit.**
+
+Closed by slice 2 (all of these are in the injected set and are caught):
+
+* an opening deleted from the geometry **and** from its zone reference,
+  while the schedule still lists it (`small_office_dropped_door`,
+  `small_office_dropped_window`, `classroom_block_dropped_window`);
+* an opening re-tagged to another schedule mark, so the mark counts no
+  longer agree with the geometry (`two_unit_house_retagged_window`);
+* an opening re-classified (door -> window) so the "door" quantity no longer
+  agrees with the geometry (`two_unit_house_door_kind_swapped`);
+* an extra opening added to the geometry (`l_shaped_retail_extra_window`);
+* only the zone reference dropped, the opening itself surviving in the
+  geometry (`two_unit_house_zone_ref_dropped` -> `zone_opening_not_listed`
+  and `zone_schedule_count_mismatch`).
+
+**Still NOT covered (stated plainly):**
+
+* **An opening deleted from the geometry, from the zone references AND from
+  the schedule at the same time is still invisible.**  Every count in the
+  model then agrees with every other count; there is nothing left to
+  disagree with.  This case is *not* in the injected set because the checker
+  cannot catch it — only a drawing-side reader (the deferred VLM second
+  reader) could.
+* The same is true for an opening that was **never in the schedule** (a
+  schedule table that carries no quantities at all): the count check has
+  nothing to compare against and stays silent by design.
+* A zone whose schedule mark has no `count` is not judged at all, so a zone
+  opening list can drift silently in that case.
+* An opening hosted on a wall **shared by several zones** is not checked for
+  zone membership (no unambiguous owner), so a wrong zone assignment for
+  such an opening is not reported.
+* The count check compares *quantities*, not *positions*: a door that was
+  deleted and a spurious one added, keeping the count equal, is not
+  detected by check 5 (it may still be caught by the geometry checks, e.g.
+  if the spurious door is misplaced).
+* The check compares the model against itself (schedule vs geometry).  It
+  does not compare either of them against the drawing.
+
+## 10. What slice 2 still does not do
+
+* **No VLM selection or wiring.**  `checker.SecondReader` remains a
+  protocol and `checker.NoVLMSecondReader` remains a stub that always
+  returns `agree=None`.  No model was selected, downloaded, called or
+  paid for; there is no agreement number to report, and none is invented.
+  This is still deferred pending an Alex decision.
+* **No Matchline extraction run, and no attempt to reach one.**  The
+  isolation rules for this slice forbid fetching, installing or running
+  Matchline code; the extraction wiring was deferred by the supervisor and
+  was deliberately **not** worked around.  The checker still consumes
+  structured-geometry JSON fixtures only.  Consequently the headline numbers
+  above describe the checker on fixtures, **not** the checker on Matchline
+  output, and this slice makes no claim whatsoever about real Matchline
+  extraction.
+* **No BEM / energy simulation**; nothing here claims an energy impact,
+  an energy-saving figure or ASHRAE 140 compliance.
+* Nothing outside `drawing-verifier/` was touched; no Fluxion/Matchline
+  integration; no other POC folder was modified; no workflow files; no
+  commits, pushes or merges.
+
+## 11. Label reassessment
+
+The label stays **Conditional**.
+
+The slice-2 evidence supports the *symbolic* half a little more strongly
+(one more check, 24/24 injected errors caught, 0/6 false flags, three more
+clean fixtures), but it does not change the two facts that keep the POC
+conditional:
+
+1. the VLM half of the POC is still unmeasured (no reader was selected or
+   run), and
+2. the checker has still never seen a real extraction, so every number here
+   is a self-consistency measurement on hand-built fixtures.
+
+Nothing in slice 2 justifies moving to *Go* (no real-drawing evidence), and
+nothing justifies moving to *No-go* (the symbolic checker demonstrably
+catches every error family it is aimed at and stays quiet on clean input).
+
+## 12. Verification commands run (slice 2)
+
+```sh
+$ python3 -m pytest drawing-verifier/tests/ -q
+58 passed in 3.08s
+
+$ python3 drawing-verifier/run_headline.py
+...
+HEADLINE  catch rate 100.0% (24/24)   false-flag rate 0.0% (0/6)   worst geometry error 0.10%
+
+$ python3 drawing-verifier/checker.py drawing-verifier/fixtures/small_office.json
+model: drawing-verifier/fixtures/small_office.json
+findings: 0
+no findings
+$ echo $?
+0
+```
+
+(The CLI exits 1 on a model with findings, e.g.
+`python3 drawing-verifier/checker.py drawing-verifier/fixtures/injected/small_office_dropped_door.json`
+prints the two count-mismatch findings and exits 1.)
