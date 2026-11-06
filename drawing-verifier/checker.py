@@ -1,7 +1,7 @@
-"""Symbolic checker for drawing-to-BEM structured geometry (SLICE 1 + 2).
+"""Symbolic checker for drawing-to-BEM structured geometry (SLICE 1 + 2 + 3).
 
 Pure Python, standard library only.  It reads a structured-geometry JSON file
-(see the schema in ``drawing-verifier/README.md``), runs five symbolic checks
+(see the schema in ``drawing-verifier/README.md``), runs six symbolic checks
 over it, and emits structured findings:
 
   1. zone closure          (loop closes geometrically, encloses non-zero area)
@@ -9,6 +9,9 @@ over it, and emits structured findings:
   3. window-to-wall ratio  (per wall and per zone, flagged outside a stated band)
   4. schedule cross-check  (dangling schedule tags, duplicate symbols / tags)
   5. schedule/geometry consistency (schedule quantities vs geometry counts)
+  6. shared-wall zone membership (an opening hosted on a wall shared by
+     several zones must belong to at least one adjacent zone, and to no
+     non-adjacent zone)
 
 The module also defines the ``SecondReader`` protocol and a stub reader that
 records "no VLM configured".  The stub is never used to pass or fail anything:
@@ -572,6 +575,32 @@ def check_schedules(model: Dict[str, Any]) -> List[Finding]:
     return findings
 
 
+def _wall_ownership_maps(
+    model: Dict[str, Any],
+) -> Tuple[Dict[str, List[str]], Dict[str, List[str]]]:
+    """Map walls to the zones that own them, and openings to the zones listing them.
+
+    ``wall_owners`` maps a wall id to the ids of the zones whose ``wall_loop``
+    contains that wall (a wall shared by several zones therefore has several
+    owners).  ``listed_in`` maps an opening id to the ids of the zones whose
+    ``openings`` list contains it.
+
+    Shared by check 5 (schedule/geometry consistency) and check 6 (shared-wall
+    zone membership) so both look at the same membership data.
+    """
+    wall_owners: Dict[str, List[str]] = {}
+    for zone in model.get("zones", []):
+        for wid in zone.get("wall_loop", []):
+            wall_owners.setdefault(wid, []).append(zone["id"])
+
+    listed_in: Dict[str, List[str]] = {}
+    for zone in model.get("zones", []):
+        for oid in zone.get("openings", []):
+            listed_in.setdefault(oid, []).append(zone["id"])
+
+    return wall_owners, listed_in
+
+
 def check_schedule_geometry_consistency(model: Dict[str, Any]) -> List[Finding]:
     """Cross-check the schedule quantities against the geometry (slice 2).
 
@@ -655,14 +684,7 @@ def check_schedule_geometry_consistency(model: Dict[str, Any]) -> List[Finding]:
             )
 
     # --- (b) zone opening lists vs the geometry -------------------------
-    wall_owners: Dict[str, List[str]] = {}
-    for zone in zones:
-        for wid in zone.get("wall_loop", []):
-            wall_owners.setdefault(wid, []).append(zone["id"])
-    listed_in: Dict[str, List[str]] = {}
-    for zone in zones:
-        for oid in zone.get("openings", []):
-            listed_in.setdefault(oid, []).append(zone["id"])
+    wall_owners, listed_in = _wall_ownership_maps(model)
 
     for op in openings:
         owners = wall_owners.get(op.get("host_wall"), [])
@@ -687,12 +709,89 @@ def check_schedule_geometry_consistency(model: Dict[str, Any]) -> List[Finding]:
     return findings
 
 
+def check_shared_wall_zone_membership(model: Dict[str, Any]) -> List[Finding]:
+    """Check the zone membership of every opening (slice 3).
+
+    Slice 2 stayed quiet on openings hosted on a wall shared by several zones
+    ("no unambiguous owner"), which left a real gap: a shared-wall opening
+    could be assigned to the wrong zone, or to no zone at all, without any
+    finding.  This check defines the membership rule instead of guessing.
+
+    The rule (documented in ``README.md``):
+
+    * an opening hosted on a wall shared by **two or more** zones must be
+      listed in the ``openings`` of **at least one** of those adjacent zones;
+      if it is listed by none of them, it belongs to no zone and is reported
+      as ``shared_wall_opening_unlisted``;
+    * an opening must **not** be listed by a zone that does not border its
+      host wall; such a listing is reported as
+      ``shared_wall_opening_wrong_zone`` (one finding per offending zone).
+      This holds for single-owner walls too, where check 5's
+      ``zone_opening_not_listed`` stays quiet because the owner does list
+      the opening.
+
+    Listing a shared-wall opening in **both** adjacent zones is tolerated: a
+    shared wall is a legitimate modelling choice for a door between two
+    spaces, and inventing a false flag for it would be worse than saying
+    nothing.  The convention is "at least one adjacent zone, no non-adjacent
+    zone".
+    """
+    findings: List[Finding] = []
+    openings = model.get("openings", [])
+    wall_ids = {w["id"] for w in model.get("walls", [])}
+    wall_owners, listed_in = _wall_ownership_maps(model)
+
+    for op in openings:
+        oid = op["id"]
+        host = op.get("host_wall")
+        if host not in wall_ids:
+            # The host wall does not exist: check 2 reports that, and the
+            # membership of the opening is undefined here.
+            continue
+        owners = wall_owners.get(host, [])
+        if not owners:
+            # No zone borders the host wall -- nothing to belong to.
+            continue
+        listed_by = listed_in.get(oid, [])
+
+        if len(owners) >= 2 and not any(zid in owners for zid in listed_by):
+            findings.append(
+                Finding(
+                    "shared_wall_opening_unlisted",
+                    oid,
+                    (
+                        f"opening {oid!r} is hosted on wall {host!r}, which is shared "
+                        f"by zones {owners}, but it is listed in none of their "
+                        "opening lists -- it belongs to no zone"
+                    ),
+                )
+            )
+
+        for zid in listed_by:
+            if zid in owners:
+                continue
+            findings.append(
+                Finding(
+                    "shared_wall_opening_wrong_zone",
+                    oid,
+                    (
+                        f"opening {oid!r} is hosted on wall {host!r}, which borders "
+                        f"zone(s) {owners}, but it is listed in the opening list of "
+                        f"zone {zid!r}, which does not border that wall"
+                    ),
+                )
+            )
+
+    return findings
+
+
 CHECKS = (
     ("zone_closure", check_zone_closure),
     ("wall_adjacency", check_wall_adjacency),
     ("window_to_wall_ratio", check_window_to_wall_ratio),
     ("schedule_cross_check", check_schedules),
     ("schedule_geometry_consistency", check_schedule_geometry_consistency),
+    ("shared_wall_zone_membership", check_shared_wall_zone_membership),
 )
 
 

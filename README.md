@@ -18,7 +18,7 @@ A clean negative result is a successful outcome — it saves a proposal cycle. N
 | `ss-dfa-surrogate-poc/` | SS-DFA / single-map (optical-AI framework) as a cheap-to-train thermal surrogate. Baseline for the photonic question. | In progress |
 | `retrofit-copilot/` | Matchline drawing → calibrated baseline → neuro-symbolic agent ranking energy-conservation measures. | Not started |
 | `neural-operator-surrogate/` | Differentiable neural-operator / PINN surrogate for a slow BEM component, standalone. | Not started |
-| `drawing-verifier/` | VLM + neuro-symbolic verifier hardening drawing-to-BEM (Matchline). | In progress (slice 1: symbolic checker) |
+| `drawing-verifier/` | VLM + neuro-symbolic verifier hardening drawing-to-BEM (Matchline). | In progress (slice 3: shared-wall zone membership; label Conditional) |
 | `world-model-hvac-control/` | Diffusion / world-model HVAC control for grid-interactive buildings. | Not started |
 | `federated-calibration/` | Federated, physics-informed calibration across simulated buildings. | Not started |
 | `local-first-building-agent/` | Small on-device models as a building agent, benchmarked against a frontier model. | Not started |

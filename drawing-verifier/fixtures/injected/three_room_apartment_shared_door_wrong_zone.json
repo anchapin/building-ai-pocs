@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "project": "three_room_apartment",
+  "units": "m",
+  "description": "Injected fault: the internal door on the shared wall p7 (living room / kitchen) is additionally listed in the bathroom, which does not border p7 -- a wrong zone assignment.",
+  "walls": [
+    {"id": "p1", "start": [0.0, 0.0], "end": [7.0, 0.0], "thickness": 0.2, "height": 3.0},
+    {"id": "p2", "start": [7.0, 0.0], "end": [12.0, 0.0], "thickness": 0.2, "height": 3.0},
+    {"id": "p3", "start": [12.0, 0.0], "end": [12.0, 4.0], "thickness": 0.2, "height": 3.0},
+    {"id": "p4", "start": [12.0, 4.0], "end": [12.0, 9.0], "thickness": 0.2, "height": 3.0},
+    {"id": "p5", "start": [12.0, 9.0], "end": [7.0, 9.0], "thickness": 0.2, "height": 3.0},
+    {"id": "p6", "start": [7.0, 9.0], "end": [7.0, 4.0], "thickness": 0.2, "height": 3.0},
+    {"id": "p7", "start": [7.0, 4.0], "end": [7.0, 0.0], "thickness": 0.2, "height": 3.0},
+    {"id": "p8", "start": [7.0, 9.0], "end": [0.0, 9.0], "thickness": 0.2, "height": 3.0},
+    {"id": "p9", "start": [0.0, 9.0], "end": [0.0, 0.0], "thickness": 0.2, "height": 3.0},
+    {"id": "p10", "start": [12.0, 4.0], "end": [7.0, 4.0], "thickness": 0.2, "height": 3.0}
+  ],
+  "openings": [
+    {"id": "d1", "kind": "door", "host_wall": "p1", "center_offset": 1.0, "width": 0.9, "sill_height": 0.0, "head_height": 2.1, "schedule_tag": "t_door_01"},
+    {"id": "d_internal", "kind": "door", "host_wall": "p7", "center_offset": 2.0, "width": 0.9, "sill_height": 0.0, "head_height": 2.1, "schedule_tag": "t_door_01"},
+    {"id": "w1", "kind": "window", "host_wall": "p1", "center_offset": 4.0, "width": 2.0, "sill_height": 1.0, "head_height": 2.3, "schedule_tag": "t_window_01"},
+    {"id": "w2", "kind": "window", "host_wall": "p9", "center_offset": 4.5, "width": 2.5, "sill_height": 1.0, "head_height": 2.3, "schedule_tag": "t_window_01"},
+    {"id": "w3", "kind": "window", "host_wall": "p8", "center_offset": 3.0, "width": 1.5, "sill_height": 1.0, "head_height": 2.3, "schedule_tag": "t_window_01"},
+    {"id": "d2", "kind": "door", "host_wall": "p2", "center_offset": 0.75, "width": 0.9, "sill_height": 0.0, "head_height": 2.1, "schedule_tag": "t_door_01"},
+    {"id": "w4", "kind": "window", "host_wall": "p3", "center_offset": 2.0, "width": 1.2, "sill_height": 1.0, "head_height": 2.3, "schedule_tag": "t_window_02"},
+    {"id": "d3", "kind": "door", "host_wall": "p5", "center_offset": 4.0, "width": 0.8, "sill_height": 0.0, "head_height": 2.1, "schedule_tag": "t_door_01"},
+    {"id": "w5", "kind": "window", "host_wall": "p4", "center_offset": 2.5, "width": 1.5, "sill_height": 1.0, "head_height": 2.2, "schedule_tag": "t_window_03"}
+  ],
+  "zones": [
+    {
+      "id": "z_living",
+      "name": "Living room",
+      "wall_loop": ["p1", "p7", "p6", "p8", "p9"],
+      "openings": ["d1", "w1", "w2", "w3", "d_internal"],
+      "schedule_tag": "t_zone_living"
+    },
+    {
+      "id": "z_kitchen",
+      "name": "Kitchen",
+      "wall_loop": ["p2", "p3", "p10", "p7"],
+      "openings": ["d2", "w4"],
+      "schedule_tag": "t_zone_kitchen"
+    },
+    {
+      "id": "z_bath",
+      "name": "Bathroom",
+      "wall_loop": ["p4", "p5", "p6", "p10"],
+      "openings": ["d3", "w5", "d_internal"],
+      "schedule_tag": "t_zone_bath"
+    }
+  ],
+  "schedules": [
+    {"tag_id": "t_door_01", "symbol": "D01", "value": "Single swing door 900 x 2100", "kind": "door", "count": 4},
+    {"tag_id": "t_window_01", "symbol": "W01", "value": "Fixed window 2000 x 1300", "kind": "window", "count": 3},
+    {"tag_id": "t_window_02", "symbol": "W02", "value": "Fixed window 1200 x 1300", "kind": "window", "count": 1},
+    {"tag_id": "t_window_03", "symbol": "W03", "value": "Fixed window 1500 x 1200", "kind": "window", "count": 1},
+    {"tag_id": "t_zone_living", "symbol": "Z50", "value": "Living room, 0.5 m2/person", "kind": "zone", "count": 5},
+    {"tag_id": "t_zone_kitchen", "symbol": "Z51", "value": "Kitchen, 0.8 m2/person", "kind": "zone", "count": 2},
+    {"tag_id": "t_zone_bath", "symbol": "Z52", "value": "Bathroom, 1.5 m2/person", "kind": "zone", "count": 3}
+  ]
+}

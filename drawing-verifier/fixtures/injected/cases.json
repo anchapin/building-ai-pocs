@@ -144,6 +144,24 @@
       "base": "studio_loft.json",
       "injected_error": "malformed fixture: schedule quantity is not a positive integer (count = -1)",
       "expected_classes": ["schema_invalid"]
+    },
+    {
+      "variant": "classroom_block_shared_door_unlisted.json",
+      "base": "classroom_block.json",
+      "injected_error": "the internal door on the shared wall c3 (classroom/corridor) is listed in no zone at all -- every zone reference dropped and the zone quantity mark regenerated to match, so the model is self-consistent",
+      "expected_classes": ["shared_wall_opening_unlisted"]
+    },
+    {
+      "variant": "three_room_apartment_shared_door_wrong_zone.json",
+      "base": "three_room_apartment.json",
+      "injected_error": "the internal door on the shared wall p7 (living/kitchen) is additionally listed in the bathroom, which does not border p7 -- a wrong zone assignment",
+      "expected_classes": ["shared_wall_opening_wrong_zone"]
+    },
+    {
+      "variant": "two_unit_house_door_wrong_zone.json",
+      "base": "two_unit_house.json",
+      "injected_error": "the unit A entrance door dA (single-owner wall ha1) is additionally listed in unit B, which does not border ha1 -- a wrong zone assignment on a single-owner wall",
+      "expected_classes": ["shared_wall_opening_wrong_zone"]
     }
   ]
 }

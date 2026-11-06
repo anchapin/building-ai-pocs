@@ -47,7 +47,12 @@ Every clean fixture also declares the **schedule quantities** (`kind` /
 `cases.json` lists every variant, the clean fixture it derives from, the
 injected error and the error class the checker must report.  Slice 1 shipped
 12 cases; slice 2 adds 12 more (the schedule/geometry consistency family
-plus extra variants of the existing families), for 24 in total.
+plus extra variants of the existing families), for 24 in total. Slice 3 adds
+3 more (the shared-wall zone-membership family), for 27 in total. Two clean
+fixtures now carry a shared-wall internal door: `classroom_block.json`
+(`d_internal` on shared wall `c3`, listed in `z_classroom`) and
+`three_room_apartment.json` (`d_internal` on shared wall `p7`, listed in
+`z_living`).
 
 | Variant | Injected error | Expected class |
 | --- | --- | --- |
@@ -75,3 +80,6 @@ plus extra variants of the existing families), for 24 in total.
 | `l_shaped_retail_unclosed_loop.json` | zone loop unclosed in a larger building | `zone_not_closed` |
 | `l_shaped_retail_duplicate_symbol.json` | duplicate schedule symbol in a larger building | `schedule_symbol_duplicate` |
 | `studio_loft_negative_count.json` | schedule quantity not a positive integer (malformed) | `schema_invalid` |
+| `classroom_block_shared_door_unlisted.json` | shared-wall door listed in no zone | `shared_wall_opening_unlisted` |
+| `three_room_apartment_shared_door_wrong_zone.json` | shared-wall door also listed in a non-adjacent zone | `shared_wall_opening_wrong_zone` |
+| `two_unit_house_door_wrong_zone.json` | single-owner door also listed in a non-adjacent zone | `shared_wall_opening_wrong_zone` |
