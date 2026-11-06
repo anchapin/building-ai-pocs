@@ -19,7 +19,7 @@ A clean negative result is a successful outcome — it saves a proposal cycle. N
 | `retrofit-copilot/` | Matchline drawing → calibrated baseline → neuro-symbolic agent ranking energy-conservation measures. | **Go** — spun out to [anchapin/retrofit-copilot](https://github.com/anchapin/retrofit-copilot) (2026-11-06) |
 | `neural-operator-surrogate/` | Differentiable neural-operator / PINN surrogate for a slow BEM component, standalone. | Not started |
 | `drawing-verifier/` | VLM + neuro-symbolic verifier hardening drawing-to-BEM (Matchline). | In progress (slice 3: shared-wall zone membership; label Conditional) |
-| `world-model-hvac-control/` | Diffusion / world-model HVAC control for grid-interactive buildings. | Not started |
+| `world-model-hvac-control/` | Diffusion / world-model HVAC control for grid-interactive buildings. | No-go (verdict 2026-11-06: world-model + MPC fails the ≥5%-at-equal-comfort gate on both unseen sets in two independent runs; LSTM hidden state unobservable from the 10-float observation) |
 | `federated-calibration/` | Federated, physics-informed calibration across simulated buildings. | No-go (verdict 2026-11-06: FedAvg never beats one-shot parameter averaging by ≥15%; IID control fires the No-go trigger) |
 | `local-first-building-agent/` | Small on-device models as a building agent, benchmarked against a frontier model. | Not started |
 
