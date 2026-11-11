@@ -45,9 +45,9 @@ Lint (advisory, blocks nothing): `python3 ~/workspace/plan-coder-repo/bin/claimc
 
 | Folder | Idea | Status |
 | --- | --- | --- |
-| `ss-dfa-surrogate-poc/` | SS-DFA / single-map (optical-AI framework) as a cheap-to-train thermal surrogate. Baseline for the photonic question. | In progress |
+| `ss-dfa-surrogate-poc/` | SS-DFA / single-map (optical-AI framework) as a cheap-to-train thermal surrogate. Baseline for the photonic question. | No-go — SS-DFA is 2.2× worse than the LSTM on full-year rollout RMSE but passes the 7-bit noise gate |
 | `retrofit-copilot/` | Matchline drawing → calibrated baseline → neuro-symbolic agent ranking energy-conservation measures. | **Go** — spun out to [anchapin/retrofit-copilot](https://github.com/anchapin/retrofit-copilot) (2026-11-06) |
-| `neural-operator-surrogate/` | Differentiable neural-operator / PINN surrogate for a slow BEM component, standalone. | Not started |
+| `neural-operator-surrogate/` | Differentiable neural-operator / PINN surrogate for a slow BEM component, standalone. | No-go — POC closed (slice 3 closes the POC): heat-balance residual <5% gate NOT MET by any honest arm (best 7.8% in-distribution, 51–73% on unseen weather/both); speedup ≥50× gate NOT MET (standing ~1×) |
 | `drawing-verifier/` | VLM + neuro-symbolic verifier hardening drawing-to-BEM (Matchline). | In progress (slice 3: shared-wall zone membership; label Conditional) |
 | `world-model-hvac-control/` | Diffusion / world-model HVAC control for grid-interactive buildings. | No-go (verdict 2026-11-06: world-model + MPC fails the ≥5%-at-equal-comfort gate on both unseen sets in two independent runs; LSTM hidden state unobservable from the 10-float observation) |
 | `federated-calibration/` | Federated, physics-informed calibration across simulated buildings. | No-go (verdict 2026-11-06: FedAvg never beats one-shot parameter averaging by ≥15%; IID control fires the No-go trigger) |
