@@ -11,6 +11,36 @@ A clean negative result is a successful outcome — it saves a proposal cycle. N
 3. The deliverable is code + a `REPORT.md` that leads with exactly one label: **Go**, **Go (software only)**, **Conditional**, or **No-go**.
 4. Winners may be promoted: to a standalone repo, into Fluxion, into Matchline, or into an NLR LDRD proposal. Losers stay here as a recorded negative result.
 
+## Claim typing in proposals and reports
+
+Every POC proposal and every `REPORT.md` carries a `## Claims` section listing its *load-bearing* claims — statements offered as evidence for the verdict, founding premises/hypotheses the verdict depends on, or the verdict's direct justification. Ordinary prose needs no tags; load-bearing claims each carry exactly one:
+
+- `[observed]` — a measured fact, **with its source in the same line** (a command and its output, a file:line, a ledger count with n, a run/PR ID, a URL). No source, no `[observed]`.
+- `[inference]` — a conclusion drawn from observations; cite the observations it is drawn from.
+- `[unsupported]` — an assumption carried forward, named as such. It may be carried and tested; it may **never** be a premise for a Go/No-go, and it must never appear in the report's verdict or ask lines.
+- `[decision]` — the operator's call, **with its date**. A decision is not evidence.
+
+Copyable template:
+
+```markdown
+## Claims
+
+- [observed] <claim> — source: <command / file:line / ledger, n>
+- [inference] <claim> — from <the observations cited above>
+- [unsupported] <claim> — carried as an assumption; NOT a premise for any verdict in this artifact
+- [decision] <claim> — <name>, <YYYY-MM-DD>
+
+## Hypothesis updates (reports, at verdict time)
+
+- H<n> <hypothesis, verbatim from the proposal> — update: supported | weakened | refuted | untested
+```
+
+`untested` is a valid, honest update — a hypothesis the POC did not reach stays untested; it is never silently dropped and never upgraded to supported by proximity to a Go.
+
+Why: claim-typing a past POC's report found two premises its No-go verdict rested on that were assumptions, invisible until typed (the SS-DFA standard-reading assumption and an uncited hardware-precision premise). Typing costs minutes and makes that class of hidden premise visible before the verdict, not after.
+
+Lint (advisory, blocks nothing): `python3 ~/workspace/plan-coder-repo/bin/claimcheck.py lint <artifact.md>` — exit 1 lists violations (untagged claim, `[observed]` without a source, `[unsupported]` in a premise/verdict position, or a missing `## Claims` section); exit 0 = clean. (Product-engineering spike Part D, plan-coder; enabled 2026-11-10.)
+
 ## POCs
 
 | Folder | Idea | Status |
