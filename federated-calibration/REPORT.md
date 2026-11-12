@@ -258,3 +258,27 @@ tests, suite now 36/36. Worker burn: 51/60 steps, 2,722,064 in / 75,043 out
 (MiniMax-M2.7, no z.ai failover). The verdict (No-go) follows the measured
 numbers; the supervisor's only judgement call is the baseline reading in
 §6.3, stated there as a judgement call.
+
+## Claims
+
+- [observed] Across the 6 configurations × 2 held-out buildings, FedAvg beats one-shot parameter averaging in only 1 of 12 building-configurations (clustered + p=0.5, H2, +8.7 %) and is worse in 11 of 12 (per-seed means over seeds 42/43/44) — source: REPORT.md §6.2 table ("FedAvg vs param-mean" column) and §6.2 reading notes.
+- [observed] The best FedAvg-vs-parameter-mean improvement over all 12 cases is +8.7 %, below the issue's ≥15 % bar; no configuration clears the bar on either held-out building — source: REPORT.md §6.2–§6.3.
+- [observed] Against the weaker donor-mean baseline FedAvg improves by ≥15 % in 8 of 12 cases, and fails on clustered H1 (+7.9 % / +5.9 %) and on the IID control (+0.2 % / +1.2 %) — source: REPORT.md §6.2 table and reading notes.
+- [observed] On the IID control, federated, centralised, parameter-mean and donor-mean agree to within ~0.3 % (FedAvg vs param-mean −0.0 % / −0.2 %; vs donor-mean +0.2 % / +1.2 %; vs centralised +0.3 % / −0.1 %) — source: REPORT.md §6.2 table (iid control rows) and §1.
+- [observed] FedAvg does not diverge under non-IID data: client-update spread stays bounded in every configuration (baseline 0.60–0.64, p=0.5 0.75–0.96, wide 0.82–1.17, clustered 0.51–0.54, clustered+p0.5 0.66–0.83, iid 0.09–0.25) and the global model converges within 1–2 rounds in all of them — source: REPORT.md §6.4.
+- [observed] FedAvg degrades as heterogeneity grows: on clustered H1 FedAvg scores 0.9045 / 0.9237 against parameter-mean 0.6379 (~42–45 % worse), versus ~6 % worse on the baseline population; partial participation moves FedAvg H1 from 0.6710 to 0.7236 while the parameter-mean rows stay identical — source: REPORT.md §6.4 and §6.2 table.
+- [observed] Local fitting overtakes FedAvg once the held-out building has its own data: H1 crosses between 6 h and 12 h (iso-12 h 0.3320 vs FedAvg 0.6710), H2 between 24 h and 48 h (iso-48 h 0.5589 vs FedAvg 0.9826) — source: REPORT.md §2 headline tables.
+- [observed] The slice-2 grid was run twice into different directories with byte-identical `data/slice2_results.json`, and the test suite passes 36/36 (`python -m pytest tests/ -q`, ~6 min run) — source: REPORT.md §6.1 and §7.
+- [inference] On the gate's applied reading — the best non-federated transfer, one-shot parameter-mean — FedAvg never clears the ≥15 % bar in any of the 6 configurations × 2 buildings, so the issue's Go criterion is not met — from the FedAvg-vs-parameter-mean observations above.
+- [inference] The IID control fires the issue's No-go trigger ("federated ≈ centralised on IID synthetic data") — from the IID-control observations above.
+- [inference] For this 4-parameter RC model class the federated protocol adds nothing over naive one-shot averaging, and the parameter-mean row is the right comparator for the ≥15 % gate rather than the donor rows — from the FedAvg-vs-parameter-mean and parameter-mean observations above.
+- [inference] Federated transfer is a cold-start story, not a replacement for local calibration — from the local-fitting and FedAvg transfer observations above.
+- [unsupported] The mechanism proposed in §6.5 (FedAvg's 60-local-step-from-moving-global updates are under-converged relative to parameter-mean's converged 400-step fits) — carried as an assumption; NOT a premise for any verdict in this artifact, and the report states it was not isolated by an experiment.
+- [unsupported] That results from fully synthetic federation speak to the privacy or deployment story — carried as an assumption; NOT a premise for any verdict in this artifact, and the report explicitly declines that claim (§4, §6.6).
+- [decision] Read the ≥15 % gate against the best non-federated transfer (one-shot parameter-mean) rather than the donor-mean baseline — operator (supervisor), 2026-11-06.
+- [decision] Verdict: No-go — FedAvg never beats one-shot parameter averaging by ≥15 %, and the IID control fires the issue's No-go trigger — operator (supervisor), 2026-11-06.
+
+## Hypothesis updates
+
+- H1 "federated beats isolated-local by ≥15 % RMSE on a held-out building (zero-shot transfer)" (issue criterion quoted in REPORT.md §6.3) — update: refuted (best case +8.7 % against parameter-mean; REPORT.md §6.2).
+- H2 "federated ≈ centralised on IID synthetic data" (issue No-go trigger quoted in REPORT.md §6.3) — update: supported (IID control: federated, centralised, parameter-mean and donor-mean agree to within ~0.3 %; REPORT.md §6.2).
