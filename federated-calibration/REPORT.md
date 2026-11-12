@@ -79,10 +79,6 @@ Tests: 16 in `tests/` (`python -m pytest tests/ -q`, ~30 s), including a boundar
 
 The worker's run hit the 60-step cap before running tests or writing this report, so the supervisor verified and finished the slice: fixed a real bug the worker's last edit introduced (`evaluate.py` raised `NameError: rollout is not defined` — the import was missing), fixed two failing tests (an over-strict boundary assertion on public deterministic shapes; a byte-identical-rerun test tripped by the out-dir path in stdout), and corrected a silent headline-row semantic change (the worker's JSONs reported the donor-mean row; the code had been edited to report the parameter-mean instead — both rows are now reported, separately labelled). All numbers in §2 were recomputed by the supervisor from an independent 3-seed run, not copied from the worker's output. Suite: 16/16 passed against the final code.
 
-## 5. Supervisor verification notes (2026-11-06)
-
-The worker's run hit the 60-step cap before running tests or writing this report, so the supervisor verified and finished the slice: fixed a real bug the worker's last edit introduced (`evaluate.py` raised `NameError: rollout is not defined` — the import was missing), fixed two failing tests (an over-strict boundary assertion on public deterministic shapes; a byte-identical-rerun test tripped by the out-dir path in stdout), and corrected a silent headline-row semantic change (the worker's JSONs reported the donor-mean row; the code had been edited to report the parameter-mean instead — both rows are now reported, separately labelled). All numbers in §2 were recomputed by the supervisor from an independent 3-seed run, not copied from the worker's output. Suite: 16/16 passed against the final code.
-
 ## 6. Slice 2: the verdict (2026-11-06)
 
 ### 6.1 What was built
