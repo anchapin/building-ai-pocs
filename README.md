@@ -53,7 +53,7 @@ Lint (advisory, blocks nothing): `python3 ~/workspace/plan-coder-repo/bin/claimc
 | `federated-calibration/` | Federated, physics-informed calibration across simulated buildings. | No-go (verdict 2026-11-06: FedAvg never beats one-shot parameter averaging by ≥15%; IID control fires the No-go trigger) |
 | `local-first-building-agent/` | Small on-device models as a building agent, benchmarked against a frontier model. | Not started |
 
-Suggested order: drawing verifier first (de-risks the Retrofit Copilot's input), then Retrofit Copilot, then the neural-operator surrogate.
+Closing note: the previous "Suggested order" line is withdrawn — it pointed at POCs that are closed. The status board above is the source of truth: every POC is closed except `drawing-verifier/` (**Conditional** — the symbolic-checker half is demonstrated and measured; the VLM second-reader half is deferred, and no Matchline extraction run was performed) and `local-first-building-agent/` (**Not started**). Closed: `ss-dfa-surrogate-poc/` (**No-go**), `retrofit-copilot/` (**Go** — spun out to [anchapin/retrofit-copilot](https://github.com/anchapin/retrofit-copilot)), `neural-operator-surrogate/` (**No-go**), `world-model-hvac-control/` (**No-go**), `federated-calibration/` (**No-go**).
 
 ## Background
 
