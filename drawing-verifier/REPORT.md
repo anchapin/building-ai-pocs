@@ -675,3 +675,26 @@ $ echo $?
 1
 ```
 
+## Claims
+
+- [observed] Slice-3 headline: 27 / 27 injected errors caught (100 %), 0 / 6 clean fixtures false-flagged (0.0 %), worst geometry error 0.10 % against the hand-built reference models — source: `python3 drawing-verifier/run_headline.py` output quoted in REPORT.md §15 and §18.
+- [observed] The earlier slices' headlines were 12 / 12 caught, 0 / 3 false flags, 0.10 % worst geometry error (slice 1) and 24 / 24 caught, 0 / 6 false flags, 0.10 % worst geometry error (slice 2) — source: `python3 drawing-verifier/run_headline.py` output quoted in REPORT.md §6, §8 and §12.
+- [observed] Every error class listed in the slice-3 per-class catch table shows a 100 % catch rate, the table's total row reads 27 / 27 (100 %), and no prior number regressed as the injected set grew from 24 to 27 cases — source: REPORT.md §15 per-error-class catch table.
+- [observed] The test suite passes in each slice: 41 tests (slice 1), 58 (slice 2), 74 (slice 3) — source: `python3 -m pytest drawing-verifier/tests/ -q` output quoted in REPORT.md §6, §12 and §18.
+- [observed] The new count-consistency check (check 5) is what catches the silently-dropped door: with check 5 removed the model yields 0 findings, with it 2 findings (`schedule_geometry_count_mismatch`, `zone_schedule_count_mismatch`) — source: the inline `python3` snippet and its output quoted in REPORT.md §7.2.
+- [observed] Check 6 (`shared_wall_zone_membership`) is the only check that fires on the three new shared-wall injected cases: 0 findings with check 6 removed, exactly the one expected class with it present — source: REPORT.md §15 note and the CLI output quoted in REPORT.md §18.
+- [observed] All six clean fixtures still produce 0 findings, and no `*.reference.json` file was edited, so the re-measured geometry error is bit-for-bit the slice-2 measurement (worst 0.10 %, every other deviation ≤ 0.05 %) — source: REPORT.md §14 and §15.
+- [observed] The checker CLI exits 1 on a model with findings (e.g. `drawing-verifier/fixtures/injected/classroom_block_shared_door_unlisted.json` → 1 finding, exit 1) and 0 on a clean fixture (`drawing-verifier/fixtures/classroom_block.json` → no findings, exit 0) — source: REPORT.md §18 verification output.
+- [observed] The checker compares the model against itself (schedule vs geometry, zone membership vs wall ownership) and never against the drawing — source: REPORT.md §9 and §16.
+- [observed] An opening deleted from the geometry, from the zone references and from the schedule at the same time is still invisible to the checker, because every count then agrees with every other count — source: REPORT.md §9 and §16.
+- [observed] No VLM was selected, downloaded or called: `checker.SecondReader` is a protocol and `checker.NoVLMSecondReader` always returns `agree=None`, so no VLM agreement number exists — source: REPORT.md §4, §10 and §17.
+- [observed] No Matchline extraction run was performed; the checker consumes structured-geometry JSON fixtures only — source: REPORT.md §4, §10 and §17.
+- [observed] The geometry-error measurement is a self-consistency measurement: the fixtures are hand-built from the same dimensions the checker reads, so it is not evidence about extraction accuracy from real drawings — source: REPORT.md §2.2.
+- [inference] The symbolic-checker half of the POC is demonstrated and measured on this slice's hand-built fixtures: the checker catches every injected error family it is aimed at and stays quiet on clean input, with no prior number regressed — from the headline, per-class catch-table and test observations above.
+- [inference] The remaining coverage gaps are structural to a model-only checker (model-vs-model comparison), so they cannot be closed inside the checker and require a drawing-side reader — from the self-comparison and still-not-covered observations above.
+- [inference] The label cannot move to Go (no real-drawing evidence) and need not move to No-go (the symbolic checker demonstrably catches every error family it is aimed at and stays quiet on clean input) — from the headline and coverage observations above.
+- [inference] The 100 % catch rate on hand-made cases is weak evidence: it demonstrates that the checks fire and are quiet on clean input, not that they generalise — from the headline observations above and the known-limits list in REPORT.md §3.
+- [unsupported] The WWR band (0.05–0.55) as a plausibility heuristic rather than a code requirement — carried as an assumption; NOT a premise for any verdict in this artifact.
+- [unsupported] The convention that a shared-wall opening is listed in exactly one adjacent zone (listing in both adjacent zones is tolerated, not flagged) — carried as an assumption; NOT a premise for any verdict in this artifact.
+- [unsupported] Floor areas as centre-line ("clear internal") areas, with wall thickness carried but not added — carried as an assumption; NOT a premise for any verdict in this artifact.
+- [decision] Label this POC Conditional: the symbolic-checker half is demonstrated and measured on the slice's hand-built fixtures, the VLM second-reader half is deferred pending VLM selection, and no Matchline extraction run was performed — operator; no verdict date is recorded in this report.

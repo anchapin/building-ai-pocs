@@ -219,3 +219,26 @@ tables + figures): `python src/train.py` after `python src/gen_data.py`, then
 `python src/evaluate.py`; the noise gate is `python src/noise_gate.py`. All
 result JSON lives in `results/` (`physics_eval.json`, `noise_gate.json`,
 `noise_gate_verdict.json`, `tuned_*.json`, `tuning_log.json`).
+
+## Claims
+
+- [observed] Mean test-year rollout temperature RMSE: SS-DFA 1.457 ± 0.834 °C vs LSTM 0.662 ± 0.041 °C vs MLP 0.616 ± 0.051 °C (3 seeds: 11/22/33) — source: `results/physics_eval.json` (per-seed `rollout.temp.rmse`), tabulated in REPORT.md §2.
+- [observed] SS-DFA/LSTM rollout-RMSE ratio is 2.20× on seed means, with per-seed matched ratios 3.53× / 1.52× / 1.48× — source: `results/physics_eval.json` (per-seed `rollout.temp.rmse`), REPORT.md §2.
+- [observed] One-step temperature RMSE: SS-DFA 0.355 ± 0.008 °C vs LSTM 0.271 ± 0.020 °C vs MLP 0.236 ± 0.007 °C; 24 h RMSE SS-DFA 1.108 °C vs LSTM 0.628 °C vs MLP 0.619 °C — source: `results/physics_eval.json` (per-seed `one_step_temp`, `h24_temp`), REPORT.md §2–§3.
+- [observed] SS-DFA fails the brief's two internal-gains sign checks at every seed (heating rises +1.9 to +3.4 %, cooling falls ~2.4 %), while all three models stay bounded with no blow-up in every rollout (test year, OOD variants, both extreme weeks) — source: `results/physics_eval.json` (monotonicity counterfactuals, `rollout.bounded`), REPORT.md §3.
+- [observed] SS-DFA has 503 trainable parameters (27,543 total) vs 40,227 for the LSTM; training wall-clock 80 ± 5 s vs 336 ± 239 s (4.2× faster); recurrent state evaluations 0.026 M vs 12.5 M — source: `results/physics_eval.json` (`training_cost`), REPORT.md §2.
+- [observed] The 7-bit noise gate passes for SS-DFA: clean 7-bit rollout ratio 1.00× and worst 7-bit condition (drift) 1.01×, no divergence; the LSTM's worst 7-bit condition (3 % noise) reaches 2.39× and fails the strict 2× reading — source: `results/noise_gate_verdict.json` (`passes_gate`, `worst_7b_ratio`, `passes_gate_strict`), REPORT.md §4.
+- [observed] All headline, physics-table and noise-gate numbers are committed as JSON under `results/` (`physics_eval.json`, `noise_gate.json`, `noise_gate_verdict.json`, `tuning_log.json`); the dataset regenerates bit-identically from seed 20261105 via `python src/gen_data.py` — source: `results/` and REPORT.md §1, §8.
+- [inference] SS-DFA misses the brief's primary accuracy bar by a wide margin: 2.20× rollout RMSE is far beyond the 50 % no-go line, and the 2-of-4 physics sign-check failure independently trips the no-go clause — from the rollout-RMSE and sign-check observations above.
+- [inference] The deficit is accumulated-state error rather than one-step error (one-step ratio 1.31× vs 2.20× on rollout RMSE), with a systematic cold drift over the rollout year (worst seed −4.44 °C/month drift, max |err| 7.9 °C) — from the one-step/rollout RMSE and physics-table observations above.
+- [inference] The Conditional escape clause ("under half the LSTM's wall-clock at comparable accuracy") does not apply, because SS-DFA's accuracy is not comparable to the LSTM's — from the rollout-RMSE and training-cost observations above.
+- [inference] The extension of the paper's claim from MNIST/CIFAR-10 classification to building-surrogate regression is not supported by this POC — from the rollout-RMSE and sign-check observations above.
+- [unsupported] The standard DFA + reservoir reading of SS-DFA adopted for this implementation (the paper's exact formulation was not available; REPORT.md §1 assumption set, §4.3) — carried as an assumption; NOT a premise for any verdict in this artifact, and not used as evidence for the No-go.
+- [unsupported] The assumption that ~7-bit precision plus the injected analogue-noise model (σ = 1 % / 3 % of each tensor's own range, per-tensor OU drift) stands in for the photonic hardware this POC targets — carried as an assumption; NOT a premise for any verdict in this artifact, and not used as evidence for the No-go.
+- [decision] Record this POC as No-go: SS-DFA is 2.2× worse than the LSTM on full-year rollout RMSE, and the Conditional escape clause does not apply — operator, 2026-11-06 (run date, REPORT.md §7).
+
+## Hypothesis updates
+
+- H1 "can train a small building-thermal surrogate as well as ordinary backpropagation" (hypothesis as stated in the POC `README.md`) — update: refuted (2.20× rollout RMSE vs the LSTM; REPORT.md §2).
+- H2 "whether the result survives the ~7-bit precision optical hardware would impose" (hypothesis as stated in the POC `README.md`) — update: supported for the 7-bit noise gate as run (1.00× clean, 1.01× worst 7-bit condition; REPORT.md §4).
+
