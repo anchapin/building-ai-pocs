@@ -183,51 +183,16 @@ dominated by parsing the run artifact" — and no other blocker.
   refusal or a "single point" rendering by the catalog — a lens-side
   change, out of scope for this slice.
 
-## Claims (re-typed after slice 2)
+## Claims
 
-- [observed] The assembler binds correctly to a **real, completed Fluxion
-  run output**: binding validity 8/8 on the real manifest with **no**
-  failures and **no** invented binding, and the adversarial set handled
-  14/14 against that manifest — source: `run_poc.py` section [8] (run
-  output: `real_runs/fluxion_standard_report.json`, sha256
-  `1d783a1e…1146b`, a byte-verified copy of the upstream completed run;
-  provenance in `real_runs/PROVENANCE.md`).
-- [observed] The real output is the versioned standard results report
-  (`results_v1`, `schema_version` 1.0.0) of a completed Fluxion run — and
-  it is **not** the issue #37 premise shape: no JSON document in the
-  Fluxion clone carries `"run_id"`/`"fields"`, so the slice-1 fixture
-  shape is a shaped premise, not a copy of a repo artifact — source:
-  `real_runs/PROVENANCE.md` (read-only search of the clone).
-- [observed] The three seeded-case requests are **refused**
-  (`unknown_field`) against the real manifest, because that run carries
-  none of their fields; the refusal is explicit and correct — source:
-  `run_poc.py` section [8a].
-- [observed] The lens does **not** invent data it was not given on the real
-  output: the hourly series (referenced by checksum only) renders "no
-  data", and the LogTail view of the report (which carries no log lines)
-  is refused `no_log_field` — source: `run_poc.py` section [8b],
-  `tests/test_real_manifest.py`.
-- [observed] The test suite passes: **90 passed**
-  (`python3 -m pytest generative-ui-diagnostic-lens/ -q`; 80 before this
-  slice, 7 new manifest tests + 3 new harness assertions) — source: the
-  pytest run in this slice.
-- [observed] The time criterion is **missed** and is reported, not waived:
-  at real-output scale the lens is on par with the throwaway baseline
-  (0.73×–1.32× like-for-like, never below 0.5×) because both are dominated
-  by parsing the 2.2 MB report; slice 1's fixture result (12.9× / 9.1× /
-  8.7× slower) is unchanged as a finding — source: `run_poc.py` sections
-  [7] and [8d].
-- [observed] Slice-1 results are unchanged: binding validity 14/14,
-  adversarial 14/14, ground-truth series bound 3/3 cases, out-of-catalog
-  refused 6/6, catalog coverage 6/6 — source: `run_poc.py` headline table.
-- [inference] Assembly accuracy, not rendering or protocol choice, is the
-  risk this POC isolates, and the deterministic validator is what makes an
-  invented binding mechanically detectable — this now holds on a real
-  artifact too, where the failure mode is not hypothetical: source: the
-  validator's reject paths exercised by the adversarial set in `run_poc.py`
-  sections [2] and [8c].
-- [inference] The lens's field naming is the fragile part of the mapping,
-  not the mechanism: three advisories bind a scalar where a series is
-  wanted. The catalogue is closed and the mapping table is explicit, so
-  this is a naming/wording issue in the request set rather than a binding
-  error — source: `run_poc.py` section [8e] advisories.
+*(re-typed after slice 2)*
+
+- [observed] The assembler binds correctly to a **real, completed Fluxion run output**: binding validity 8/8 on the real manifest with **no** failures and **no** invented binding, and the adversarial set handled 14/14 against that manifest — source: `run_poc.py` section [8] (run output: `real_runs/fluxion_standard_report.json`, sha256 `1d783a1e…1146b`, a byte-verified copy of the upstream completed run; provenance in `real_runs/PROVENANCE.md`).
+- [observed] The real output is the versioned standard results report (`results_v1`, `schema_version` 1.0.0) of a completed Fluxion run — and it is **not** the issue #37 premise shape: no JSON document in the Fluxion clone carries `"run_id"`/`"fields"`, so the slice-1 fixture shape is a shaped premise, not a copy of a repo artifact — source: `real_runs/PROVENANCE.md` (read-only search of the clone).
+- [observed] The three seeded-case requests are **refused** (`unknown_field`) against the real manifest, because that run carries none of their fields; the refusal is explicit and correct — source: `run_poc.py` section [8a].
+- [observed] The lens does **not** invent data it was not given on the real output: the hourly series (referenced by checksum only) renders "no data", and the LogTail view of the report (which carries no log lines) is refused `no_log_field` — source: `run_poc.py` section [8b], `tests/test_real_manifest.py`.
+- [observed] The test suite passes: **90 passed** (`python3 -m pytest generative-ui-diagnostic-lens/ -q`; 80 before this slice, 7 new manifest tests + 3 new harness assertions) — source: the pytest run in this slice.
+- [observed] The time criterion is **missed** and is reported, not waived: at real-output scale the lens is on par with the throwaway baseline (0.73×–1.32× like-for-like, never below 0.5×) because both are dominated by parsing the 2.2 MB report; slice 1's fixture result (12.9× / 9.1× / 8.7× slower) is unchanged as a finding — source: `run_poc.py` sections [7] and [8d].
+- [observed] Slice-1 results are unchanged: binding validity 14/14, adversarial 14/14, ground-truth series bound 3/3 cases, out-of-catalog refused 6/6, catalog coverage 6/6 — source: `run_poc.py` headline table.
+- [inference] Assembly accuracy, not rendering or protocol choice, is the risk this POC isolates, and the deterministic validator is what makes an invented binding mechanically detectable — this now holds on a real artifact too, where the failure mode is not hypothetical: source: the validator's reject paths exercised by the adversarial set in `run_poc.py` sections [2] and [8c].
+- [inference] The lens's field naming is the fragile part of the mapping, not the mechanism: three advisories bind a scalar where a series is wanted. The catalogue is closed and the mapping table is explicit, so this is a naming/wording issue in the request set rather than a binding error — source: `run_poc.py` section [8e] advisories.
