@@ -1,0 +1,59 @@
+{
+  "description": "Requests for the REAL Fluxion run output (the standard results report, results_v1). They name the fields the real report actually carries, so the assembler has something to bind to; the seeded-case requests and the adversarial set are run against the same manifest by run_poc.py section [8].",
+  "requests": [
+    {
+      "id": "real01_kpi_heating_energy",
+      "request": "kpi card for heating energy",
+      "expect": "spec",
+      "note": "Binds annual.end_use_kwh.heating (kWh) - a field the real report carries."
+    },
+    {
+      "id": "real02_chart_monthly_heating",
+      "request": "chart monthly heating energy",
+      "expect": "spec",
+      "note": "Binds the twelve monthly heating bins (kWh) - a series the real report carries."
+    },
+    {
+      "id": "real03_kpi_peak_heating",
+      "request": "kpi card for peak heating",
+      "expect": "spec",
+      "note": "Binds annual.peaks.heating (kW)."
+    },
+    {
+      "id": "real04_chart_hourly_heating",
+      "request": "chart hourly heating energy",
+      "expect": "spec",
+      "note": "Binds the hourly end-use series (kWh). The report references that series by checksum instead of embedding it, so the view renders 'no data' - the lens must not invent it."
+    },
+    {
+      "id": "real05_kpi_unmet_heating_hours",
+      "request": "kpi card for unmet heating hours",
+      "expect": "spec",
+      "note": "Binds unmet_hours.all_hours.heating (h)."
+    },
+    {
+      "id": "real06_chart_total_energy",
+      "request": "chart total energy",
+      "expect": "spec",
+      "note": "Binds annual.total_energy_kwh (kWh)."
+    },
+    {
+      "id": "real07_diff_table_heating_cooling",
+      "request": "diff table of heating energy and cooling energy",
+      "expect": "spec",
+      "note": "Binds both end-use energies (kWh) with the same unit - the unit check must pass."
+    },
+    {
+      "id": "real08_log_tail",
+      "request": "show the last 20 lines of the run log",
+      "expect_code": "no_log_field",
+      "note": "The real report carries no log lines: the lens must refuse rather than invent a log field."
+    },
+    {
+      "id": "real09_param_inspector",
+      "request": "show the run inputs and provenance",
+      "expect": "spec",
+      "note": "ParamInspector over the real run's own provenance block."
+    }
+  ]
+}

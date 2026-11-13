@@ -23,6 +23,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import hashlib
 import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -42,7 +43,15 @@ CASE_REQUESTS = os.path.join(HERE, "fixtures", "case_requests.json")
 ADVERSARIAL = os.path.join(HERE, "adversarial", "requests.json")
 OUT_OF_CATALOG = os.path.join(HERE, "fixtures", "requests_out_of_catalog.json")
 
+#: the REAL Fluxion run output (slice 2, step 0) and its request set
+REAL_REPORT = os.path.join(HERE, "real_runs", manifest_mod.REAL_REPORT_FILE)
+REAL_REQUESTS = os.path.join(HERE, "real_runs", "requests.json")
+
 REPEATS = 50
+
+#: the real report is a 2 MB document - fewer repeats are enough for a
+#: stable per-view measurement at this scale
+REAL_REPEATS = 10
 
 
 # --------------------------------------------------------------------------
@@ -128,6 +137,102 @@ def lens_view(spec: dict, run: dict) -> list:
         value = values[-1] if values else field.get("value")
         lines.append("%s = %s %s" % (name, value, unit if unit else ""))
     return lines
+
+
+def binding_failure_details(spec: dict, manifest: dict) -> list:
+    """Verbatim detail of every invalid binding of ``spec``.
+
+    One entry per bad binding: the field, the unit the manifest declares
+    and the unit the spec binds (or the fact that the manifest has no such
+    field), plus the offending spec fragment verbatim.
+    """
+    details = []
+    for index, component in enumerate(spec.get("components", [])):
+        primitive = catalog.get_primitive(component.get("primitive"))
+        if primitive is None:
+            continue
+        bindings = component.get("bindings") or {}
+        bound_unit = bindings.get("unit")
+        for name in sorted(bindings):
+            if primitive.binding_kind(name) != "field":
+                continue
+            value = bindings[name]
+            entry = manifest_mod.find_entry(manifest, value)
+            fragment = json.dumps(component, sort_keys=True)
+            if entry is None:
+                details.append(
+                    "component %d (%s): field %r is NOT in manifest %s | spec fragment: %s"
+                    % (index, component.get("primitive"), value, manifest.get("run_id"), fragment)
+                )
+                continue
+            if bound_unit is not None:
+                declared = catalog.normalize_unit(entry.get("unit"))
+                asked = catalog.normalize_unit(bound_unit)
+                if declared != asked:
+                    details.append(
+                        "component %d (%s): field %r is %s, spec binds %s | spec fragment: %s"
+                        % (index, component.get("primitive"), value, declared, asked, fragment)
+                    )
+    return details
+
+
+def kind_mismatch_details(spec: dict, manifest: dict) -> list:
+    """Advisory: a *scalar* field bound as a *series* (and the reverse).
+
+    This is not an invalid binding - the field exists and its unit matches -
+    but the view cannot show a series for a scalar, so it is reported.
+    """
+    details = []
+    for index, component in enumerate(spec.get("components", [])):
+        primitive = catalog.get_primitive(component.get("primitive"))
+        if primitive is None:
+            continue
+        bindings = component.get("bindings") or {}
+        for name in ("series", "reference_series", "field"):
+            if name not in bindings:
+                continue
+            if primitive.binding_kind(name) != "field":
+                continue
+            entry = manifest_mod.find_entry(manifest, bindings[name])
+            if entry is None:
+                continue
+            kind = entry.get("kind")
+            wanted = "scalar" if name == "field" else "series"
+            if kind != wanted:
+                details.append(
+                    "component %d (%s): field %r is a %s bound as %s"
+                    % (index, component.get("primitive"), bindings[name], kind, wanted)
+                )
+    return details
+
+
+def real_baseline_view(report_path: str, field_names) -> list:
+    """The throwaway script's view of the REAL run output.
+
+    The same trivial shape as ``fixtures/baseline_throwaway.py``: open the
+    report JSON, print the named fields.  No request awareness, no
+    validation, no refusal, no reuse.
+    """
+    with open(report_path, "r", encoding="utf-8") as handle:
+        report = json.load(handle)
+    lines = []
+    for name in field_names:
+        values = manifest_mod.report_field_values(report, name)
+        value = values[-1] if values else None
+        lines.append("%s = %s" % (name, value))
+    return lines
+
+
+def median(values) -> float:
+    """The median of a list of measurements (robust against one-off stalls)."""
+    ordered = sorted(values)
+    count = len(ordered)
+    if not count:
+        return 0.0
+    middle = count // 2
+    if count % 2:
+        return ordered[middle]
+    return (ordered[middle - 1] + ordered[middle]) / 2.0
 
 
 def count_lines(*paths: str) -> int:
@@ -365,6 +470,246 @@ def main() -> int:
             % (case_id, baseline_ms, out_lines, lens_ms, lens_ms / baseline_ms if baseline_ms else float("nan"))
         )
 
+    # ---- the REAL Fluxion run output (slice 2, step 0) ----------------
+    print("\n[8] the REAL Fluxion run output (slice 2, step 0)")
+    real_report = manifest_mod.load_standard_report()
+    real_manifest = manifest_mod.manifest_from_standard_report(real_report)
+    real_run = manifest_mod.standard_report_to_run(real_report)
+    real_requests = load_requests(REAL_REQUESTS)
+    digest = hashlib.sha256()
+    with open(REAL_REPORT, "rb") as handle:
+        digest.update(handle.read())
+    print("   run output : real_runs/%s" % manifest_mod.REAL_REPORT_FILE)
+    print("   sha256     : %s  (provenance: real_runs/PROVENANCE.md)" % digest.hexdigest())
+    print(
+        "   run id     : %s   manifest fields: %d   (names + units only)"
+        % (real_manifest["run_id"], len(real_manifest["entries"]))
+    )
+
+    real_failures = []
+    real_invented = []
+    real_advisories = []
+    real_expect_mismatch = []
+
+    # ---- 8a: the three seeded-case requests against the REAL manifest --
+    print("\n[8a] the three seeded-case requests against the REAL manifest")
+    real_seed_checked = 0
+    real_seed_valid = 0
+    real_seed_refused = 0
+    real_seed_specs = 0
+    for request in case_requests[:3]:
+        result = assembler.assemble(request["request"], real_manifest)
+        if result.get("status") == "refused":
+            real_seed_refused += 1
+            print(
+                "   %-24s REFUSED (%s) - the field is not in the real run's manifest"
+                % (request["id"], result["reason_code"])
+            )
+            continue
+        real_seed_specs += 1
+        checked, valid, _failures = check_bindings(result, real_manifest)
+        real_seed_checked += checked
+        real_seed_valid += valid
+        for detail in binding_failure_details(result, real_manifest):
+            real_failures.append("%s: %s" % (request["id"], detail))
+        errors = uispec.validate_spec(result, real_manifest)
+        if errors:
+            real_failures.append("%s: spec invalid %s" % (request["id"], errors))
+        print(
+            "   %-24s spec ok, %d component(s), bindings %d/%d"
+            % (request["id"], len(result["components"]), valid, checked)
+        )
+    print(
+        "   seeded cases: %d spec, %d refused; bindings %d/%d"
+        % (real_seed_specs, real_seed_refused, real_seed_valid, real_seed_checked)
+    )
+
+    # ---- 8b: the real-output request set against the REAL manifest -----
+    print("\n[8b] the real-output request set against the REAL manifest")
+    real_checked = 0
+    real_valid = 0
+    real_specs = 0
+    real_refused = 0
+    for request in real_requests:
+        result = assembler.assemble(request["request"], real_manifest)
+        expect = request.get("expect")
+        expect_code = request.get("expect_code")
+        if result.get("status") == "refused":
+            real_refused += 1
+            code = result.get("reason_code", "")
+            ok = expect_code is not None and code == expect_code
+            if expect == "spec" or not ok:
+                real_expect_mismatch.append(
+                    "%s: expected %s, got refusal %s"
+                    % (request["id"], expect or expect_code, code)
+                )
+            print(
+                "   %-32s refused: %-16s %s"
+                % (request["id"], code, "ok" if ok else "NOT AS EXPECTED")
+            )
+            continue
+        real_specs += 1
+        checked, valid, _failures = check_bindings(result, real_manifest)
+        real_checked += checked
+        real_valid += valid
+        for detail in binding_failure_details(result, real_manifest):
+            real_failures.append("%s: %s" % (request["id"], detail))
+            if "is NOT in manifest" in detail:
+                real_invented.append("%s: %s" % (request["id"], detail))
+        errors = uispec.validate_spec(result, real_manifest)
+        if errors:
+            real_failures.append("%s: spec invalid %s" % (request["id"], errors))
+        for advisory in kind_mismatch_details(result, real_manifest):
+            real_advisories.append("%s: %s" % (request["id"], advisory))
+        print(
+            "   %-32s spec ok, %d component(s), bindings %d/%d"
+            % (request["id"], len(result["components"]), valid, checked)
+        )
+
+    # ---- 8c: the adversarial set against the REAL manifest -------------
+    print("\n[8c] the adversarial set against the REAL manifest")
+    real_adv_handled = 0
+    real_adv_code_match = 0
+    real_adv_specs = []
+    for request in adversarial:
+        result = assembler.assemble(request["request"], real_manifest)
+        refused = result.get("status") == "refused"
+        code = result.get("reason_code", "")
+        expected = request.get("expect_code")
+        if refused:
+            handled = True
+            if expected is None or code == expected:
+                real_adv_code_match += 1
+            print("   %-34s -> refused: %-28s handled" % (request["id"], code))
+        else:
+            details = binding_failure_details(result, real_manifest)
+            checked, valid, _failures = check_bindings(result, real_manifest)
+            real_checked += checked
+            real_valid += valid
+            for detail in details:
+                real_failures.append("%s: %s" % (request["id"], detail))
+                if "is NOT in manifest" in detail:
+                    real_invented.append("%s: %s" % (request["id"], detail))
+            errors = uispec.validate_spec(result, real_manifest)
+            handled = not details and not errors
+            if handled:
+                real_adv_specs.append(request["id"])
+            print(
+                "   %-34s -> SPEC (no-data)%s"
+                % (request["id"], "" if handled else "  NOT HANDLED")
+            )
+        if handled:
+            real_adv_handled += 1
+
+    # ---- 8d: timing at real-output scale ------------------------------
+    print("\n[8d] timing at real-output scale (same measurement as section 7)")
+    print(
+        "   the baseline re-reads the %d kB report on every call (that is what a "
+        "throwaway script does); the lens path is measured twice: with the report "
+        "already parsed (as section 7 does for the fixtures) and with the report "
+        "re-read on every view (like-for-like with the baseline)"
+        % (os.path.getsize(REAL_REPORT) // 1024)
+    )
+    real_timings = []
+    for request in real_requests:
+        result = assembler.assemble(request["request"], real_manifest)
+        if result.get("status") == "refused":
+            continue
+        fields = []
+        for component in result.get("components", []):
+            bindings = component.get("bindings") or {}
+            name = bindings.get("series") or bindings.get("field")
+            if name:
+                fields.append(name)
+        if not fields:
+            continue
+
+        start = time.perf_counter()
+        for _ in range(REAL_REPEATS):
+            real_baseline_view(REAL_REPORT, fields)
+        baseline_ms = (time.perf_counter() - start) * 1000.0 / REAL_REPEATS
+
+        # lens, report already parsed (the same shape as section 7)
+        samples = []
+        for _ in range(REAL_REPEATS):
+            start = time.perf_counter()
+            manifest = manifest_mod.manifest_from_standard_report(real_report)
+            spec = assembler.assemble(request["request"], manifest)
+            uispec.validate_spec(spec, manifest)
+            lens_view(spec, real_run)
+            samples.append((time.perf_counter() - start) * 1000.0)
+        lens_ms = median(samples)
+
+        # lens, report read from disk on every view (like-for-like with the
+        # baseline, which re-reads the file on every call)
+        samples = []
+        for _ in range(REAL_REPEATS):
+            start = time.perf_counter()
+            report = manifest_mod.load_standard_report()
+            manifest = manifest_mod.manifest_from_standard_report(report)
+            spec = assembler.assemble(request["request"], manifest)
+            uispec.validate_spec(spec, manifest)
+            lens_view(spec, real_run)
+            samples.append((time.perf_counter() - start) * 1000.0)
+        lens_full_ms = median(samples)
+
+        real_timings.append(
+            (
+                request["id"],
+                baseline_ms,
+                lens_ms,
+                lens_full_ms,
+                len(real_baseline_view(REAL_REPORT, fields)),
+            )
+        )
+    for row_id, baseline_ms, lens_ms, lens_full_ms, out_lines in real_timings:
+        print(
+            "   %-30s baseline %7.3f ms/view (%d output lines)   lens %7.3f ms/view "
+            "(report pre-parsed, ratio %5.2fx)   lens %7.3f ms/view (report re-read, ratio %5.2fx)"
+            % (
+                row_id,
+                baseline_ms,
+                out_lines,
+                lens_ms,
+                lens_ms / baseline_ms if baseline_ms else float("nan"),
+                lens_full_ms,
+                lens_full_ms / baseline_ms if baseline_ms else float("nan"),
+            )
+        )
+
+    # ---- 8e: real-output summary --------------------------------------
+    print("\n[8e] real-output summary")
+    print(
+        "   binding validity (real manifest): %d/%d"
+        % (real_valid + real_seed_valid, real_checked + real_seed_checked)
+    )
+    if real_failures:
+        print("   FAILURES:")
+        for failure in real_failures:
+            print("     - %s" % failure)
+    else:
+        print("   failures: none")
+    if real_invented:
+        print("   invented bindings (a field the real run does not carry):")
+        for invented in real_invented:
+            print("     - %s" % invented)
+    else:
+        print("   invented bindings: none")
+    if real_advisories:
+        print("   advisories (kind mismatch, not an invalid binding):")
+        for advisory in real_advisories:
+            print("     - %s" % advisory)
+    else:
+        print("   advisories: none")
+    if real_expect_mismatch:
+        print("   outcome not as expected:")
+        for mismatch in real_expect_mismatch:
+            print("     - %s" % mismatch)
+    print(
+        "   adversarial handled (refusal / no-data): %d/%d (refusal code as expected: %d/%d)"
+        % (real_adv_handled, len(adversarial), real_adv_code_match, len(adversarial))
+    )
+
     # ---- headline table ------------------------------------------------
     print("\n" + "=" * 78)
     print("HEADLINE")
@@ -402,6 +747,17 @@ def main() -> int:
         "| lens path vs throwaway baseline          | %s |"
         % ", ".join("%s %.3f vs %.3f ms" % (row[0], row[2], row[1]) for row in timings)
     )
+    print(
+        "| real-output binding validity (real manifest) | %d/%d |"
+        % (real_valid + real_seed_valid, real_checked + real_seed_checked)
+    )
+    print(
+        "| real-output adversarial handled          | %d/%d |"
+        % (real_adv_handled, len(adversarial))
+    )
+    print(
+        "| real-output invented bindings            | %d |" % len(real_invented)
+    )
     print("=" * 78)
     if binding_failures:
         print("RESULT: binding failures present - see section 4")
@@ -412,6 +768,19 @@ def main() -> int:
             print("  - %s" % failure)
         return 1
     print("RESULT: every binding valid, every adversarial request handled")
+    if real_failures or real_invented or real_expect_mismatch:
+        print("RESULT (real output): failures present - see section 8")
+        return 1
+    print(
+        "RESULT (real output): every binding valid on the real manifest (%d/%d), "
+        "no invented binding, adversarial handled %d/%d"
+        % (
+            real_valid + real_seed_valid,
+            real_checked + real_seed_checked,
+            real_adv_handled,
+            len(adversarial),
+        )
+    )
     return 0
 
 
