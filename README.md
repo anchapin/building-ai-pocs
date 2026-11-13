@@ -40,6 +40,7 @@ Copyable template:
 Why: claim-typing a past POC's report found two premises its No-go verdict rested on that were assumptions, invisible until typed (the SS-DFA standard-reading assumption and an uncited hardware-precision premise). Typing costs minutes and makes that class of hidden premise visible before the verdict, not after.
 
 Lint (advisory, blocks nothing): `python3 scripts/claimcheck.py lint <artifact.md>` — exit 1 lists violations (untagged claim, `[observed]` without a source, `[unsupported]` in a premise/verdict position, or a missing `## Claims` section); exit 0 = clean. The checker is vendored in this repo at `scripts/claimcheck.py`, a scoped equivalent of the plan-coder tool, which remains the reference implementation. (Product-engineering spike Part D, plan-coder; enabled 2026-11-10.)
+All artifacts at once (README.md plus every POC's REPORT.md, discovered by glob): `python3 scripts/lint_claims.py` — exit 1 if any artifact violates, exit 0 when all are clean; the GitHub Actions workflow `.github/workflows/claims-lint.yml` runs that command on markdown-touching PRs/pushes, but it is advisory (continue-on-error) and never blocks a merge.
 
 ## POCs
 
