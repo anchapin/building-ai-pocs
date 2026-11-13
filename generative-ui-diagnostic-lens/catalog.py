@@ -72,6 +72,7 @@ UNIT_ALIASES: Dict[str, str] = {
     "fahrenheit": "°F",
     "f": "°F",
     "kelvin": "K",
+    "k": "K",
     "w": "W",
     "watt": "W",
     "watts": "W",
@@ -164,6 +165,58 @@ def unit_label(unit: Optional[str]) -> str:
     if canonical is None:
         return "?"
     return UNIT_TABLE[canonical][1]
+
+
+# --------------------------------------------------------------------------
+# The shared unit vocabulary
+# --------------------------------------------------------------------------
+#
+# The assembler recognises the units a request may name.  That vocabulary is
+# derived from the tables above, so there is exactly ONE unit vocabulary in
+# this POC: a unit the catalog knows can never be unknown to the assembler
+# (which used to be a silent-binding bug: "chart ... in K" fell through the
+# assembler's shorter list and bound the field's own unit instead).
+
+#: dimensions whose unit spellings are not unit words at all ("1", "none",
+#: "dimensionless" are ordinary words / bare numbers, not unit mentions)
+NON_DETECTABLE_DIMENSIONS: frozenset = frozenset({"dimensionless"})
+
+
+def detectable_units() -> Tuple[str, ...]:
+    """Canonical units a request may name.
+
+    Every unit the catalog can carry, except the dimensionless ones.
+    """
+    return tuple(
+        unit
+        for unit in UNIT_TABLE
+        if UNIT_TABLE[unit][0] not in NON_DETECTABLE_DIMENSIONS
+    )
+
+
+def is_detectable_unit(unit: Optional[str]) -> bool:
+    """True if ``unit`` is a unit a request may name."""
+    canonical = normalize_unit(unit)
+    if canonical is None:
+        return False
+    return UNIT_TABLE[canonical][0] not in NON_DETECTABLE_DIMENSIONS
+
+
+def unit_spellings() -> Tuple[str, ...]:
+    """Every lower-case spelling that names a detectable unit.
+
+    Canonical spellings (``°C``, ``kg/s``, ``kWh``) plus the catalog's
+    aliases (``celsius``, ``kelvin``, ``kgsec`` ...).  The assembler uses
+    this list both to recognise a unit mention in free text and to keep such
+    a word out of the "leftover" words it reports as unknown fields.
+    """
+    spellings = set()
+    for canonical in detectable_units():
+        spellings.add(canonical.lower())
+        for alias, target in UNIT_ALIASES.items():
+            if target == canonical:
+                spellings.add(alias)
+    return tuple(sorted(spellings))
 
 
 # --------------------------------------------------------------------------
