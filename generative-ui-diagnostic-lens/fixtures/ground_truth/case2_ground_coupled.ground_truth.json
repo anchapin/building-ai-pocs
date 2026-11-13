@@ -1,0 +1,27 @@
+{
+  "case_id": "case2_ground_coupled",
+  "diagnosis": "The ground-coupled floor is behaving as a large, nearly constant thermal sink: floor_boundary_temperature stays within 0.162 K of the constant 9.4 degC ground baseline (ground_baseline_temperature) for all 24 samples (9.240..9.562 degC), while zone1_air_temperature stays at 20.411..21.601 degC, inside its own band. The diagnosis lives in the floor-boundary series compared against the 9.4 degC baseline, not in the zone air temperature.",
+  "expected_observations": {
+    "baseline_value": 9.4,
+    "floor_boundary_temperature_max": 9.562,
+    "floor_boundary_temperature_max_abs_deviation": 0.162,
+    "floor_boundary_temperature_min": 9.24,
+    "floor_boundary_temperature_out_of_band": false,
+    "zone1_air_temperature_out_of_range": false
+  },
+  "frozen": true,
+  "key_fields": [
+    "floor_boundary_temperature",
+    "ground_baseline_temperature"
+  ],
+  "perturbation": {
+    "input": null,
+    "note": "No input is perturbed in this case; it is a baseline case."
+  },
+  "run_id": "run_ground_coupled_case2",
+  "supporting_fields": [
+    "zone1_air_temperature"
+  ],
+  "title": "Ground-coupled floor, boundary temperature vs a 9.4 degC baseline",
+  "written_before_assembler": true
+}

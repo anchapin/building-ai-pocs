@@ -1,0 +1,143 @@
+{
+  "fields": {
+    "run_log": {
+      "kind": "log",
+      "reference_range": null,
+      "unit": null,
+      "values": [
+        "case3: run started, seed=14001",
+        "case3: reading input table (6 entries)",
+        "case3: solver block: initialising",
+        "case3: solver block: converged in 24 steps",
+        "case3: writing result fields",
+        "case3: results written, status=ok"
+      ]
+    },
+    "total_cooling_energy": {
+      "kind": "scalar",
+      "reference_range": null,
+      "unit": "kWh",
+      "value": 980.4
+    },
+    "zone1_air_temperature": {
+      "kind": "series",
+      "reference_range": {
+        "max": 26.0,
+        "min": 20.0
+      },
+      "unit": "°C",
+      "values": [
+        24.856,
+        25.002,
+        25.162,
+        25.186,
+        25.193,
+        25.076,
+        24.954,
+        24.693,
+        24.472,
+        24.216,
+        23.847,
+        23.617,
+        23.273,
+        23.101,
+        22.899,
+        22.84,
+        22.751,
+        22.878,
+        22.989,
+        23.173,
+        23.42,
+        23.672,
+        23.977,
+        24.22
+      ]
+    },
+    "zone1_latent_load": {
+      "kind": "series",
+      "reference_range": null,
+      "unit": "W",
+      "values": [
+        118.251,
+        132.815,
+        146.479,
+        157.604,
+        172.339,
+        186.855,
+        195.89,
+        211.527,
+        222.083,
+        231.527,
+        248.064,
+        257.221,
+        272.389,
+        281.93,
+        299.758,
+        311.068,
+        322.62,
+        333.012,
+        348.071,
+        355.654,
+        373.531,
+        388.441,
+        400.492,
+        413.815
+      ]
+    },
+    "zone1_relative_humidity": {
+      "kind": "series",
+      "reference_range": {
+        "max": 70.0,
+        "min": 40.0
+      },
+      "unit": "%RH",
+      "values": [
+        55.054,
+        55.726,
+        57.13,
+        57.941,
+        59.185,
+        60.242,
+        61.207,
+        62.162,
+        62.959,
+        64.151,
+        64.89,
+        66.213,
+        67.002,
+        67.807,
+        68.96,
+        69.966,
+        70.98,
+        71.862,
+        73.139,
+        74.253,
+        74.82,
+        76.246,
+        77.001,
+        77.92
+      ]
+    }
+  },
+  "inputs": {
+    "latent_fraction": 0.42,
+    "outdoor_humidity_ratio": 0.019,
+    "outdoor_temperature_c": 31.0,
+    "run_hours": 24,
+    "zone_count": 1
+  },
+  "provenance": {
+    "fixture": "gen_fixtures.py",
+    "reference": "humid-climate latent load style",
+    "seed": "31415",
+    "step0_source": "in-folder fixture (no live Fluxion run)"
+  },
+  "run_id": "run_humid_latent_case3",
+  "run_name": "Humid-climate latent-load case (moisture signal)",
+  "solver": {
+    "converged": true,
+    "iterations": 24,
+    "name": "fixture-solver"
+  },
+  "status": "ok"
+}

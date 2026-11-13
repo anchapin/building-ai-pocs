@@ -1,0 +1,119 @@
+{
+  "fields": {
+    "run_log": {
+      "kind": "log",
+      "reference_range": null,
+      "unit": null,
+      "values": [
+        "case1: run started, seed=14001",
+        "case1: reading input table (6 entries)",
+        "case1: solver block: initialising",
+        "case1: solver block: converged in 24 steps",
+        "case1: writing result fields",
+        "case1: results written, status=ok"
+      ]
+    },
+    "total_heating_energy": {
+      "kind": "scalar",
+      "reference_range": null,
+      "unit": "kWh",
+      "value": 412.6
+    },
+    "zone1_air_temperature": {
+      "kind": "series",
+      "reference_range": {
+        "max": 24.0,
+        "min": 20.0
+      },
+      "unit": "°C",
+      "values": [
+        21.025,
+        21.103,
+        21.288,
+        21.293,
+        21.427,
+        21.445,
+        21.322,
+        21.296,
+        23.973,
+        24.14,
+        24.303,
+        24.471,
+        24.721,
+        24.817,
+        25.014,
+        25.222,
+        25.426,
+        25.519,
+        25.768,
+        25.93,
+        26.047,
+        26.301,
+        26.447,
+        26.588
+      ]
+    },
+    "zone1_supply_air_temperature": {
+      "kind": "series",
+      "reference_range": null,
+      "unit": "°C",
+      "values": []
+    },
+    "zone2_air_temperature": {
+      "kind": "series",
+      "reference_range": {
+        "max": 24.0,
+        "min": 20.0
+      },
+      "unit": "°C",
+      "values": [
+        21.716,
+        21.879,
+        21.898,
+        21.987,
+        21.962,
+        22.001,
+        21.912,
+        21.888,
+        21.755,
+        21.705,
+        21.566,
+        21.409,
+        21.358,
+        21.187,
+        21.143,
+        21.068,
+        21.004,
+        20.976,
+        20.985,
+        21.109,
+        21.147,
+        21.215,
+        21.391,
+        21.467
+      ]
+    }
+  },
+  "inputs": {
+    "heating_setpoint_c": 24.0,
+    "infiltration_ach": 0.35,
+    "internal_gain_w": 1200.0,
+    "outdoor_temperature_c": 6.0,
+    "run_hours": 24,
+    "zone_count": 2
+  },
+  "provenance": {
+    "fixture": "gen_fixtures.py",
+    "reference": "ASHRAE-140-style",
+    "seed": "14001",
+    "step0_source": "in-folder fixture (no live Fluxion run)"
+  },
+  "run_id": "run_ashrae140_case1",
+  "run_name": "ASHRAE-140-style case 1 (perturbed heating setpoint)",
+  "solver": {
+    "converged": true,
+    "iterations": 24,
+    "name": "fixture-solver"
+  },
+  "status": "ok"
+}

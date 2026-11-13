@@ -1,0 +1,146 @@
+{
+  "fields": {
+    "floor_boundary_temperature": {
+      "kind": "series",
+      "reference_range": {
+        "max": 9.6,
+        "min": 9.2
+      },
+      "unit": "°C",
+      "values": [
+        9.403,
+        9.451,
+        9.463,
+        9.492,
+        9.512,
+        9.548,
+        9.562,
+        9.527,
+        9.543,
+        9.506,
+        9.456,
+        9.449,
+        9.411,
+        9.368,
+        9.331,
+        9.296,
+        9.252,
+        9.24,
+        9.267,
+        9.241,
+        9.258,
+        9.305,
+        9.308,
+        9.355
+      ]
+    },
+    "ground_baseline_temperature": {
+      "kind": "series",
+      "reference_range": {
+        "max": 9.4,
+        "min": 9.4
+      },
+      "unit": "°C",
+      "values": [
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4,
+        9.4
+      ]
+    },
+    "run_log": {
+      "kind": "log",
+      "reference_range": null,
+      "unit": null,
+      "values": [
+        "case2: run started, seed=14001",
+        "case2: reading input table (6 entries)",
+        "case2: solver block: initialising",
+        "case2: solver block: converged in 24 steps",
+        "case2: writing result fields",
+        "case2: results written, status=ok"
+      ]
+    },
+    "total_heating_energy": {
+      "kind": "scalar",
+      "reference_range": null,
+      "unit": "kWh",
+      "value": 305.1
+    },
+    "zone1_air_temperature": {
+      "kind": "series",
+      "reference_range": {
+        "max": 26.0,
+        "min": 20.0
+      },
+      "unit": "°C",
+      "values": [
+        21.144,
+        21.276,
+        21.354,
+        21.392,
+        21.552,
+        21.601,
+        21.565,
+        21.584,
+        21.601,
+        21.519,
+        21.523,
+        21.371,
+        21.297,
+        21.205,
+        21.097,
+        20.94,
+        20.838,
+        20.748,
+        20.615,
+        20.583,
+        20.487,
+        20.465,
+        20.422,
+        20.411
+      ]
+    }
+  },
+  "inputs": {
+    "ground_baseline_c": 9.4,
+    "ground_coupling": "adiabatic_slab_9p4C",
+    "run_hours": 24,
+    "slab_thickness_m": 0.3,
+    "zone_count": 1
+  },
+  "provenance": {
+    "fixture": "gen_fixtures.py",
+    "reference": "ground-coupled floor style",
+    "seed": "90210",
+    "step0_source": "in-folder fixture (no live Fluxion run)"
+  },
+  "run_id": "run_ground_coupled_case2",
+  "run_name": "Ground-coupled floor case (9.4 degC baseline)",
+  "solver": {
+    "converged": true,
+    "iterations": 24,
+    "name": "fixture-solver"
+  },
+  "status": "ok"
+}

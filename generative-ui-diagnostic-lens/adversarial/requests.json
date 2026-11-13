@@ -1,0 +1,117 @@
+{
+  "description": "Adversarial request set (14 requests). Every one of them must end in an explicit refusal or a no-data spec - never in an invented binding. The expectations are the outcome the assembler must produce; the runner records what actually happened.",
+  "requests": [
+    {
+      "id": "adv01_nonexistent_field_co2",
+      "category": "nonexistent_field",
+      "run_id": "run_ashrae140_case1",
+      "request": "plot the CO2 generation rate over time",
+      "expect_code": "unknown_field",
+      "note": "CO2 generation rate is not a field of any run."
+    },
+    {
+      "id": "adv02_wrong_unit_kw",
+      "category": "wrong_unit",
+      "run_id": "run_ashrae140_case1",
+      "request": "show zone1 air temperature in kW",
+      "expect_code": "unit_mismatch",
+      "note": "zone1_air_temperature is degC; the request asks for kW."
+    },
+    {
+      "id": "adv03_other_run_by_id",
+      "category": "different_run",
+      "run_id": "run_ashrae140_case1",
+      "request": "chart run_ground_coupled_case2 floor boundary temperature",
+      "expect_code": "run_mismatch",
+      "note": "the request names another run's id."
+    },
+    {
+      "id": "adv04_mid_run_state",
+      "category": "mid_run_state",
+      "run_id": "run_ashrae140_case1",
+      "request": "show the mid-run solver state for zone1",
+      "expect_code": "mid_run_state_unavailable",
+      "note": "live / mid-run solver state is never served."
+    },
+    {
+      "id": "adv05_nonexistent_field_chiller",
+      "category": "nonexistent_field",
+      "run_id": "run_ashrae140_case1",
+      "request": "chart the annual chiller electricity consumption",
+      "expect_code": "unknown_field",
+      "note": "annual chiller electricity consumption is not a field of this run."
+    },
+    {
+      "id": "adv06_wrong_unit_variant",
+      "category": "wrong_unit",
+      "run_id": "run_ashrae140_case1",
+      "request": "plot zone1 air temperature in kW for the whole day",
+      "expect_code": "unit_mismatch",
+      "note": "same trap as adv02 with a longer phrasing."
+    },
+    {
+      "id": "adv07_nonexistent_field_with_unit",
+      "category": "nonexistent_field",
+      "run_id": "run_ashrae140_case1",
+      "request": "show the CO2 generation rate for zone1 in kg/s",
+      "expect_code": "unknown_field",
+      "note": "unknown field that also names a unit."
+    },
+    {
+      "id": "adv08_mid_run_checkpoint",
+      "category": "mid_run_state",
+      "run_id": "run_ground_coupled_case2",
+      "request": "render the current solver checkpoint state",
+      "expect_code": "mid_run_state_unavailable",
+      "note": "checkpoint / current-state variant."
+    },
+    {
+      "id": "adv09_other_run_by_id_2",
+      "category": "different_run",
+      "run_id": "run_ashrae140_case1",
+      "request": "chart run_humid_latent_case3 zone1 relative humidity",
+      "expect_code": "run_mismatch",
+      "note": "the request names a third run's id."
+    },
+    {
+      "id": "adv10_other_run_in_words",
+      "category": "different_run",
+      "run_id": "run_ground_coupled_case2",
+      "request": "show me the data from another run",
+      "expect_code": "different_run_requested",
+      "note": "the request asks for another run without naming it."
+    },
+    {
+      "id": "adv11_mixed_known_and_unknown",
+      "category": "nonexistent_field",
+      "run_id": "run_ashrae140_case1",
+      "request": "plot zone1 air temperature and the CO2 generation rate",
+      "expect_code": "unknown_field",
+      "note": "one real field and one invented field: the whole request is refused, nothing is invented for the missing half."
+    },
+    {
+      "id": "adv12_nonexistent_field_uvalue",
+      "category": "nonexistent_field",
+      "run_id": "run_ashrae140_case1",
+      "request": "plot the window U-value",
+      "expect_code": "unknown_field",
+      "note": "an input property, not a result field."
+    },
+    {
+      "id": "adv13_other_run_field_by_name",
+      "category": "different_run",
+      "run_id": "run_ashrae140_case1",
+      "request": "plot the ground baseline temperature",
+      "expect_code": "unknown_field",
+      "note": "the field belongs to another run; this run's manifest does not have it."
+    },
+    {
+      "id": "adv14_zone_that_does_not_exist",
+      "category": "nonexistent_field",
+      "run_id": "run_ashrae140_case1",
+      "request": "highlight zone zone9 air temperature",
+      "expect_code": "unknown_field",
+      "note": "zone9 is not part of this run."
+    }
+  ]
+}
