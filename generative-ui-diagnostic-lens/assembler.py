@@ -24,7 +24,12 @@ Matching rules (all deterministic)
     not generic words (``peak``, ``reference``, ``hour`` ...) are treated as
     a mention of a field the manifest does not have -> explicit refusal.
 5.  A unit named in the request must match the unit of every field the
-    request binds; otherwise the request is refused.
+    request binds; otherwise the request is refused.  The unit vocabulary
+    is the catalog's (``catalog.unit_spellings`` / ``catalog.normalize_unit``)
+    - there is no second, shorter list of "recognised" units, because a
+    catalog unit the assembler failed to recognise would silently bind the
+    field's own unit instead of being checked.  A unit the catalog cannot
+    check at all (``BTU/h``) is refused (``unknown_unit``).
 
 Refusal codes
 -------------
@@ -45,7 +50,7 @@ Refusal codes
 from __future__ import annotations
 
 import re
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
 
 import catalog
 import manifest as manifest_mod
@@ -71,7 +76,8 @@ STOPWORDS = frozenset(
 GENERIC_WORDS = frozenset(
     """
     peak max maximum min minimum average mean last latest first final whole
-    day hour hours time times series data number numbers value values total
+    day hour hours minute minutes second seconds time times series data
+    number numbers value values total
     sum summary comparison compare table card kpi zone zones log logs lines
     tail inputs input parameters parameter provenance settings configuration
     result results field fields name unit units reference range band case
@@ -87,13 +93,10 @@ GENERIC_WORDS = frozenset(
     """.split()
 )
 
-#: spellings that are units, not field names (never counted as leftovers)
-UNIT_WORDS = frozenset(
-    """
-    kw mw w kwh mwh wh degc degf celsius fahrenheit c f k % %rh kg/s g/s kg/kg
-    g/kg w/m2 m3/h
-    """.split()
-)
+#: spellings that are units, not field names (never counted as leftovers).
+#: Shared with the catalog: the assembler recognises exactly the units the
+#: catalog knows, so the two vocabularies cannot drift apart.
+UNIT_WORDS = frozenset(catalog.unit_spellings())
 
 #: request phrases that select a catalog primitive.  Longest match wins.
 TRIGGERS: Tuple[Tuple[str, str], ...] = (
@@ -161,28 +164,15 @@ OTHER_RUN_PHRASES: Tuple[str, ...] = (
     "previous run",
 )
 
-#: units the lens can detect in free text (checked against the manifest)
-DETECTABLE_UNITS: Tuple[Tuple[str, str], ...] = (
-    (r"%RH", "%RH"),
-    (r"°C", "°C"),
-    (r"\bdegC\b", "°C"),
-    (r"\bcelsius\b", "°C"),
-    (r"°F", "°F"),
-    (r"\bdegF\b", "°F"),
-    (r"\bfahrenheit\b", "°F"),
-    (r"\bkWh\b", "kWh"),
-    (r"\bMWh\b", "MWh"),
-    (r"\bWh\b", "Wh"),
-    (r"\bkW\b", "kW"),
-    (r"\bMW\b", "MW"),
-    (r"\bW\b", "W"),
-    (r"\bkg/s\b", "kg/s"),
-    (r"\bg/s\b", "g/s"),
-    (r"\bkg/kg\b", "kg/kg"),
-    (r"\bg/kg\b", "g/kg"),
-    (r"\bW/m2\b", "W/m2"),
-    (r"\bm3/h\b", "m3/h"),
-    (r"%", "%"),
+#: tokens that may name a unit in free text: letters, digits, ``%``, ``°``
+#: and the compound separators the catalog uses (``kg/s``, ``W/m2.K``)
+UNIT_TOKEN_RE = re.compile(r"[A-Za-z%°][A-Za-z0-9%°]*(?:[./][A-Za-z0-9%°]+)*")
+
+#: words that introduce a unit ("temperature in K", "power in kW")
+UNIT_CONTEXT_WORDS = frozenset(
+    """
+    in using as unit units of expressed measured given
+    """.split()
 )
 
 #: aggregation keywords (searched in the part of a segment not consumed by a
@@ -238,12 +228,84 @@ def _name_tokens(name: str) -> List[str]:
     return out
 
 
-def _detect_unit(text: str) -> Optional[str]:
-    """The first unit named in ``text`` (canonicalised), if any."""
-    for pattern, canonical in DETECTABLE_UNITS:
-        if re.search(pattern, text):
-            return canonical
-    return None
+def _detect_unit(
+    text: str, field_tokens: Optional[Set[str]] = None
+) -> Tuple[Optional[str], Optional[str]]:
+    """The first unit named in ``text``.
+
+    Returns ``(canonical_unit, unknown_unit_token)``.  The unit vocabulary
+    is the catalog's: a token names a unit exactly when
+    ``catalog.normalize_unit`` can canonicalise it.  There is deliberately no
+    second, shorter list of "recognised" units - a unit the catalog knows
+    but the assembler did not recognise would silently bind the field's own
+    unit instead of being checked (the "in K" bug).
+
+    ``unknown_unit_token`` is set when the request names something that looks
+    like a unit (``BTU/h``) but that the catalog cannot check at all; such a
+    request is refused rather than served with a guessed unit.
+    """
+    for match in UNIT_TOKEN_RE.finditer(text):
+        token = match.group()
+        lowered = token.lower()
+        contextual = _in_unit_context(text, match.start())
+        canonical = catalog.normalize_unit(token)
+        if canonical is None:
+            canonical = catalog.normalize_unit(lowered)
+        if canonical is None:
+            if _looks_like_unit(token) and contextual:
+                return None, token
+            continue
+        if not catalog.is_detectable_unit(canonical):
+            continue
+        if not contextual:
+            # an ordinary English word that also names a unit ("hours") is
+            # only a unit mention when the request introduces it as one
+            if lowered in GENERIC_WORDS:
+                continue
+            # a single letter only names a unit when it is written in the
+            # canonical capitalisation ("K", "W") - "the run's log" is not a
+            # request for seconds
+            if len(token) == 1 and token.isalpha() and not token.isupper():
+                continue
+        # a part of a manifest field name ("zone1_heating_kw") is not a unit
+        # mention unless the request introduces it as one ("in kW")
+        if field_tokens and lowered in field_tokens and not contextual:
+            continue
+        return canonical, None
+    return None, None
+
+
+def _looks_symbolic(token: str) -> bool:
+    """True if the token carries a unit symbol (``°C``, ``%RH``, ``kg/s``)."""
+    return any(not char.isalpha() for char in token)
+
+
+def _looks_like_unit(token: str) -> bool:
+    """True if the token looks like a unit the catalog cannot check."""
+    return _looks_symbolic(token) and any(char in token for char in "/%°")
+
+
+def _in_unit_context(text: str, start: int) -> bool:
+    """True if the token at ``start`` is introduced as a unit ("in K").
+
+    The word right before the token must introduce it: "temperature in K",
+    "power in kW", "units of kg/s".  A number in between ("the last 3
+    hours") means the token is not a unit mention.
+    """
+    words = re.findall(r"[A-Za-z0-9]+", text[:start])
+    if not words:
+        return False
+    return words[-1].lower() in UNIT_CONTEXT_WORDS
+
+
+def _field_tokens(entries: Sequence[Dict[str, Any]]) -> Set[str]:
+    """The lower-case parts of every manifest field name."""
+    tokens: Set[str] = set()
+    for entry in entries:
+        for part in re.split(r"[_\-.]+", str(entry.get("name", ""))):
+            if part:
+                tokens.add(part.lower())
+    return tokens
 
 
 def _detect_aggregation(tokens: Sequence[str]) -> str:
@@ -416,8 +478,16 @@ def assemble(
     triggers = find_triggers(request)
     entries = manifest.get("entries", [])
 
-    # 4. unit named in the request
-    requested_unit = _detect_unit(request)
+    # 4. unit named in the request.  The unit vocabulary is the catalog's,
+    #    so a unit the catalog knows is always checked against the field.
+    requested_unit, unknown_unit = _detect_unit(request, _field_tokens(entries))
+    if unknown_unit is not None:
+        notes.append("refused: uncheckable unit %r" % unknown_unit)
+        return uispec.make_refusal(
+            "unknown_unit",
+            "the request names a unit the lens cannot check: %r" % unknown_unit,
+            requested_unit=unknown_unit,
+        )
     if requested_unit is not None:
         canonical = catalog.normalize_unit(requested_unit)
         if canonical is None:
