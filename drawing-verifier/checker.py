@@ -448,18 +448,32 @@ def check_wall_adjacency(model: Dict[str, Any]) -> List[Finding]:
 
     for host, spans in spans_by_wall.items():
         spans.sort()
-        for (lo1, hi1, id1), (lo2, hi2, id2) in zip(spans, spans[1:]):
-            if lo2 < hi1 - TOLERANCE_M:
-                findings.append(
-                    Finding(
-                        "opening_overlap",
-                        id2,
-                        (
-                            f"opening {id2!r} overlaps opening {id1!r} on host wall "
-                            f"{host!r} by {hi1 - lo2:.3f} m"
-                        ),
+        # Every pair of openings on the wall is compared, not only
+        # consecutive ones: a narrow opening sitting between two wider ones
+        # would otherwise hide a real overlap of the outer two.
+        for index, (lo1, hi1, id1) in enumerate(spans):
+            for (lo2, hi2, id2) in spans[index + 1:]:
+                # The geometric overlap of two spans is their *common* part:
+                # ``min(hi1, hi2) - max(lo1, lo2)``.  The previous test used
+                # ``hi1 - lo2`` and compared it against the tolerance, which
+                # is only the overlap when the second span ends beyond the
+                # first one.  For a span *contained* in the other (or merely
+                # ending earlier) it measured the complement of the overlap,
+                # so a 0.020 m overlap inside a 10 m opening was reported as
+                # a 9.960 m overlap -- a false positive with a wrong
+                # magnitude.
+                overlap = min(hi1, hi2) - max(lo1, lo2)
+                if overlap > TOLERANCE_M:
+                    findings.append(
+                        Finding(
+                            "opening_overlap",
+                            id2,
+                            (
+                                f"opening {id2!r} overlaps opening {id1!r} on host wall "
+                                f"{host!r} by {overlap:.3f} m"
+                            ),
+                        )
                     )
-                )
 
     for zone in model.get("zones", []):
         zid = zone["id"]
