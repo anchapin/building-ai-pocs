@@ -1,0 +1,36 @@
+name: claims-lint
+
+# Advisory only: this workflow never blocks a merge. It reports claim-typing
+# violations in the repository's markdown artifacts; it is not a required
+# status check and its failures are explicitly tolerated (continue-on-error).
+on:
+  pull_request:
+    paths:
+      - '**/*.md'
+  push:
+    branches:
+      - '**'
+    paths:
+      - '**/*.md'
+
+permissions:
+  contents: read
+
+jobs:
+  claims-lint:
+    name: Advisory claims lint (all artifacts)
+    runs-on: ubuntu-latest
+    # Advisory by design: a violation fails this job's conclusion but never
+    # blocks the pull request. Do not turn this into a required check.
+    continue-on-error: true
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Lint README.md and every POC REPORT.md
+        run: python3 scripts/lint_claims.py
