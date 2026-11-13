@@ -1,7 +1,13 @@
-# Generative-UI Diagnostic Lens — POC slice 0 (read-only, deterministic)
+# Generative-UI Diagnostic Lens — POC (read-only, deterministic)
 
-**Status:** slice 0 built and measured on in-folder fixtures.  The verdict is
-**Conditional** (see `REPORT.md`).
+**Status:** slice 0 built and measured on in-folder fixtures, plus slice 2,
+which re-runs the same assembler and validator against a **real, completed
+Fluxion run output** (a byte-verified copy of the versioned standard results
+report, `real_runs/fluxion_standard_report.json`; provenance in
+`real_runs/PROVENANCE.md`).  The binding gate is met on that real output
+(8/8 bindings valid, 14/14 adversarial handled, 0 invented bindings); the
+time criterion is still missed and is reported, not waived.  See `REPORT.md`
+for the full verdict and the re-typed Claims.
 
 A *diagnostic lens* turns a plain-language question about a building-simulation
 run ("chart zone 1 air temperature and show it against the reference range")
@@ -163,16 +169,40 @@ catalog **cannot** express (floor-plan heat map, cross-run comparison,
 scatter plot, live solver animation, edit-and-re-run).  Those are the
 inexpressible list of the catalog-coverage table; all of them are refused.
 
-## 6. Limits of this slice
+## 6. The real Fluxion run output (slice 2)
 
-* **Step-0 limitation (verbatim from the brief):** this slice runs against
-  in-folder FIXTURE run outputs shaped after the issue's documented Fluxion
-  `results.json` premise (issue #37, premise verified by the issue author
-  2026-11-13 in the fluxion clone).  Step 0 against a real live Fluxion run
-  output is NOT verified by this slice; the report's verdict is therefore at
-  most **Conditional**, and its Claims section must type that claim as
-  [unsupported] for live-Fluxion binding and [observed] only for the
-  fixture runs actually executed.
+`real_runs/fluxion_standard_report.json` is a **byte-for-byte copy of a
+completed Fluxion run's output** — the versioned standard results report
+(`results_v1`) that the engine emits for a finished run.  It was obtained
+read-only from the Fluxion clone; nothing in Fluxion was executed or
+modified.  `real_runs/PROVENANCE.md` records the artifact, its upstream
+commit, its sha256 (`1d783a1e…1146b`) and what it is not.
+
+`manifest.py` maps it to lens field names mechanically
+(`STANDARD_REPORT_FIELDS`): every lens field is a field the report carries,
+with the unit the report's own schema declares.  The report carries the
+hourly end-use series by **checksum only**, so those fields have no values
+and the lens renders "no data" for them; it carries no log lines, so the
+LogTail view of the real run is refused `no_log_field`.
+
+`run_poc.py` section [8] runs the same assembler and validator over the
+three seeded-case requests, the real-output request set
+(`real_runs/requests.json`) and the adversarial set against that real
+manifest, and reports binding validity, adversarial handling, invented
+bindings and the timing comparison at real-output scale.
+
+## 7. Limits of this slice
+
+* Slice 1 (fixtures) ran against in-folder FIXTURE run outputs shaped after
+  the issue's documented Fluxion `results.json` premise (issue #37, premise
+  verified by the issue author 2026-11-13 in the fluxion clone).  Slice 2
+  added the step-0 check against a real completed run output — but the real
+  artifact that exists in the Fluxion repo is the versioned standard results
+  report, **not** the issue's premise shape: no JSON document in the clone
+  carries a `"run_id"` or a `"fields"` key, so the fixture shape remains a
+  *shaped premise*, not a copy of a repo artifact.
+* The time criterion (median lens time-to-diagnosis < 50% of a throwaway
+  baseline) is **missed** at both scales and is reported, not waived.
 * No write path, no solver execution or patching, no Fluxion integration, no
   protocol adoption (A2UI / AG-UI / MCP Apps), no hosted services, no
   secrets or paid APIs, no packages beyond the Python standard library.
