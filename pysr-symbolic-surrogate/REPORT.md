@@ -8,17 +8,20 @@ out-of-range — requires one PySR run on a host where its Julia backend works.
 
 ## Claims
 
-- [observed] The least-squares biquadratic refit, trained on the restricted
-  box (PLR 0.3–0.8 × T 24–30.6 °C, 400 samples), recovers the generating
-  coefficients exactly on noise-free data for seeds 0–2 (in-range and
-  out-of-range RMSE ≈ 1e-15; `MEASUREMENTS.md` rows 1, 3, 5). This is the
-  control the PySR arm must be compared against, and it confirms the
-  generator + evaluation harness measure what they claim to.
-- [observed] At 1% multiplicative noise the same refit's out-of-range RMSE
-  (0.0027–0.0148 across seeds 0–2) runs roughly 3–8× its in-range RMSE
-  (0.00086–0.0017) — rows 2, 4, 6. The extrapolation gap the POC exists to
-  test is real for the comparator on this data.
-- [observed] Every PySR fit attempted on this VM (6 fits: restricted +
+- [observed] (source: MEASUREMENTS.md rows 1, 3, 5) The least-squares
+  biquadratic refit, trained on the restricted box (PLR 0.3–0.8 × T 24–30.6 °C,
+  400 samples), recovers the generating coefficients exactly on noise-free
+  data for seeds 0–2 (in-range and out-of-range RMSE ≈ 1e-15; `MEASUREMENTS.md`
+  rows 1, 3, 5). This is the control the PySR arm must be compared against,
+  and it confirms the generator + evaluation harness measure what they claim
+  to.
+- [observed] (source: MEASUREMENTS.md rows 2, 4, 6) At 1% multiplicative noise
+  the same refit's out-of-range RMSE (0.0027–0.0148 across seeds 0–2) runs
+  roughly 3–8× its in-range RMSE (0.00086–0.0017) — rows 2, 4, 6. The
+  extrapolation gap the POC exists to test is real for the comparator on this
+  data.
+- [observed] (source: MEASUREMENTS.md, PySR arm environment failure record)
+  Every PySR fit attempted on this VM (6 fits: restricted +
   control arms, seeds 0–2, plus a minimal direct fit) failed in the Julia
   backend before producing an equation: first `OSError(28)` from juliapkg
   staging its 273.2 MB Julia download in the 512 MB `/tmp` tmpfs, then —
