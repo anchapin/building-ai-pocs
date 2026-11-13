@@ -467,7 +467,7 @@ running the benchmark.
 - [inference] The heat-balance metric conflates trajectory error with physics violation (a drifted trajectory carries a large implied imbalance), so the reported residuals overstate the physics violation — from the heat-balance observations above and REPORT.md slice-2 "Reading".
 - [unsupported] The optimistic setting — the ground truth IS the RC model, the physics loss uses the KNOWN per-series RC parameters, and each rollout starts from the true wall state — is carried as an assumption; NOT a premise for any verdict in this artifact, and no claim about physics priors under parameter error is made from it.
 - [unsupported] That physics priors help in practice on real buildings — carried as an assumption; NOT a premise for any verdict in this artifact (the nominal-vs-true result cuts the other way and everything remains on self-consistent RC ground truth).
-- [decision] Label this POC No-go (full-POC verdict; slice 3 closes the POC) — operator; no verdict date is recorded in this report.
+- [decision] Label this POC No-go (full-POC verdict; slice 3 closes the POC) — operator, 2026-11-06.
 
 ## Hypothesis updates
 

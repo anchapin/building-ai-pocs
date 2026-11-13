@@ -697,4 +697,4 @@ $ echo $?
 - [unsupported] The WWR band (0.05–0.55) as a plausibility heuristic rather than a code requirement — carried as an assumption; NOT a premise for any verdict in this artifact.
 - [unsupported] The convention that a shared-wall opening is listed in exactly one adjacent zone (listing in both adjacent zones is tolerated, not flagged) — carried as an assumption; NOT a premise for any verdict in this artifact.
 - [unsupported] Floor areas as centre-line ("clear internal") areas, with wall thickness carried but not added — carried as an assumption; NOT a premise for any verdict in this artifact.
-- [decision] Label this POC Conditional: the symbolic-checker half is demonstrated and measured on the slice's hand-built fixtures, the VLM second-reader half is deferred pending VLM selection, and no Matchline extraction run was performed — operator; no verdict date is recorded in this report.
+- [decision] Label this POC Conditional: the symbolic-checker half is demonstrated and measured on the slice's hand-built fixtures, the VLM second-reader half is deferred pending VLM selection, and no Matchline extraction run was performed — operator, 2026-11-06.
