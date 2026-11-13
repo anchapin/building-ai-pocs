@@ -1,0 +1,32 @@
+{
+  "case_id": "case1_ashrae140",
+  "diagnosis": "Zone 1 air temperature leaves its reference band from hour 9 onwards because the heating setpoint input was perturbed from 20.0 degC to 24.0 degC at hour 8: zone1_air_temperature rises to 26.588 degC at hour 23 while the reference band is 20.0..24.0 degC. Zone 2 air temperature stays inside the band over the same window (20.976..22.001 degC), so the excursion is local to the zone driven by the perturbed input, not a global shift of the run.",
+  "expected_observations": {
+    "first_out_of_range_hour": 9,
+    "zone1_air_temperature_max": 26.588,
+    "zone1_air_temperature_out_of_range": true,
+    "zone1_air_temperature_reference_max": 24.0,
+    "zone2_air_temperature_max": 22.001,
+    "zone2_air_temperature_min": 20.976,
+    "zone2_air_temperature_out_of_range": false
+  },
+  "frozen": true,
+  "key_fields": [
+    "zone1_air_temperature",
+    "zone2_air_temperature"
+  ],
+  "perturbation": {
+    "applied_at_hour": 8,
+    "input": "heating_setpoint_c",
+    "note": "The heating setpoint input was raised by 4.0 K at hour 8 and held there for the rest of the run.",
+    "perturbed_value": 24.0,
+    "reference_value": 20.0,
+    "unit": "degC"
+  },
+  "run_id": "run_ashrae140_case1",
+  "supporting_fields": [
+    "total_heating_energy"
+  ],
+  "title": "ASHRAE-140-style case with one perturbed input",
+  "written_before_assembler": true
+}

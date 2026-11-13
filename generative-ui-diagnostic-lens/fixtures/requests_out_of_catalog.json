@@ -1,0 +1,53 @@
+{
+  "description": "Requests attempted during the slice that the CLOSED six-primitive catalog cannot express. Each one must end in an explicit refusal (no primitive, or no field to bind) - never in an invented binding. This file is the deliverable 'inexpressible list' of the catalog-coverage table.",
+  "requests": [
+    {
+      "id": "out01_floor_plan_heatmap",
+      "intent": "whole-building floor-plan heat map",
+      "run_id": "run_ashrae140_case1",
+      "request": "show the whole building as a coloured floor plan of every zone",
+      "expect_code": "unknown_field",
+      "note": "The catalog has no building-geometry primitive; ZoneHighlight is schematic and takes one zone and one series."
+    },
+    {
+      "id": "out02_two_run_comparison",
+      "intent": "side-by-side comparison of two runs",
+      "run_id": "run_ashrae140_case1",
+      "request": "compare run_ashrae140_case1 and run_humid_latent_case3 side by side",
+      "expect_code": "run_mismatch",
+      "note": "No cross-run primitive exists, and a run other than the bound one is refused."
+    },
+    {
+      "id": "out03_scatter",
+      "intent": "scatter plot of one field against another",
+      "run_id": "run_humid_latent_case3",
+      "request": "plot zone1 relative humidity against zone1 latent load as a scatter",
+      "expect_code": "unknown_field",
+      "note": "The catalog has no scatter / x-y primitive; only TimeSeriesChart (one series vs the sample index)."
+    },
+    {
+      "id": "out04_live_solver_animation",
+      "intent": "animated view of the solver converging",
+      "run_id": "run_ground_coupled_case2",
+      "request": "animate the solver state while it is running",
+      "expect_code": "mid_run_state_unavailable",
+      "note": "Live / mid-run state is out of scope for a read-only lens on finished runs."
+    },
+    {
+      "id": "out05_edit_and_rerun",
+      "intent": "change an input and re-run the model",
+      "run_id": "run_ashrae140_case1",
+      "request": "set the heating setpoint to 22 degC and re-run the simulation",
+      "expect_code": "unknown_field",
+      "note": "Write path and solver execution are out of scope for this slice."
+    },
+    {
+      "id": "out06_nothing_field_like",
+      "intent": "a request with no field in it at all",
+      "run_id": "run_ashrae140_case1",
+      "request": "show me the data",
+      "expect_code": "no_known_intent",
+      "note": "Nothing field-like and no recognised primitive phrase: the lens refuses instead of guessing."
+    }
+  ]
+}

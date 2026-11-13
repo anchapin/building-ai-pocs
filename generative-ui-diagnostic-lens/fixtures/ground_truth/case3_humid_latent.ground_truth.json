@@ -1,0 +1,27 @@
+{
+  "case_id": "case3_humid_latent",
+  "diagnosis": "The anomaly in this run is a moisture/latent one: zone1_relative_humidity climbs from 55.054 %RH to 77.920 %RH and leaves its 40..70 %RH reference band from hour 16 onwards, while zone1_latent_load rises with it from 118.251 W to 413.815 W. The dry-bulb signal zone1_air_temperature stays within 1.249 K of 24 degC over the same window (22.751..25.193 degC), so a diagnosis built on temperature alone would miss the excursion.",
+  "expected_observations": {
+    "first_out_of_range_hour": 16,
+    "zone1_air_temperature_max_abs_deviation_from_24": 1.249,
+    "zone1_latent_load_max": 413.815,
+    "zone1_relative_humidity_max": 77.92,
+    "zone1_relative_humidity_out_of_range": true,
+    "zone1_relative_humidity_reference_max": 70.0
+  },
+  "frozen": true,
+  "key_fields": [
+    "zone1_relative_humidity",
+    "zone1_latent_load"
+  ],
+  "perturbation": {
+    "input": null,
+    "note": "No input is perturbed in this case; it is a baseline case."
+  },
+  "run_id": "run_humid_latent_case3",
+  "supporting_fields": [
+    "zone1_air_temperature"
+  ],
+  "title": "Humid-climate latent load; the signal is moisture, not temperature",
+  "written_before_assembler": true
+}
