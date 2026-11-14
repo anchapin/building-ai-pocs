@@ -50,9 +50,9 @@ The strict layer is ~72% of the layer code — well over the issue's 50% Conditi
 
 ## Claims
 
-- [observed] 15 frozen scoped parameters, each with an explicit SI unit, range and default — `run_poc.py` section [1] prints the set; ranges are in-repo evidence (10), cited physical bounds (4), or a labelled decision (1) because no Fluxion measure spec exists in this repo.
-- [observed] Panel binding validity 14/14 and adversarial rejection 33/33 at the schema layer — `run_poc.py` sections [2] and [5]; 36 POC tests pass.
-- [observed] Panel-generated and hand-written configurations are byte-for-byte identical for 5/5 representative sweeps — SHA-256 hashes printed in `run_poc.py` section [6].
+- [observed] 15 frozen scoped parameters, each with an explicit SI unit, range and default (source: run_poc.py section [1]) — `run_poc.py` section [1] prints the set; ranges are in-repo evidence (10), cited physical bounds (4), or a labelled decision (1) because no Fluxion measure spec exists in this repo.
+- [observed] Panel binding validity 14/14 and adversarial rejection 33/33 at the schema layer (source: run_poc.py sections [2] and [5]) — `run_poc.py` sections [2] and [5]; 36 POC tests pass.
+- [observed] Panel-generated and hand-written configurations are byte-for-byte identical for 5/5 representative sweeps (source: run_poc.py section [6]) — SHA-256 hashes printed in `run_poc.py` section [6].
 - [unsupported] Solver-run equivalence: no Fluxion solver or `apply-measures` run was executed in this POC; any claim that generated sweeps produce identical simulation outputs is unproven here.
 - [inference] The strict schema layer is the dominant cost of the approach (~72% of layer code lines), so the schema layer — not panel generation — is where a Fluxion investment would go first.
 - [decision] Verdict Conditional, per the issue's own rules: equivalence/rejection bars met at the configuration level, strict layer >50% of effort, solver equivalence unobserved.
