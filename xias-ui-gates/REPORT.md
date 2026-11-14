@@ -766,10 +766,10 @@ P1 class per the parent gate: axe serious/critical, rendered contrast < AA, targ
 
 ## Claims
 
-- [observed] All 24 screen×theme×viewport cells rendered the real staging-studio screens in the hermetic harness and were measured; counts and worst examples above come from `results/gates-1-4.json` (axe-core 4 + rendered-DOM measurement in Chromium).
-- [observed] Gate 4 (horizontal overflow at 390px) is 0 px on all six screens in both themes — unlike the lens renderer's fixture output, the real app does not overflow at 390px.
-- [observed] Gate 7 counts 878 hex occurrences, 614 classified 'other' (not design tokens, not material swatches) — from `results/gate7-hex-count.json`, a static count over src/components + src/app at the measured commit.
-- [observed] The dominant rendered failures are colour contrast (muted-foreground text at ~3.5:1 against a 4.5:1 requirement) and sub-24px targets, concentrated in project detail and the lookbook editor.
+- [observed] All 24 screen×theme×viewport cells rendered the real staging-studio screens in the hermetic harness and were measured; counts and worst examples above come from `results/gates-1-4.json` (axe-core 4 + rendered-DOM measurement in Chromium); source: results/gates-1-4.json.
+- [observed] Gate 4 (horizontal overflow at 390px) is 0 px on all six screens in both themes — unlike the lens renderer's fixture output, the real app does not overflow at 390px; source: results/gates-1-4.json.
+- [observed] Gate 7 counts 878 hex occurrences, 614 classified 'other' (not design tokens, not material swatches) — from `results/gate7-hex-count.json`, a static count over src/components + src/app at the measured commit; source: results/gate7-hex-count.json.
+- [observed] The dominant rendered failures are colour contrast (muted-foreground text at ~3.5:1 against a 4.5:1 requirement) and sub-24px targets, concentrated in project detail and the lookbook editor; source: results/gates-1-4.json.
 - [inference] Because P1 findings appear on every screen, a Phase 1 gate wired into staging-studio's E2E would start red on day one; the gate-set wall-time (~72 s for the measurement pass, plus build/seed) is the ceiling it would add.
 - [unsupported] Nothing here measures gates 5 (keyboard) or 6 (verify-interactive), real-user impact, or XIAS's effect on these numbers; no claim is made about them.
 
