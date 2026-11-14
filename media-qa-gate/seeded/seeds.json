@@ -1,0 +1,67 @@
+{
+  "seeds": [
+    {
+      "derived_from": "android/screenshots/combat.png",
+      "expect_error": true,
+      "expected_check": "dimensions",
+      "file": "placeholder_1x1.png",
+      "id": "placeholder_1x1",
+      "kind": "1x1 placeholder",
+      "note": ""
+    },
+    {
+      "derived_from": "android/screenshots/campaign.png",
+      "expect_error": true,
+      "expected_check": "blank",
+      "file": "solid_colour_frame.png",
+      "id": "solid_colour_frame",
+      "kind": "single-colour frame",
+      "note": ""
+    },
+    {
+      "derived_from": "android/screenshots/main_menu.png",
+      "expect_error": true,
+      "expected_check": "dimensions",
+      "file": "wrong_dimensions.png",
+      "id": "wrong_dimensions",
+      "kind": "wrong dimensions",
+      "note": ""
+    },
+    {
+      "derived_from": "ios/screenshots/iphone_5_5/campaign.png",
+      "expect_error": true,
+      "expected_check": "sharpness",
+      "file": "blurred_frame.png",
+      "id": "blurred_frame",
+      "kind": "blurred frame",
+      "note": ""
+    },
+    {
+      "derived_from": "ios/screenshots/iphone_6_7/combat.png",
+      "expect_error": true,
+      "expected_check": "exposure",
+      "file": "crushed_exposure.png",
+      "id": "crushed_exposure",
+      "kind": "crushed exposure",
+      "note": ""
+    },
+    {
+      "derived_from": "ios/screenshots/ipad/campaign.png",
+      "expect_error": false,
+      "expected_check": "duplicate",
+      "file": "duplicate_slot/campaign.png",
+      "id": "duplicate_frame_a",
+      "kind": "duplicate frame, first copy of a slot pair",
+      "note": "the first copy of the pair; the duplicate check can only fire on the second occurrence"
+    },
+    {
+      "derived_from": "ios/screenshots/ipad/campaign.png",
+      "expect_error": true,
+      "expected_check": "duplicate",
+      "file": "duplicate_slot/campaign_copy.png",
+      "id": "duplicate_frame_b",
+      "kind": "duplicate frame, second copy of the same slot pair",
+      "note": "pixel-identical to duplicate_slot/campaign.png in the same submission group"
+    }
+  ]
+}
