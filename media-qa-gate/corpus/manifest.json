@@ -1,0 +1,527 @@
+{
+  "artifacts": [
+    {
+      "bytes": 5120,
+      "file": "android/feature_graphic_1024x500.png",
+      "group": "android",
+      "sha256": "237cf1d288030d5423a47f284bc1cc4db71ba37644845101f9825caea2375a44",
+      "source": "armored-archer/app_store_assets/android/feature_graphic_1024x500.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/android/feature_graphic_1024x500.png"
+    },
+    {
+      "bytes": 9248,
+      "file": "android/icon_1024x1024.png",
+      "group": "android",
+      "sha256": "13af06e55b209d95f9ceeeff5b0625abb9bd05cc3c6d1cd755e2fa6d12e87025",
+      "source": "armored-archer/app_store_assets/android/icon_1024x1024.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/android/icon_1024x1024.png"
+    },
+    {
+      "bytes": 3616,
+      "file": "android/icon_512x512.png",
+      "group": "android",
+      "sha256": "f535f38b6849e8e0f54e451c4d3dbffe1e98eac740bd6030d1736b8b433869a4",
+      "source": "armored-archer/app_store_assets/android/icon_512x512.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/android/icon_512x512.png"
+    },
+    {
+      "bytes": 35630,
+      "expected": [
+        1080,
+        1920
+      ],
+      "file": "android/screenshots/campaign.png",
+      "group": "android/screenshots",
+      "sha256": "c25678393b0a8fde1be197b9dd13301f791079ba7c2d74ff294b862359d578f1",
+      "source": "armored-archer/app_store_assets/android/screenshots/campaign.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/android/screenshots/campaign.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 37578,
+      "expected": [
+        1080,
+        1920
+      ],
+      "file": "android/screenshots/combat.png",
+      "group": "android/screenshots",
+      "sha256": "dc657a22882864cd7690ca4cfbb887a7a7722a03277c04323c53617d168f06c9",
+      "source": "armored-archer/app_store_assets/android/screenshots/combat.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/android/screenshots/combat.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 35899,
+      "expected": [
+        1080,
+        1920
+      ],
+      "file": "android/screenshots/gear_inventory.png",
+      "group": "android/screenshots",
+      "sha256": "b8862136d88b94fb4c23a5cd2ebca9a31dca69ab5b4a52e7b5c53bc88d443a07",
+      "source": "armored-archer/app_store_assets/android/screenshots/gear_inventory.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/android/screenshots/gear_inventory.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 34332,
+      "expected": [
+        1080,
+        1920
+      ],
+      "file": "android/screenshots/leaderboard.png",
+      "group": "android/screenshots",
+      "sha256": "d633a3a6a9b604d2f48be584d0880bc9b42711e0b5a3a64d78acc7467a919464",
+      "source": "armored-archer/app_store_assets/android/screenshots/leaderboard.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/android/screenshots/leaderboard.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 33603,
+      "expected": [
+        1080,
+        1920
+      ],
+      "file": "android/screenshots/main_menu.png",
+      "group": "android/screenshots",
+      "sha256": "082cce55ba7dbff1be12e27d0c1e263a6c9dfc57fd7b8eea4e19d2a3e92d99fa",
+      "source": "armored-archer/app_store_assets/android/screenshots/main_menu.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/android/screenshots/main_menu.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 11462,
+      "file": "android/screenshots/screenshot_1.png",
+      "group": "android/screenshots",
+      "sha256": "f2bb6a7595437c1768ef511af6a7be3c359aab0487abada8316f593b223dc690",
+      "source": "armored-archer/app_store_assets/android/screenshots/screenshot_1.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/android/screenshots/screenshot_1.png"
+    },
+    {
+      "bytes": 6950,
+      "file": "android/screenshots/screenshot_2.png",
+      "group": "android/screenshots",
+      "sha256": "770dcf59d8c6c42fe14f3d6a95bbc7da3e6e1d03ab01466f9d43bdcc6d42617e",
+      "source": "armored-archer/app_store_assets/android/screenshots/screenshot_2.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/android/screenshots/screenshot_2.png"
+    },
+    {
+      "bytes": 17225,
+      "file": "android/screenshots/screenshot_3.png",
+      "group": "android/screenshots",
+      "sha256": "2738dbc332b9c60c0d557abab072f251d8b80c0062b7f0e069ee39e586639214",
+      "source": "armored-archer/app_store_assets/android/screenshots/screenshot_3.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/android/screenshots/screenshot_3.png"
+    },
+    {
+      "bytes": 35276,
+      "expected": [
+        1080,
+        1920
+      ],
+      "file": "android/screenshots/shop.png",
+      "group": "android/screenshots",
+      "sha256": "f10c6e4942e2dd3f56330fb9357bd937e40e2911de130d914dbdc1dab8173a47",
+      "source": "armored-archer/app_store_assets/android/screenshots/shop.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/android/screenshots/shop.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 5844,
+      "file": "ios/feature_graphic_1200x600.png",
+      "group": "ios",
+      "sha256": "4d63f112a53f95b476ebc849fe29375b9583700ee28405b497e8a28af1a427dc",
+      "source": "armored-archer/app_store_assets/ios/feature_graphic_1200x600.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/feature_graphic_1200x600.png"
+    },
+    {
+      "bytes": 9248,
+      "file": "ios/icon_1024x1024.png",
+      "group": "ios",
+      "sha256": "13af06e55b209d95f9ceeeff5b0625abb9bd05cc3c6d1cd755e2fa6d12e87025",
+      "source": "armored-archer/app_store_assets/ios/icon_1024x1024.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/icon_1024x1024.png"
+    },
+    {
+      "bytes": 48798,
+      "expected": [
+        2048,
+        2732
+      ],
+      "file": "ios/screenshots/ipad/campaign.png",
+      "group": "ios/screenshots/ipad",
+      "sha256": "0ea4d49a70ff515e61df643572ffd26c630e455bf0bf03249fdf68e3df3f39c6",
+      "source": "armored-archer/app_store_assets/ios/screenshots/ipad/campaign.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/ipad/campaign.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 50880,
+      "expected": [
+        2048,
+        2732
+      ],
+      "file": "ios/screenshots/ipad/combat.png",
+      "group": "ios/screenshots/ipad",
+      "sha256": "fa47b4b865bded661028f89822164328a9275c2f5d1d7152572fd8edd28f8ba8",
+      "source": "armored-archer/app_store_assets/ios/screenshots/ipad/combat.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/ipad/combat.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 49269,
+      "expected": [
+        2048,
+        2732
+      ],
+      "file": "ios/screenshots/ipad/gear_inventory.png",
+      "group": "ios/screenshots/ipad",
+      "sha256": "c20bad9a31e5e39ee312920c3e7d6ecf378a938bdc95db71133aa1cabfea1a0a",
+      "source": "armored-archer/app_store_assets/ios/screenshots/ipad/gear_inventory.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/ipad/gear_inventory.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 47620,
+      "expected": [
+        2048,
+        2732
+      ],
+      "file": "ios/screenshots/ipad/leaderboard.png",
+      "group": "ios/screenshots/ipad",
+      "sha256": "30830442a261b0c823cd8d0b3b34d01d5b31f9ecff25a5cd12295e1098298ef8",
+      "source": "armored-archer/app_store_assets/ios/screenshots/ipad/leaderboard.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/ipad/leaderboard.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 46800,
+      "expected": [
+        2048,
+        2732
+      ],
+      "file": "ios/screenshots/ipad/main_menu.png",
+      "group": "ios/screenshots/ipad",
+      "sha256": "57c0db7f1b830e315a124c486f1f884094b292d6e983d5bbdd3415e9edbdb487",
+      "source": "armored-archer/app_store_assets/ios/screenshots/ipad/main_menu.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/ipad/main_menu.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 25624,
+      "expected": [
+        2048,
+        2732
+      ],
+      "file": "ios/screenshots/ipad/screenshot_1.png",
+      "group": "ios/screenshots/ipad",
+      "sha256": "cfbf20b2115e15b0497458252ae700eada847f5b7d064c5d198c45149b3895f7",
+      "source": "armored-archer/app_store_assets/ios/screenshots/ipad/screenshot_1.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/ipad/screenshot_1.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 25624,
+      "expected": [
+        2048,
+        2732
+      ],
+      "file": "ios/screenshots/ipad/screenshot_2.png",
+      "group": "ios/screenshots/ipad",
+      "sha256": "cfbf20b2115e15b0497458252ae700eada847f5b7d064c5d198c45149b3895f7",
+      "source": "armored-archer/app_store_assets/ios/screenshots/ipad/screenshot_2.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/ipad/screenshot_2.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 39796,
+      "expected": [
+        2048,
+        2732
+      ],
+      "file": "ios/screenshots/ipad/screenshot_3.png",
+      "group": "ios/screenshots/ipad",
+      "sha256": "cd55f2510d4aec02ee2da7152f83c91d175311534baadca436678e16458a2eaa",
+      "source": "armored-archer/app_store_assets/ios/screenshots/ipad/screenshot_3.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/ipad/screenshot_3.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 39796,
+      "expected": [
+        2048,
+        2732
+      ],
+      "file": "ios/screenshots/ipad/screenshot_4.png",
+      "group": "ios/screenshots/ipad",
+      "sha256": "cd55f2510d4aec02ee2da7152f83c91d175311534baadca436678e16458a2eaa",
+      "source": "armored-archer/app_store_assets/ios/screenshots/ipad/screenshot_4.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/ipad/screenshot_4.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 48411,
+      "expected": [
+        2048,
+        2732
+      ],
+      "file": "ios/screenshots/ipad/shop.png",
+      "group": "ios/screenshots/ipad",
+      "sha256": "3afeb73904f75a1679a10bfabac13659232f57fa85fecc06db02c3ca760c66df",
+      "source": "armored-archer/app_store_assets/ios/screenshots/ipad/shop.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/ipad/shop.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 38329,
+      "expected": [
+        1242,
+        2208
+      ],
+      "file": "ios/screenshots/iphone_5_5/campaign.png",
+      "group": "ios/screenshots/iphone_5_5",
+      "sha256": "5cbfb2a0d75cb4d61e3f66c183ffcc444749e94881ae7adae954388721dd308e",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_5_5/campaign.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_5_5/campaign.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 40360,
+      "expected": [
+        1242,
+        2208
+      ],
+      "file": "ios/screenshots/iphone_5_5/combat.png",
+      "group": "ios/screenshots/iphone_5_5",
+      "sha256": "de3e0667151472f54b75cd8ef586fe5e05d81913eb760fe20906bd822717d801",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_5_5/combat.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_5_5/combat.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 38721,
+      "expected": [
+        1242,
+        2208
+      ],
+      "file": "ios/screenshots/iphone_5_5/gear_inventory.png",
+      "group": "ios/screenshots/iphone_5_5",
+      "sha256": "d1fb9d95059737ec9c6fe4acde36185f553be724a7bcdaebbd88313a570f6fe6",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_5_5/gear_inventory.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_5_5/gear_inventory.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 37022,
+      "expected": [
+        1242,
+        2208
+      ],
+      "file": "ios/screenshots/iphone_5_5/leaderboard.png",
+      "group": "ios/screenshots/iphone_5_5",
+      "sha256": "f07ffaf8a56720fe567848c59421e498dc4cc002e50ea3d1aac19fd479e52704",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_5_5/leaderboard.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_5_5/leaderboard.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 36280,
+      "expected": [
+        1242,
+        2208
+      ],
+      "file": "ios/screenshots/iphone_5_5/main_menu.png",
+      "group": "ios/screenshots/iphone_5_5",
+      "sha256": "127c0dab6cb9980f11b48be3ed7c9f2b92ee92222e800f485d10d74a93fdbab7",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_5_5/main_menu.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_5_5/main_menu.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 15738,
+      "expected": [
+        1242,
+        2208
+      ],
+      "file": "ios/screenshots/iphone_5_5/screenshot_1.png",
+      "group": "ios/screenshots/iphone_5_5",
+      "sha256": "193174f799fd655fb93ca0631febc930226932b2f72c2ec09c551b72e459a02f",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_5_5/screenshot_1.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_5_5/screenshot_1.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 29874,
+      "expected": [
+        1242,
+        2208
+      ],
+      "file": "ios/screenshots/iphone_5_5/screenshot_2.png",
+      "group": "ios/screenshots/iphone_5_5",
+      "sha256": "a895e005a210c787e5f9927a0064eb15eb664c44ce4e0bacadd654bed10161c3",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_5_5/screenshot_2.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_5_5/screenshot_2.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 29874,
+      "expected": [
+        1242,
+        2208
+      ],
+      "file": "ios/screenshots/iphone_5_5/screenshot_3.png",
+      "group": "ios/screenshots/iphone_5_5",
+      "sha256": "a895e005a210c787e5f9927a0064eb15eb664c44ce4e0bacadd654bed10161c3",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_5_5/screenshot_3.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_5_5/screenshot_3.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 37953,
+      "expected": [
+        1242,
+        2208
+      ],
+      "file": "ios/screenshots/iphone_5_5/shop.png",
+      "group": "ios/screenshots/iphone_5_5",
+      "sha256": "02f648f9c388758ad8de86a63103d6a347b1ecca31caab04a4838b76abb94883",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_5_5/shop.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_5_5/shop.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 41125,
+      "expected": [
+        1290,
+        2796
+      ],
+      "file": "ios/screenshots/iphone_6_7/campaign.png",
+      "group": "ios/screenshots/iphone_6_7",
+      "sha256": "e2093081ed1735bc2205efdfcbf9609e6e4b6dbc5826f17ac3c505f24ccea332",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_6_7/campaign.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_6_7/campaign.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 43138,
+      "expected": [
+        1290,
+        2796
+      ],
+      "file": "ios/screenshots/iphone_6_7/combat.png",
+      "group": "ios/screenshots/iphone_6_7",
+      "sha256": "fd7b152e08fa7aa582450d9150188277dc792b470537e1e100f616dd7e65d5c4",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_6_7/combat.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_6_7/combat.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 41519,
+      "expected": [
+        1290,
+        2796
+      ],
+      "file": "ios/screenshots/iphone_6_7/gear_inventory.png",
+      "group": "ios/screenshots/iphone_6_7",
+      "sha256": "f0c7c3b5d059866a350a560f90c750783ef789f88754043759592401b141d500",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_6_7/gear_inventory.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_6_7/gear_inventory.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 39824,
+      "expected": [
+        1290,
+        2796
+      ],
+      "file": "ios/screenshots/iphone_6_7/leaderboard.png",
+      "group": "ios/screenshots/iphone_6_7",
+      "sha256": "64fdf4ca306e74d29bebe2a93894b164ce256be17e650fd5413d3568b926c542",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_6_7/leaderboard.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_6_7/leaderboard.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 39118,
+      "expected": [
+        1290,
+        2796
+      ],
+      "file": "ios/screenshots/iphone_6_7/main_menu.png",
+      "group": "ios/screenshots/iphone_6_7",
+      "sha256": "63c398f35bc46591b34ebc9b153b3556b2d0b62a1dc626d5a7d3d2a0ad1234bb",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_6_7/main_menu.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_6_7/main_menu.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 18409,
+      "expected": [
+        1290,
+        2796
+      ],
+      "file": "ios/screenshots/iphone_6_7/screenshot_1.png",
+      "group": "ios/screenshots/iphone_6_7",
+      "sha256": "388c118d018bfcd791ca5337b91c31ee15607e518eeb42569838134d9123dfea",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_6_7/screenshot_1.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_6_7/screenshot_1.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 18713,
+      "expected": [
+        1290,
+        2796
+      ],
+      "file": "ios/screenshots/iphone_6_7/screenshot_2.png",
+      "group": "ios/screenshots/iphone_6_7",
+      "sha256": "ce24ae3763eec82d1ce5596a19afe962a58daa90b5536476fa0aba30d1fb8f09",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_6_7/screenshot_2.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_6_7/screenshot_2.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 32415,
+      "expected": [
+        1290,
+        2796
+      ],
+      "file": "ios/screenshots/iphone_6_7/screenshot_3.png",
+      "group": "ios/screenshots/iphone_6_7",
+      "sha256": "7ace6a2a53210aef3ab94f7e79812d1512d4e46cfeb4bb824d1b1fc7be1f8a40",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_6_7/screenshot_3.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_6_7/screenshot_3.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 32415,
+      "expected": [
+        1290,
+        2796
+      ],
+      "file": "ios/screenshots/iphone_6_7/screenshot_4.png",
+      "group": "ios/screenshots/iphone_6_7",
+      "sha256": "7ace6a2a53210aef3ab94f7e79812d1512d4e46cfeb4bb824d1b1fc7be1f8a40",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_6_7/screenshot_4.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_6_7/screenshot_4.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    },
+    {
+      "bytes": 40710,
+      "expected": [
+        1290,
+        2796
+      ],
+      "file": "ios/screenshots/iphone_6_7/shop.png",
+      "group": "ios/screenshots/iphone_6_7",
+      "sha256": "5193c2f1b2343a1d0ec292b028958e648c9e2df6eb37f4958dffa05429ac73f3",
+      "source": "armored-archer/app_store_assets/ios/screenshots/iphone_6_7/shop.png",
+      "source_absolute": "/home/hatch/workspace/armored-archer/app_store_assets/ios/screenshots/iphone_6_7/shop.png",
+      "spec_ref": "app_store_assets/SCREENSHOT_SPEC.md"
+    }
+  ],
+  "count": 43,
+  "description": "Real armored-archer store artifacts copied read-only into this worktree. No generated images.",
+  "source_root": "/home/hatch/workspace/armored-archer",
+  "source_subtree": "app_store_assets"
+}

@@ -1,0 +1,107 @@
+{
+  "threshold": 0.01,
+  "rows": [
+    {
+      "pair": "placeholder_1x1 vs its source",
+      "current": "seeded/placeholder_1x1.png",
+      "baseline": "corpus/android/screenshots/combat.png",
+      "current_size": [
+        1,
+        1
+      ],
+      "baseline_size": [
+        1080,
+        1920
+      ],
+      "rmse_equivalent_normalised": null,
+      "rmse_suite_verdict": "FAIL",
+      "note": "single artifact, no baseline exists in the wild",
+      "real_suite_output": "SKIPPED: ImageMagick 'compare' binary is not installed on this VM - the suite cannot be executed here"
+    },
+    {
+      "pair": "solid_colour_frame vs its source",
+      "current": "seeded/solid_colour_frame.png",
+      "baseline": "corpus/android/screenshots/campaign.png",
+      "current_size": [
+        1080,
+        1920
+      ],
+      "baseline_size": [
+        1080,
+        1920
+      ],
+      "rmse_equivalent_normalised": 0.102962,
+      "rmse_suite_verdict": "FAIL",
+      "note": "single artifact, no baseline exists in the wild",
+      "real_suite_output": "SKIPPED: ImageMagick 'compare' binary is not installed on this VM - the suite cannot be executed here"
+    },
+    {
+      "pair": "wrong_dimensions vs its source",
+      "current": "seeded/wrong_dimensions.png",
+      "baseline": "corpus/android/screenshots/main_menu.png",
+      "current_size": [
+        160,
+        120
+      ],
+      "baseline_size": [
+        1080,
+        1920
+      ],
+      "rmse_equivalent_normalised": null,
+      "rmse_suite_verdict": "FAIL",
+      "note": "single artifact, no baseline exists in the wild",
+      "real_suite_output": "SKIPPED: ImageMagick 'compare' binary is not installed on this VM - the suite cannot be executed here"
+    },
+    {
+      "pair": "blurred_frame vs its source",
+      "current": "seeded/blurred_frame.png",
+      "baseline": "corpus/ios/screenshots/iphone_5_5/campaign.png",
+      "current_size": [
+        1242,
+        2208
+      ],
+      "baseline_size": [
+        1242,
+        2208
+      ],
+      "rmse_equivalent_normalised": 0.040351,
+      "rmse_suite_verdict": "FAIL",
+      "note": "single artifact, no baseline exists in the wild",
+      "real_suite_output": "SKIPPED: ImageMagick 'compare' binary is not installed on this VM - the suite cannot be executed here"
+    },
+    {
+      "pair": "crushed_exposure vs its source",
+      "current": "seeded/crushed_exposure.png",
+      "baseline": "corpus/ios/screenshots/iphone_6_7/combat.png",
+      "current_size": [
+        1290,
+        2796
+      ],
+      "baseline_size": [
+        1290,
+        2796
+      ],
+      "rmse_equivalent_normalised": 0.167275,
+      "rmse_suite_verdict": "FAIL",
+      "note": "single artifact, no baseline exists in the wild",
+      "real_suite_output": "SKIPPED: ImageMagick 'compare' binary is not installed on this VM - the suite cannot be executed here"
+    },
+    {
+      "pair": "real duplicate pair (ipad screenshot_1 vs screenshot_2)",
+      "current": "corpus/ios/screenshots/ipad/screenshot_2.png",
+      "baseline": "corpus/ios/screenshots/ipad/screenshot_1.png",
+      "current_size": [
+        2048,
+        2732
+      ],
+      "baseline_size": [
+        2048,
+        2732
+      ],
+      "rmse_equivalent_normalised": 0.0,
+      "rmse_suite_verdict": "PASS",
+      "note": "two slots of one submission group that are pixel-identical",
+      "real_suite_output": "SKIPPED: ImageMagick 'compare' binary is not installed on this VM - the suite cannot be executed here"
+    }
+  ]
+}
