@@ -1,0 +1,3666 @@
+{
+ "environment": {
+  "checks": [
+   "pydantic_monty: import ok",
+   "mcp: import ok",
+   "cv2: import ok",
+   "numpy: import ok",
+   "PIL: import ok",
+   "server module: list_sheets() -> 11 sheets"
+  ],
+  "ok": true,
+  "pydantic_monty_version": "1.3.0",
+  "python": "/home/hatch/workspace/fixtrees/bap50-venv/bin/python"
+ },
+ "monty_errors": [],
+ "monty_subset_probe": {
+  "collections": "available",
+  "decimal": "blocked: MontyRuntimeError: ModuleNotFoundError: No module named 'decimal'",
+  "functools": "available",
+  "itertools": "available",
+  "json": "available",
+  "math": "available",
+  "re": "available",
+  "statistics": "blocked: MontyRuntimeError: ModuleNotFoundError: No module named 'statistics'",
+  "string": "blocked: MontyRuntimeError: ModuleNotFoundError: No module named 'string'"
+ },
+ "records": [
+  {
+   "arm": "sequential",
+   "bytes_returned": 13140,
+   "call_list": "list_sheets(), extract_elevation_openings(Elevation_01), extract_elevation_openings(Elevation_02), extract_elevation_openings(Elevation_03), extract_elevation_openings(Elevation_04)",
+   "calls": 5,
+   "context_bytes": 13140,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 5,
+   "mismatch": "",
+   "output": {
+    "band_order": [
+     "Ground",
+     "First",
+     "Second",
+     "Third",
+     "Roof"
+    ],
+    "matrix": {
+     "Elevation_01": {
+      "First": 4,
+      "Ground": 3,
+      "Roof": 0,
+      "Second": 5,
+      "Third": 4
+     },
+     "Elevation_02": {
+      "First": 3,
+      "Ground": 2,
+      "Roof": 1,
+      "Second": 3,
+      "Third": 3
+     },
+     "Elevation_03": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     },
+     "Elevation_04": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     }
+    },
+    "name": "elevation_x_band_opening_count_matrix",
+    "task_id": "T1"
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T1",
+   "wall_time_s": 1.4976511849999952,
+   "wall_times_s": [
+    1.4976511849999952,
+    1.5010646160008037,
+    1.451283885000521
+   ]
+  },
+  {
+   "arm": "sequential",
+   "bytes_returned": 13140,
+   "call_list": "list_sheets(), extract_elevation_openings(Elevation_01), extract_elevation_openings(Elevation_02), extract_elevation_openings(Elevation_03), extract_elevation_openings(Elevation_04)",
+   "calls": 5,
+   "context_bytes": 13140,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 5,
+   "mismatch": "",
+   "output": {
+    "by_band": {
+     "First": [
+      {
+       "flagged": false,
+       "head_max_m": 6.25,
+       "head_min_m": 6.25,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 5.41,
+       "sill_min_m": 5.41,
+       "sill_range_m": 0.0,
+       "width_m": 0.68
+      },
+      {
+       "flagged": false,
+       "head_max_m": 6.25,
+       "head_min_m": 6.25,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 5.41,
+       "sill_min_m": 5.41,
+       "sill_range_m": 0.0,
+       "width_m": 0.69
+      },
+      {
+       "flagged": false,
+       "head_max_m": 6.25,
+       "head_min_m": 6.25,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 5.01,
+       "sill_min_m": 5.01,
+       "sill_range_m": 0.0,
+       "width_m": 1.04
+      },
+      {
+       "flagged": false,
+       "head_max_m": 5.25,
+       "head_min_m": 5.25,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 4.01,
+       "sill_min_m": 4.01,
+       "sill_range_m": 0.0,
+       "width_m": 1.23
+      },
+      {
+       "flagged": false,
+       "head_max_m": 6.26,
+       "head_min_m": 6.25,
+       "head_range_m": 0.01,
+       "n": 7,
+       "sill_max_m": 5.02,
+       "sill_min_m": 5.01,
+       "sill_range_m": 0.01,
+       "width_m": 2.04
+      }
+     ],
+     "Ground": [
+      {
+       "flagged": false,
+       "head_max_m": 2.22,
+       "head_min_m": 2.22,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 1.38,
+       "sill_min_m": 1.38,
+       "sill_range_m": 0.0,
+       "width_m": 0.69
+      },
+      {
+       "flagged": false,
+       "head_max_m": 2.22,
+       "head_min_m": 2.22,
+       "head_range_m": 0.0,
+       "n": 2,
+       "sill_max_m": 0.98,
+       "sill_min_m": 0.98,
+       "sill_range_m": 0.0,
+       "width_m": 1.04
+      },
+      {
+       "flagged": false,
+       "head_max_m": 2.22,
+       "head_min_m": 2.22,
+       "head_range_m": 0.0,
+       "n": 6,
+       "sill_max_m": 0.99,
+       "sill_min_m": 0.98,
+       "sill_range_m": 0.01,
+       "width_m": 2.04
+      }
+     ],
+     "Roof": [
+      {
+       "flagged": false,
+       "head_max_m": 15.67,
+       "head_min_m": 15.67,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 14.43,
+       "sill_min_m": 14.43,
+       "sill_range_m": 0.0,
+       "width_m": 1.23
+      }
+     ],
+     "Second": [
+      {
+       "flagged": false,
+       "head_max_m": 9.72,
+       "head_min_m": 9.72,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 8.89,
+       "sill_min_m": 8.89,
+       "sill_range_m": 0.0,
+       "width_m": 0.68
+      },
+      {
+       "flagged": false,
+       "head_max_m": 9.72,
+       "head_min_m": 9.72,
+       "head_range_m": 0.0,
+       "n": 3,
+       "sill_max_m": 8.89,
+       "sill_min_m": 8.89,
+       "sill_range_m": 0.0,
+       "width_m": 0.69
+      },
+      {
+       "flagged": false,
+       "head_max_m": 9.73,
+       "head_min_m": 9.72,
+       "head_range_m": 0.01,
+       "n": 2,
+       "sill_max_m": 8.49,
+       "sill_min_m": 8.48,
+       "sill_range_m": 0.01,
+       "width_m": 1.04
+      },
+      {
+       "flagged": false,
+       "head_max_m": 8.72,
+       "head_min_m": 8.72,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 7.48,
+       "sill_min_m": 7.48,
+       "sill_range_m": 0.0,
+       "width_m": 1.23
+      },
+      {
+       "flagged": false,
+       "head_max_m": 9.73,
+       "head_min_m": 9.72,
+       "head_range_m": 0.01,
+       "n": 5,
+       "sill_max_m": 8.49,
+       "sill_min_m": 8.48,
+       "sill_range_m": 0.01,
+       "width_m": 2.04
+      }
+     ],
+     "Third": [
+      {
+       "flagged": false,
+       "head_max_m": 13.2,
+       "head_min_m": 13.2,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 12.37,
+       "sill_min_m": 12.37,
+       "sill_range_m": 0.0,
+       "width_m": 0.68
+      },
+      {
+       "flagged": false,
+       "head_max_m": 13.2,
+       "head_min_m": 13.2,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 12.37,
+       "sill_min_m": 12.37,
+       "sill_range_m": 0.0,
+       "width_m": 0.69
+      },
+      {
+       "flagged": false,
+       "head_max_m": 13.21,
+       "head_min_m": 13.2,
+       "head_range_m": 0.01,
+       "n": 2,
+       "sill_max_m": 11.96,
+       "sill_min_m": 11.96,
+       "sill_range_m": 0.0,
+       "width_m": 1.04
+      },
+      {
+       "flagged": false,
+       "head_max_m": 12.2,
+       "head_min_m": 12.2,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 10.96,
+       "sill_min_m": 10.96,
+       "sill_range_m": 0.0,
+       "width_m": 1.23
+      },
+      {
+       "flagged": false,
+       "head_max_m": 13.21,
+       "head_min_m": 13.2,
+       "head_range_m": 0.01,
+       "n": 6,
+       "sill_max_m": 11.96,
+       "sill_min_m": 11.96,
+       "sill_range_m": 0.0,
+       "width_m": 2.04
+      }
+     ]
+    },
+    "groups": [
+     {
+      "flagged": true,
+      "head_max_m": 13.2,
+      "head_min_m": 6.25,
+      "head_range_m": 6.95,
+      "members": [
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_01-W3",
+        "sheet": "Elevation_01",
+        "sill_m": 12.37
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_01-W7",
+        "sheet": "Elevation_01",
+        "sill_m": 8.89
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_01-W12",
+        "sheet": "Elevation_01",
+        "sill_m": 5.41
+       }
+      ],
+      "n": 3,
+      "sill_max_m": 12.37,
+      "sill_min_m": 5.41,
+      "sill_range_m": 6.96,
+      "width_m": 0.68
+     },
+     {
+      "flagged": true,
+      "head_max_m": 13.2,
+      "head_min_m": 2.22,
+      "head_range_m": 10.98,
+      "members": [
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_01-W2",
+        "sheet": "Elevation_01",
+        "sill_m": 12.37
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_01-W6",
+        "sheet": "Elevation_01",
+        "sill_m": 8.89
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_01-W8",
+        "sheet": "Elevation_01",
+        "sill_m": 8.89
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_01-W9",
+        "sheet": "Elevation_01",
+        "sill_m": 8.89
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_01-W11",
+        "sheet": "Elevation_01",
+        "sill_m": 5.41
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_01-W16",
+        "sheet": "Elevation_01",
+        "sill_m": 1.38
+       }
+      ],
+      "n": 6,
+      "sill_max_m": 12.37,
+      "sill_min_m": 1.38,
+      "sill_range_m": 10.99,
+      "width_m": 0.69
+     },
+     {
+      "flagged": true,
+      "head_max_m": 13.21,
+      "head_min_m": 2.22,
+      "head_range_m": 10.99,
+      "members": [
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_01-W1",
+        "sheet": "Elevation_01",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_01-W5",
+        "sheet": "Elevation_01",
+        "sill_m": 8.48
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_01-W10",
+        "sheet": "Elevation_01",
+        "sill_m": 5.01
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_01-W15",
+        "sheet": "Elevation_01",
+        "sill_m": 0.98
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.21,
+        "id": "Elevation_04-W1",
+        "sheet": "Elevation_04",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.73,
+        "id": "Elevation_04-W3",
+        "sheet": "Elevation_04",
+        "sill_m": 8.49
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_04-W7",
+        "sheet": "Elevation_04",
+        "sill_m": 0.98
+       }
+      ],
+      "n": 7,
+      "sill_max_m": 11.96,
+      "sill_min_m": 0.98,
+      "sill_range_m": 10.98,
+      "width_m": 1.04
+     },
+     {
+      "flagged": true,
+      "head_max_m": 15.67,
+      "head_min_m": 5.25,
+      "head_range_m": 10.42,
+      "members": [
+       {
+        "floor_band": "Roof",
+        "head_m": 15.67,
+        "id": "Elevation_02-W1",
+        "sheet": "Elevation_02",
+        "sill_m": 14.43
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 12.2,
+        "id": "Elevation_02-W4",
+        "sheet": "Elevation_02",
+        "sill_m": 10.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 8.72,
+        "id": "Elevation_02-W7",
+        "sheet": "Elevation_02",
+        "sill_m": 7.48
+       },
+       {
+        "floor_band": "First",
+        "head_m": 5.25,
+        "id": "Elevation_02-W10",
+        "sheet": "Elevation_02",
+        "sill_m": 4.01
+       }
+      ],
+      "n": 4,
+      "sill_max_m": 14.43,
+      "sill_min_m": 4.01,
+      "sill_range_m": 10.42,
+      "width_m": 1.23
+     },
+     {
+      "flagged": true,
+      "head_max_m": 13.21,
+      "head_min_m": 2.22,
+      "head_range_m": 10.99,
+      "members": [
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_01-W4",
+        "sheet": "Elevation_01",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_01-W13",
+        "sheet": "Elevation_01",
+        "sill_m": 5.01
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_01-W14",
+        "sheet": "Elevation_01",
+        "sill_m": 0.98
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.21,
+        "id": "Elevation_02-W2",
+        "sheet": "Elevation_02",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.21,
+        "id": "Elevation_02-W3",
+        "sheet": "Elevation_02",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.73,
+        "id": "Elevation_02-W5",
+        "sheet": "Elevation_02",
+        "sill_m": 8.49
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.73,
+        "id": "Elevation_02-W6",
+        "sheet": "Elevation_02",
+        "sill_m": 8.49
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.26,
+        "id": "Elevation_02-W8",
+        "sheet": "Elevation_02",
+        "sill_m": 5.02
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.26,
+        "id": "Elevation_02-W9",
+        "sheet": "Elevation_02",
+        "sill_m": 5.02
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_02-W11",
+        "sheet": "Elevation_02",
+        "sill_m": 0.99
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_02-W12",
+        "sheet": "Elevation_02",
+        "sill_m": 0.99
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_03-W1",
+        "sheet": "Elevation_03",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_03-W2",
+        "sheet": "Elevation_03",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_03-W3",
+        "sheet": "Elevation_03",
+        "sill_m": 8.48
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_03-W4",
+        "sheet": "Elevation_03",
+        "sill_m": 8.48
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_03-W5",
+        "sheet": "Elevation_03",
+        "sill_m": 5.01
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_03-W6",
+        "sheet": "Elevation_03",
+        "sill_m": 5.01
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_03-W7",
+        "sheet": "Elevation_03",
+        "sill_m": 0.98
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_03-W8",
+        "sheet": "Elevation_03",
+        "sill_m": 0.98
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.21,
+        "id": "Elevation_04-W2",
+        "sheet": "Elevation_04",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.73,
+        "id": "Elevation_04-W4",
+        "sheet": "Elevation_04",
+        "sill_m": 8.49
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_04-W5",
+        "sheet": "Elevation_04",
+        "sill_m": 5.02
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_04-W6",
+        "sheet": "Elevation_04",
+        "sill_m": 5.02
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_04-W8",
+        "sheet": "Elevation_04",
+        "sill_m": 0.98
+       }
+      ],
+      "n": 24,
+      "sill_max_m": 11.96,
+      "sill_min_m": 0.98,
+      "sill_range_m": 10.98,
+      "width_m": 2.04
+     }
+    ],
+    "name": "width_consistency_check",
+    "task_id": "T2",
+    "tolerance_m": 0.05
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T2",
+   "wall_time_s": 1.258289354000226,
+   "wall_times_s": [
+    1.33136355500028,
+    1.258289354000226,
+    1.2142710870002702
+   ]
+  },
+  {
+   "arm": "sequential",
+   "bytes_returned": 13140,
+   "call_list": "list_sheets(), extract_elevation_openings(Elevation_01), extract_elevation_openings(Elevation_02), extract_elevation_openings(Elevation_03), extract_elevation_openings(Elevation_04)",
+   "calls": 5,
+   "context_bytes": 13140,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 5,
+   "mismatch": "",
+   "output": {
+    "bands": [
+     {
+      "band": "Ground",
+      "count": 9,
+      "head_max_m": 2.22,
+      "head_min_m": 2.22,
+      "sill_max_m": 1.38,
+      "sill_min_m": 0.98
+     },
+     {
+      "band": "First",
+      "count": 11,
+      "head_max_m": 6.26,
+      "head_min_m": 5.25,
+      "sill_max_m": 5.41,
+      "sill_min_m": 4.01
+     },
+     {
+      "band": "Second",
+      "count": 12,
+      "head_max_m": 9.73,
+      "head_min_m": 8.72,
+      "sill_max_m": 8.89,
+      "sill_min_m": 7.48
+     },
+     {
+      "band": "Third",
+      "count": 11,
+      "head_max_m": 13.21,
+      "head_min_m": 12.2,
+      "sill_max_m": 12.37,
+      "sill_min_m": 10.96
+     },
+     {
+      "band": "Roof",
+      "count": 1,
+      "head_max_m": 15.67,
+      "head_min_m": 15.67,
+      "sill_max_m": 14.43,
+      "sill_min_m": 14.43
+     }
+    ],
+    "name": "band_sill_head_ranges",
+    "task_id": "T3"
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T3",
+   "wall_time_s": 1.2451186179996512,
+   "wall_times_s": [
+    1.2451186179996512,
+    1.2006673920004687,
+    1.2722537510007896
+   ]
+  },
+  {
+   "arm": "sequential",
+   "bytes_returned": 14673,
+   "call_list": "list_sheets(), extract_elevation_openings(Elevation_01), extract_elevation_openings(Elevation_02), extract_elevation_openings(Elevation_03), extract_elevation_openings(Elevation_04), get_crop(Elevation_01,elevation_01-w14_ground), get_crop(Elevation_01,elevation_01-w15_ground), get_crop(Elevation_01,elevation_01-w16_ground), get_crop(Elevation_02,elevation_02-w11_ground), get_crop(Elevation_02,elevation_02-w12_ground), get_crop(Elevation_03,elevation_03-w7_ground), get_crop(Elevation_03,elevation_03-w8_ground), get_crop(Elevation_04,elevation_04-w7_ground), get_crop(Elevation_04,elevation_04-w8_ground)",
+   "calls": 14,
+   "context_bytes": 14673,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 14,
+   "mismatch": "",
+   "output": {
+    "crops": [
+     {
+      "bbox_px": [
+       1531,
+       2630,
+       1760,
+       2769
+      ],
+      "file_name": "Elevation_01_elevation_01-w14_ground.png",
+      "id": "Elevation_01-W14",
+      "label": "elevation_01-w14_ground",
+      "sheet": "Elevation_01",
+      "size_px": [
+       229,
+       139
+      ],
+      "source_box_px": [
+       1531,
+       2630,
+       1760,
+       2769
+      ]
+     },
+     {
+      "bbox_px": [
+       2220,
+       2630,
+       2336,
+       2769
+      ],
+      "file_name": "Elevation_01_elevation_01-w15_ground.png",
+      "id": "Elevation_01-W15",
+      "label": "elevation_01-w15_ground",
+      "sheet": "Elevation_01",
+      "size_px": [
+       116,
+       139
+      ],
+      "source_box_px": [
+       2220,
+       2630,
+       2336,
+       2769
+      ]
+     },
+     {
+      "bbox_px": [
+       2559,
+       2630,
+       2636,
+       2724
+      ],
+      "file_name": "Elevation_01_elevation_01-w16_ground.png",
+      "id": "Elevation_01-W16",
+      "label": "elevation_01-w16_ground",
+      "sheet": "Elevation_01",
+      "size_px": [
+       77,
+       94
+      ],
+      "source_box_px": [
+       2559,
+       2630,
+       2636,
+       2724
+      ]
+     },
+     {
+      "bbox_px": [
+       1492,
+       2664,
+       1721,
+       2802
+      ],
+      "file_name": "Elevation_02_elevation_02-w11_ground.png",
+      "id": "Elevation_02-W11",
+      "label": "elevation_02-w11_ground",
+      "sheet": "Elevation_02",
+      "size_px": [
+       229,
+       138
+      ],
+      "source_box_px": [
+       1492,
+       2664,
+       1721,
+       2802
+      ]
+     },
+     {
+      "bbox_px": [
+       2284,
+       2664,
+       2513,
+       2802
+      ],
+      "file_name": "Elevation_02_elevation_02-w12_ground.png",
+      "id": "Elevation_02-W12",
+      "label": "elevation_02-w12_ground",
+      "sheet": "Elevation_02",
+      "size_px": [
+       229,
+       138
+      ],
+      "source_box_px": [
+       2284,
+       2664,
+       2513,
+       2802
+      ]
+     },
+     {
+      "bbox_px": [
+       1705,
+       2657,
+       1934,
+       2796
+      ],
+      "file_name": "Elevation_03_elevation_03-w7_ground.png",
+      "id": "Elevation_03-W7",
+      "label": "elevation_03-w7_ground",
+      "sheet": "Elevation_03",
+      "size_px": [
+       229,
+       139
+      ],
+      "source_box_px": [
+       1705,
+       2657,
+       1934,
+       2796
+      ]
+     },
+     {
+      "bbox_px": [
+       2118,
+       2657,
+       2347,
+       2796
+      ],
+      "file_name": "Elevation_03_elevation_03-w8_ground.png",
+      "id": "Elevation_03-W8",
+      "label": "elevation_03-w8_ground",
+      "sheet": "Elevation_03",
+      "size_px": [
+       229,
+       139
+      ],
+      "source_box_px": [
+       2118,
+       2657,
+       2347,
+       2796
+      ]
+     },
+     {
+      "bbox_px": [
+       1815,
+       2670,
+       1931,
+       2809
+      ],
+      "file_name": "Elevation_04_elevation_04-w7_ground.png",
+      "id": "Elevation_04-W7",
+      "label": "elevation_04-w7_ground",
+      "sheet": "Elevation_04",
+      "size_px": [
+       116,
+       139
+      ],
+      "source_box_px": [
+       1815,
+       2670,
+       1931,
+       2809
+      ]
+     },
+     {
+      "bbox_px": [
+       2065,
+       2670,
+       2294,
+       2809
+      ],
+      "file_name": "Elevation_04_elevation_04-w8_ground.png",
+      "id": "Elevation_04-W8",
+      "label": "elevation_04-w8_ground",
+      "sheet": "Elevation_04",
+      "size_px": [
+       229,
+       139
+      ],
+      "source_box_px": [
+       2065,
+       2670,
+       2294,
+       2809
+      ]
+     }
+    ],
+    "name": "ground_band_evidence_crops",
+    "task_id": "T4"
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T4",
+   "wall_time_s": 3.399373824000577,
+   "wall_times_s": [
+    3.5057036580001295,
+    3.399373824000577,
+    3.3019704700000148
+   ]
+  },
+  {
+   "arm": "sequential",
+   "bytes_returned": 13672,
+   "call_list": "list_sheets(), extract_elevation_openings(Elevation_01), extract_elevation_openings(Elevation_02), extract_elevation_openings(Elevation_03), extract_elevation_openings(Elevation_04), summarise_findings(<10 findings>)",
+   "calls": 6,
+   "context_bytes": 13672,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 6,
+   "mismatch": "",
+   "output": {
+    "band_order": [
+     "Ground",
+     "First",
+     "Second",
+     "Third",
+     "Roof"
+    ],
+    "band_sill_head_ranges": [
+     {
+      "band": "Ground",
+      "count": 9,
+      "head_max_m": 2.22,
+      "head_min_m": 2.22,
+      "sill_max_m": 1.38,
+      "sill_min_m": 0.98
+     },
+     {
+      "band": "First",
+      "count": 11,
+      "head_max_m": 6.26,
+      "head_min_m": 5.25,
+      "sill_max_m": 5.41,
+      "sill_min_m": 4.01
+     },
+     {
+      "band": "Second",
+      "count": 12,
+      "head_max_m": 9.73,
+      "head_min_m": 8.72,
+      "sill_max_m": 8.89,
+      "sill_min_m": 7.48
+     },
+     {
+      "band": "Third",
+      "count": 11,
+      "head_max_m": 13.21,
+      "head_min_m": 12.2,
+      "sill_max_m": 12.37,
+      "sill_min_m": 10.96
+     },
+     {
+      "band": "Roof",
+      "count": 1,
+      "head_max_m": 15.67,
+      "head_min_m": 15.67,
+      "sill_max_m": 14.43,
+      "sill_min_m": 14.43
+     }
+    ],
+    "findings_summary": {
+     "building_totals": {
+      "Cannot Determine": 3,
+      "Mismatch": 7
+     },
+     "floor_status": {
+      "First": "Mismatch",
+      "Ground": "Mismatch",
+      "Roof": "Mismatch",
+      "Second": "Mismatch",
+      "Third": "Mismatch"
+     },
+     "per_floor": {
+      "First": {
+       "Cannot Determine": 1,
+       "Mismatch": 2
+      },
+      "Ground": {
+       "Cannot Determine": 0,
+       "Mismatch": 2
+      },
+      "Roof": {
+       "Cannot Determine": 0,
+       "Mismatch": 1
+      },
+      "Second": {
+       "Cannot Determine": 1,
+       "Mismatch": 1
+      },
+      "Third": {
+       "Cannot Determine": 1,
+       "Mismatch": 1
+      }
+     }
+    },
+    "name": "audit_prep_composite",
+    "opening_count_matrix": {
+     "Elevation_01": {
+      "First": 4,
+      "Ground": 3,
+      "Roof": 0,
+      "Second": 5,
+      "Third": 4
+     },
+     "Elevation_02": {
+      "First": 3,
+      "Ground": 2,
+      "Roof": 1,
+      "Second": 3,
+      "Third": 3
+     },
+     "Elevation_03": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     },
+     "Elevation_04": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     }
+    },
+    "task_id": "T5"
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T5",
+   "wall_time_s": 1.2221961450004528,
+   "wall_times_s": [
+    1.2221961450004528,
+    1.2653415830000085,
+    1.186341863999587
+   ]
+  },
+  {
+   "arm": "code-mode",
+   "bytes_returned": 13140,
+   "call_list": "list_sheets, extract_elevation_openings, extract_elevation_openings, extract_elevation_openings, extract_elevation_openings",
+   "calls": 1,
+   "context_bytes": 402,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 5,
+   "mismatch": "",
+   "output": {
+    "band_order": [
+     "Ground",
+     "First",
+     "Second",
+     "Third",
+     "Roof"
+    ],
+    "matrix": {
+     "Elevation_01": {
+      "First": 4,
+      "Ground": 3,
+      "Roof": 0,
+      "Second": 5,
+      "Third": 4
+     },
+     "Elevation_02": {
+      "First": 3,
+      "Ground": 2,
+      "Roof": 1,
+      "Second": 3,
+      "Third": 3
+     },
+     "Elevation_03": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     },
+     "Elevation_04": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     }
+    },
+    "name": "elevation_x_band_opening_count_matrix",
+    "task_id": "T1"
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T1",
+   "wall_time_s": 1.2442671009994228,
+   "wall_times_s": [
+    1.3712305050003124,
+    1.2442671009994228,
+    1.2201753640001698
+   ]
+  },
+  {
+   "arm": "code-mode",
+   "bytes_returned": 13140,
+   "call_list": "list_sheets, extract_elevation_openings, extract_elevation_openings, extract_elevation_openings, extract_elevation_openings",
+   "calls": 1,
+   "context_bytes": 8140,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 5,
+   "mismatch": "",
+   "output": {
+    "by_band": {
+     "First": [
+      {
+       "flagged": false,
+       "head_max_m": 6.25,
+       "head_min_m": 6.25,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 5.41,
+       "sill_min_m": 5.41,
+       "sill_range_m": 0.0,
+       "width_m": 0.68
+      },
+      {
+       "flagged": false,
+       "head_max_m": 6.25,
+       "head_min_m": 6.25,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 5.41,
+       "sill_min_m": 5.41,
+       "sill_range_m": 0.0,
+       "width_m": 0.69
+      },
+      {
+       "flagged": false,
+       "head_max_m": 6.25,
+       "head_min_m": 6.25,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 5.01,
+       "sill_min_m": 5.01,
+       "sill_range_m": 0.0,
+       "width_m": 1.04
+      },
+      {
+       "flagged": false,
+       "head_max_m": 5.25,
+       "head_min_m": 5.25,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 4.01,
+       "sill_min_m": 4.01,
+       "sill_range_m": 0.0,
+       "width_m": 1.23
+      },
+      {
+       "flagged": false,
+       "head_max_m": 6.26,
+       "head_min_m": 6.25,
+       "head_range_m": 0.01,
+       "n": 7,
+       "sill_max_m": 5.02,
+       "sill_min_m": 5.01,
+       "sill_range_m": 0.01,
+       "width_m": 2.04
+      }
+     ],
+     "Ground": [
+      {
+       "flagged": false,
+       "head_max_m": 2.22,
+       "head_min_m": 2.22,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 1.38,
+       "sill_min_m": 1.38,
+       "sill_range_m": 0.0,
+       "width_m": 0.69
+      },
+      {
+       "flagged": false,
+       "head_max_m": 2.22,
+       "head_min_m": 2.22,
+       "head_range_m": 0.0,
+       "n": 2,
+       "sill_max_m": 0.98,
+       "sill_min_m": 0.98,
+       "sill_range_m": 0.0,
+       "width_m": 1.04
+      },
+      {
+       "flagged": false,
+       "head_max_m": 2.22,
+       "head_min_m": 2.22,
+       "head_range_m": 0.0,
+       "n": 6,
+       "sill_max_m": 0.99,
+       "sill_min_m": 0.98,
+       "sill_range_m": 0.01,
+       "width_m": 2.04
+      }
+     ],
+     "Roof": [
+      {
+       "flagged": false,
+       "head_max_m": 15.67,
+       "head_min_m": 15.67,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 14.43,
+       "sill_min_m": 14.43,
+       "sill_range_m": 0.0,
+       "width_m": 1.23
+      }
+     ],
+     "Second": [
+      {
+       "flagged": false,
+       "head_max_m": 9.72,
+       "head_min_m": 9.72,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 8.89,
+       "sill_min_m": 8.89,
+       "sill_range_m": 0.0,
+       "width_m": 0.68
+      },
+      {
+       "flagged": false,
+       "head_max_m": 9.72,
+       "head_min_m": 9.72,
+       "head_range_m": 0.0,
+       "n": 3,
+       "sill_max_m": 8.89,
+       "sill_min_m": 8.89,
+       "sill_range_m": 0.0,
+       "width_m": 0.69
+      },
+      {
+       "flagged": false,
+       "head_max_m": 9.73,
+       "head_min_m": 9.72,
+       "head_range_m": 0.01,
+       "n": 2,
+       "sill_max_m": 8.49,
+       "sill_min_m": 8.48,
+       "sill_range_m": 0.01,
+       "width_m": 1.04
+      },
+      {
+       "flagged": false,
+       "head_max_m": 8.72,
+       "head_min_m": 8.72,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 7.48,
+       "sill_min_m": 7.48,
+       "sill_range_m": 0.0,
+       "width_m": 1.23
+      },
+      {
+       "flagged": false,
+       "head_max_m": 9.73,
+       "head_min_m": 9.72,
+       "head_range_m": 0.01,
+       "n": 5,
+       "sill_max_m": 8.49,
+       "sill_min_m": 8.48,
+       "sill_range_m": 0.01,
+       "width_m": 2.04
+      }
+     ],
+     "Third": [
+      {
+       "flagged": false,
+       "head_max_m": 13.2,
+       "head_min_m": 13.2,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 12.37,
+       "sill_min_m": 12.37,
+       "sill_range_m": 0.0,
+       "width_m": 0.68
+      },
+      {
+       "flagged": false,
+       "head_max_m": 13.2,
+       "head_min_m": 13.2,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 12.37,
+       "sill_min_m": 12.37,
+       "sill_range_m": 0.0,
+       "width_m": 0.69
+      },
+      {
+       "flagged": false,
+       "head_max_m": 13.21,
+       "head_min_m": 13.2,
+       "head_range_m": 0.01,
+       "n": 2,
+       "sill_max_m": 11.96,
+       "sill_min_m": 11.96,
+       "sill_range_m": 0.0,
+       "width_m": 1.04
+      },
+      {
+       "flagged": false,
+       "head_max_m": 12.2,
+       "head_min_m": 12.2,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 10.96,
+       "sill_min_m": 10.96,
+       "sill_range_m": 0.0,
+       "width_m": 1.23
+      },
+      {
+       "flagged": false,
+       "head_max_m": 13.21,
+       "head_min_m": 13.2,
+       "head_range_m": 0.01,
+       "n": 6,
+       "sill_max_m": 11.96,
+       "sill_min_m": 11.96,
+       "sill_range_m": 0.0,
+       "width_m": 2.04
+      }
+     ]
+    },
+    "groups": [
+     {
+      "flagged": true,
+      "head_max_m": 13.2,
+      "head_min_m": 6.25,
+      "head_range_m": 6.95,
+      "members": [
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_01-W3",
+        "sheet": "Elevation_01",
+        "sill_m": 12.37
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_01-W7",
+        "sheet": "Elevation_01",
+        "sill_m": 8.89
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_01-W12",
+        "sheet": "Elevation_01",
+        "sill_m": 5.41
+       }
+      ],
+      "n": 3,
+      "sill_max_m": 12.37,
+      "sill_min_m": 5.41,
+      "sill_range_m": 6.96,
+      "width_m": 0.68
+     },
+     {
+      "flagged": true,
+      "head_max_m": 13.2,
+      "head_min_m": 2.22,
+      "head_range_m": 10.98,
+      "members": [
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_01-W2",
+        "sheet": "Elevation_01",
+        "sill_m": 12.37
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_01-W6",
+        "sheet": "Elevation_01",
+        "sill_m": 8.89
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_01-W8",
+        "sheet": "Elevation_01",
+        "sill_m": 8.89
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_01-W9",
+        "sheet": "Elevation_01",
+        "sill_m": 8.89
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_01-W11",
+        "sheet": "Elevation_01",
+        "sill_m": 5.41
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_01-W16",
+        "sheet": "Elevation_01",
+        "sill_m": 1.38
+       }
+      ],
+      "n": 6,
+      "sill_max_m": 12.37,
+      "sill_min_m": 1.38,
+      "sill_range_m": 10.99,
+      "width_m": 0.69
+     },
+     {
+      "flagged": true,
+      "head_max_m": 13.21,
+      "head_min_m": 2.22,
+      "head_range_m": 10.99,
+      "members": [
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_01-W1",
+        "sheet": "Elevation_01",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_01-W5",
+        "sheet": "Elevation_01",
+        "sill_m": 8.48
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_01-W10",
+        "sheet": "Elevation_01",
+        "sill_m": 5.01
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_01-W15",
+        "sheet": "Elevation_01",
+        "sill_m": 0.98
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.21,
+        "id": "Elevation_04-W1",
+        "sheet": "Elevation_04",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.73,
+        "id": "Elevation_04-W3",
+        "sheet": "Elevation_04",
+        "sill_m": 8.49
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_04-W7",
+        "sheet": "Elevation_04",
+        "sill_m": 0.98
+       }
+      ],
+      "n": 7,
+      "sill_max_m": 11.96,
+      "sill_min_m": 0.98,
+      "sill_range_m": 10.98,
+      "width_m": 1.04
+     },
+     {
+      "flagged": true,
+      "head_max_m": 15.67,
+      "head_min_m": 5.25,
+      "head_range_m": 10.42,
+      "members": [
+       {
+        "floor_band": "Roof",
+        "head_m": 15.67,
+        "id": "Elevation_02-W1",
+        "sheet": "Elevation_02",
+        "sill_m": 14.43
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 12.2,
+        "id": "Elevation_02-W4",
+        "sheet": "Elevation_02",
+        "sill_m": 10.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 8.72,
+        "id": "Elevation_02-W7",
+        "sheet": "Elevation_02",
+        "sill_m": 7.48
+       },
+       {
+        "floor_band": "First",
+        "head_m": 5.25,
+        "id": "Elevation_02-W10",
+        "sheet": "Elevation_02",
+        "sill_m": 4.01
+       }
+      ],
+      "n": 4,
+      "sill_max_m": 14.43,
+      "sill_min_m": 4.01,
+      "sill_range_m": 10.42,
+      "width_m": 1.23
+     },
+     {
+      "flagged": true,
+      "head_max_m": 13.21,
+      "head_min_m": 2.22,
+      "head_range_m": 10.99,
+      "members": [
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_01-W4",
+        "sheet": "Elevation_01",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_01-W13",
+        "sheet": "Elevation_01",
+        "sill_m": 5.01
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_01-W14",
+        "sheet": "Elevation_01",
+        "sill_m": 0.98
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.21,
+        "id": "Elevation_02-W2",
+        "sheet": "Elevation_02",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.21,
+        "id": "Elevation_02-W3",
+        "sheet": "Elevation_02",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.73,
+        "id": "Elevation_02-W5",
+        "sheet": "Elevation_02",
+        "sill_m": 8.49
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.73,
+        "id": "Elevation_02-W6",
+        "sheet": "Elevation_02",
+        "sill_m": 8.49
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.26,
+        "id": "Elevation_02-W8",
+        "sheet": "Elevation_02",
+        "sill_m": 5.02
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.26,
+        "id": "Elevation_02-W9",
+        "sheet": "Elevation_02",
+        "sill_m": 5.02
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_02-W11",
+        "sheet": "Elevation_02",
+        "sill_m": 0.99
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_02-W12",
+        "sheet": "Elevation_02",
+        "sill_m": 0.99
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_03-W1",
+        "sheet": "Elevation_03",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_03-W2",
+        "sheet": "Elevation_03",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_03-W3",
+        "sheet": "Elevation_03",
+        "sill_m": 8.48
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_03-W4",
+        "sheet": "Elevation_03",
+        "sill_m": 8.48
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_03-W5",
+        "sheet": "Elevation_03",
+        "sill_m": 5.01
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_03-W6",
+        "sheet": "Elevation_03",
+        "sill_m": 5.01
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_03-W7",
+        "sheet": "Elevation_03",
+        "sill_m": 0.98
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_03-W8",
+        "sheet": "Elevation_03",
+        "sill_m": 0.98
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.21,
+        "id": "Elevation_04-W2",
+        "sheet": "Elevation_04",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.73,
+        "id": "Elevation_04-W4",
+        "sheet": "Elevation_04",
+        "sill_m": 8.49
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_04-W5",
+        "sheet": "Elevation_04",
+        "sill_m": 5.02
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_04-W6",
+        "sheet": "Elevation_04",
+        "sill_m": 5.02
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_04-W8",
+        "sheet": "Elevation_04",
+        "sill_m": 0.98
+       }
+      ],
+      "n": 24,
+      "sill_max_m": 11.96,
+      "sill_min_m": 0.98,
+      "sill_range_m": 10.98,
+      "width_m": 2.04
+     }
+    ],
+    "name": "width_consistency_check",
+    "task_id": "T2",
+    "tolerance_m": 0.05
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T2",
+   "wall_time_s": 1.2468046469994079,
+   "wall_times_s": [
+    1.4650784469995415,
+    1.2468046469994079,
+    1.2026260900001944
+   ]
+  },
+  {
+   "arm": "code-mode",
+   "bytes_returned": 13140,
+   "call_list": "list_sheets, extract_elevation_openings, extract_elevation_openings, extract_elevation_openings, extract_elevation_openings",
+   "calls": 1,
+   "context_bytes": 563,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 5,
+   "mismatch": "",
+   "output": {
+    "bands": [
+     {
+      "band": "Ground",
+      "count": 9,
+      "head_max_m": 2.22,
+      "head_min_m": 2.22,
+      "sill_max_m": 1.38,
+      "sill_min_m": 0.98
+     },
+     {
+      "band": "First",
+      "count": 11,
+      "head_max_m": 6.26,
+      "head_min_m": 5.25,
+      "sill_max_m": 5.41,
+      "sill_min_m": 4.01
+     },
+     {
+      "band": "Second",
+      "count": 12,
+      "head_max_m": 9.73,
+      "head_min_m": 8.72,
+      "sill_max_m": 8.89,
+      "sill_min_m": 7.48
+     },
+     {
+      "band": "Third",
+      "count": 11,
+      "head_max_m": 13.21,
+      "head_min_m": 12.2,
+      "sill_max_m": 12.37,
+      "sill_min_m": 10.96
+     },
+     {
+      "band": "Roof",
+      "count": 1,
+      "head_max_m": 15.67,
+      "head_min_m": 15.67,
+      "sill_max_m": 14.43,
+      "sill_min_m": 14.43
+     }
+    ],
+    "name": "band_sill_head_ranges",
+    "task_id": "T3"
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T3",
+   "wall_time_s": 1.2403206010003487,
+   "wall_times_s": [
+    1.414605027000107,
+    1.2169255790004172,
+    1.2403206010003487
+   ]
+  },
+  {
+   "arm": "code-mode",
+   "bytes_returned": 14673,
+   "call_list": "list_sheets, extract_elevation_openings, extract_elevation_openings, extract_elevation_openings, extract_elevation_openings, get_crop, get_crop, get_crop, get_crop, get_crop, get_crop, get_crop, get_crop, get_crop",
+   "calls": 1,
+   "context_bytes": 2100,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 14,
+   "mismatch": "",
+   "output": {
+    "crops": [
+     {
+      "bbox_px": [
+       1531,
+       2630,
+       1760,
+       2769
+      ],
+      "file_name": "Elevation_01_elevation_01-w14_ground.png",
+      "id": "Elevation_01-W14",
+      "label": "elevation_01-w14_ground",
+      "sheet": "Elevation_01",
+      "size_px": [
+       229,
+       139
+      ],
+      "source_box_px": [
+       1531,
+       2630,
+       1760,
+       2769
+      ]
+     },
+     {
+      "bbox_px": [
+       2220,
+       2630,
+       2336,
+       2769
+      ],
+      "file_name": "Elevation_01_elevation_01-w15_ground.png",
+      "id": "Elevation_01-W15",
+      "label": "elevation_01-w15_ground",
+      "sheet": "Elevation_01",
+      "size_px": [
+       116,
+       139
+      ],
+      "source_box_px": [
+       2220,
+       2630,
+       2336,
+       2769
+      ]
+     },
+     {
+      "bbox_px": [
+       2559,
+       2630,
+       2636,
+       2724
+      ],
+      "file_name": "Elevation_01_elevation_01-w16_ground.png",
+      "id": "Elevation_01-W16",
+      "label": "elevation_01-w16_ground",
+      "sheet": "Elevation_01",
+      "size_px": [
+       77,
+       94
+      ],
+      "source_box_px": [
+       2559,
+       2630,
+       2636,
+       2724
+      ]
+     },
+     {
+      "bbox_px": [
+       1492,
+       2664,
+       1721,
+       2802
+      ],
+      "file_name": "Elevation_02_elevation_02-w11_ground.png",
+      "id": "Elevation_02-W11",
+      "label": "elevation_02-w11_ground",
+      "sheet": "Elevation_02",
+      "size_px": [
+       229,
+       138
+      ],
+      "source_box_px": [
+       1492,
+       2664,
+       1721,
+       2802
+      ]
+     },
+     {
+      "bbox_px": [
+       2284,
+       2664,
+       2513,
+       2802
+      ],
+      "file_name": "Elevation_02_elevation_02-w12_ground.png",
+      "id": "Elevation_02-W12",
+      "label": "elevation_02-w12_ground",
+      "sheet": "Elevation_02",
+      "size_px": [
+       229,
+       138
+      ],
+      "source_box_px": [
+       2284,
+       2664,
+       2513,
+       2802
+      ]
+     },
+     {
+      "bbox_px": [
+       1705,
+       2657,
+       1934,
+       2796
+      ],
+      "file_name": "Elevation_03_elevation_03-w7_ground.png",
+      "id": "Elevation_03-W7",
+      "label": "elevation_03-w7_ground",
+      "sheet": "Elevation_03",
+      "size_px": [
+       229,
+       139
+      ],
+      "source_box_px": [
+       1705,
+       2657,
+       1934,
+       2796
+      ]
+     },
+     {
+      "bbox_px": [
+       2118,
+       2657,
+       2347,
+       2796
+      ],
+      "file_name": "Elevation_03_elevation_03-w8_ground.png",
+      "id": "Elevation_03-W8",
+      "label": "elevation_03-w8_ground",
+      "sheet": "Elevation_03",
+      "size_px": [
+       229,
+       139
+      ],
+      "source_box_px": [
+       2118,
+       2657,
+       2347,
+       2796
+      ]
+     },
+     {
+      "bbox_px": [
+       1815,
+       2670,
+       1931,
+       2809
+      ],
+      "file_name": "Elevation_04_elevation_04-w7_ground.png",
+      "id": "Elevation_04-W7",
+      "label": "elevation_04-w7_ground",
+      "sheet": "Elevation_04",
+      "size_px": [
+       116,
+       139
+      ],
+      "source_box_px": [
+       1815,
+       2670,
+       1931,
+       2809
+      ]
+     },
+     {
+      "bbox_px": [
+       2065,
+       2670,
+       2294,
+       2809
+      ],
+      "file_name": "Elevation_04_elevation_04-w8_ground.png",
+      "id": "Elevation_04-W8",
+      "label": "elevation_04-w8_ground",
+      "sheet": "Elevation_04",
+      "size_px": [
+       229,
+       139
+      ],
+      "source_box_px": [
+       2065,
+       2670,
+       2294,
+       2809
+      ]
+     }
+    ],
+    "name": "ground_band_evidence_crops",
+    "task_id": "T4"
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T4",
+   "wall_time_s": 3.5499625869997544,
+   "wall_times_s": [
+    3.5499625869997544,
+    3.7104148339994936,
+    3.3616097080002874
+   ]
+  },
+  {
+   "arm": "code-mode",
+   "bytes_returned": 13672,
+   "call_list": "list_sheets, extract_elevation_openings, extract_elevation_openings, extract_elevation_openings, extract_elevation_openings, summarise_findings",
+   "calls": 1,
+   "context_bytes": 1354,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 6,
+   "mismatch": "",
+   "output": {
+    "band_order": [
+     "Ground",
+     "First",
+     "Second",
+     "Third",
+     "Roof"
+    ],
+    "band_sill_head_ranges": [
+     {
+      "band": "Ground",
+      "count": 9,
+      "head_max_m": 2.22,
+      "head_min_m": 2.22,
+      "sill_max_m": 1.38,
+      "sill_min_m": 0.98
+     },
+     {
+      "band": "First",
+      "count": 11,
+      "head_max_m": 6.26,
+      "head_min_m": 5.25,
+      "sill_max_m": 5.41,
+      "sill_min_m": 4.01
+     },
+     {
+      "band": "Second",
+      "count": 12,
+      "head_max_m": 9.73,
+      "head_min_m": 8.72,
+      "sill_max_m": 8.89,
+      "sill_min_m": 7.48
+     },
+     {
+      "band": "Third",
+      "count": 11,
+      "head_max_m": 13.21,
+      "head_min_m": 12.2,
+      "sill_max_m": 12.37,
+      "sill_min_m": 10.96
+     },
+     {
+      "band": "Roof",
+      "count": 1,
+      "head_max_m": 15.67,
+      "head_min_m": 15.67,
+      "sill_max_m": 14.43,
+      "sill_min_m": 14.43
+     }
+    ],
+    "findings_summary": {
+     "building_totals": {
+      "Cannot Determine": 3,
+      "Mismatch": 7
+     },
+     "floor_status": {
+      "First": "Mismatch",
+      "Ground": "Mismatch",
+      "Roof": "Mismatch",
+      "Second": "Mismatch",
+      "Third": "Mismatch"
+     },
+     "per_floor": {
+      "First": {
+       "Cannot Determine": 1,
+       "Mismatch": 2
+      },
+      "Ground": {
+       "Cannot Determine": 0,
+       "Mismatch": 2
+      },
+      "Roof": {
+       "Cannot Determine": 0,
+       "Mismatch": 1
+      },
+      "Second": {
+       "Cannot Determine": 1,
+       "Mismatch": 1
+      },
+      "Third": {
+       "Cannot Determine": 1,
+       "Mismatch": 1
+      }
+     }
+    },
+    "name": "audit_prep_composite",
+    "opening_count_matrix": {
+     "Elevation_01": {
+      "First": 4,
+      "Ground": 3,
+      "Roof": 0,
+      "Second": 5,
+      "Third": 4
+     },
+     "Elevation_02": {
+      "First": 3,
+      "Ground": 2,
+      "Roof": 1,
+      "Second": 3,
+      "Third": 3
+     },
+     "Elevation_03": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     },
+     "Elevation_04": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     }
+    },
+    "task_id": "T5"
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T5",
+   "wall_time_s": 1.2147993290000159,
+   "wall_times_s": [
+    1.3212137699993036,
+    1.2004113279999729,
+    1.2147993290000159
+   ]
+  },
+  {
+   "arm": "ad-hoc",
+   "bytes_returned": 13140,
+   "call_list": "list_sheets(), extract_elevation_openings(Elevation_01), extract_elevation_openings(Elevation_02), extract_elevation_openings(Elevation_03), extract_elevation_openings(Elevation_04)",
+   "calls": 1,
+   "context_bytes": 402,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 5,
+   "mismatch": "",
+   "output": {
+    "band_order": [
+     "Ground",
+     "First",
+     "Second",
+     "Third",
+     "Roof"
+    ],
+    "matrix": {
+     "Elevation_01": {
+      "First": 4,
+      "Ground": 3,
+      "Roof": 0,
+      "Second": 5,
+      "Third": 4
+     },
+     "Elevation_02": {
+      "First": 3,
+      "Ground": 2,
+      "Roof": 1,
+      "Second": 3,
+      "Third": 3
+     },
+     "Elevation_03": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     },
+     "Elevation_04": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     }
+    },
+    "name": "elevation_x_band_opening_count_matrix",
+    "task_id": "T1"
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T1",
+   "wall_time_s": 1.3904530190002333,
+   "wall_times_s": [
+    1.4047152620005363,
+    1.3904530190002333,
+    1.3650825329996223
+   ]
+  },
+  {
+   "arm": "ad-hoc",
+   "bytes_returned": 13140,
+   "call_list": "list_sheets(), extract_elevation_openings(Elevation_01), extract_elevation_openings(Elevation_02), extract_elevation_openings(Elevation_03), extract_elevation_openings(Elevation_04)",
+   "calls": 1,
+   "context_bytes": 8140,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 5,
+   "mismatch": "",
+   "output": {
+    "by_band": {
+     "First": [
+      {
+       "flagged": false,
+       "head_max_m": 6.25,
+       "head_min_m": 6.25,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 5.41,
+       "sill_min_m": 5.41,
+       "sill_range_m": 0.0,
+       "width_m": 0.68
+      },
+      {
+       "flagged": false,
+       "head_max_m": 6.25,
+       "head_min_m": 6.25,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 5.41,
+       "sill_min_m": 5.41,
+       "sill_range_m": 0.0,
+       "width_m": 0.69
+      },
+      {
+       "flagged": false,
+       "head_max_m": 6.25,
+       "head_min_m": 6.25,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 5.01,
+       "sill_min_m": 5.01,
+       "sill_range_m": 0.0,
+       "width_m": 1.04
+      },
+      {
+       "flagged": false,
+       "head_max_m": 5.25,
+       "head_min_m": 5.25,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 4.01,
+       "sill_min_m": 4.01,
+       "sill_range_m": 0.0,
+       "width_m": 1.23
+      },
+      {
+       "flagged": false,
+       "head_max_m": 6.26,
+       "head_min_m": 6.25,
+       "head_range_m": 0.01,
+       "n": 7,
+       "sill_max_m": 5.02,
+       "sill_min_m": 5.01,
+       "sill_range_m": 0.01,
+       "width_m": 2.04
+      }
+     ],
+     "Ground": [
+      {
+       "flagged": false,
+       "head_max_m": 2.22,
+       "head_min_m": 2.22,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 1.38,
+       "sill_min_m": 1.38,
+       "sill_range_m": 0.0,
+       "width_m": 0.69
+      },
+      {
+       "flagged": false,
+       "head_max_m": 2.22,
+       "head_min_m": 2.22,
+       "head_range_m": 0.0,
+       "n": 2,
+       "sill_max_m": 0.98,
+       "sill_min_m": 0.98,
+       "sill_range_m": 0.0,
+       "width_m": 1.04
+      },
+      {
+       "flagged": false,
+       "head_max_m": 2.22,
+       "head_min_m": 2.22,
+       "head_range_m": 0.0,
+       "n": 6,
+       "sill_max_m": 0.99,
+       "sill_min_m": 0.98,
+       "sill_range_m": 0.01,
+       "width_m": 2.04
+      }
+     ],
+     "Roof": [
+      {
+       "flagged": false,
+       "head_max_m": 15.67,
+       "head_min_m": 15.67,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 14.43,
+       "sill_min_m": 14.43,
+       "sill_range_m": 0.0,
+       "width_m": 1.23
+      }
+     ],
+     "Second": [
+      {
+       "flagged": false,
+       "head_max_m": 9.72,
+       "head_min_m": 9.72,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 8.89,
+       "sill_min_m": 8.89,
+       "sill_range_m": 0.0,
+       "width_m": 0.68
+      },
+      {
+       "flagged": false,
+       "head_max_m": 9.72,
+       "head_min_m": 9.72,
+       "head_range_m": 0.0,
+       "n": 3,
+       "sill_max_m": 8.89,
+       "sill_min_m": 8.89,
+       "sill_range_m": 0.0,
+       "width_m": 0.69
+      },
+      {
+       "flagged": false,
+       "head_max_m": 9.73,
+       "head_min_m": 9.72,
+       "head_range_m": 0.01,
+       "n": 2,
+       "sill_max_m": 8.49,
+       "sill_min_m": 8.48,
+       "sill_range_m": 0.01,
+       "width_m": 1.04
+      },
+      {
+       "flagged": false,
+       "head_max_m": 8.72,
+       "head_min_m": 8.72,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 7.48,
+       "sill_min_m": 7.48,
+       "sill_range_m": 0.0,
+       "width_m": 1.23
+      },
+      {
+       "flagged": false,
+       "head_max_m": 9.73,
+       "head_min_m": 9.72,
+       "head_range_m": 0.01,
+       "n": 5,
+       "sill_max_m": 8.49,
+       "sill_min_m": 8.48,
+       "sill_range_m": 0.01,
+       "width_m": 2.04
+      }
+     ],
+     "Third": [
+      {
+       "flagged": false,
+       "head_max_m": 13.2,
+       "head_min_m": 13.2,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 12.37,
+       "sill_min_m": 12.37,
+       "sill_range_m": 0.0,
+       "width_m": 0.68
+      },
+      {
+       "flagged": false,
+       "head_max_m": 13.2,
+       "head_min_m": 13.2,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 12.37,
+       "sill_min_m": 12.37,
+       "sill_range_m": 0.0,
+       "width_m": 0.69
+      },
+      {
+       "flagged": false,
+       "head_max_m": 13.21,
+       "head_min_m": 13.2,
+       "head_range_m": 0.01,
+       "n": 2,
+       "sill_max_m": 11.96,
+       "sill_min_m": 11.96,
+       "sill_range_m": 0.0,
+       "width_m": 1.04
+      },
+      {
+       "flagged": false,
+       "head_max_m": 12.2,
+       "head_min_m": 12.2,
+       "head_range_m": 0.0,
+       "n": 1,
+       "sill_max_m": 10.96,
+       "sill_min_m": 10.96,
+       "sill_range_m": 0.0,
+       "width_m": 1.23
+      },
+      {
+       "flagged": false,
+       "head_max_m": 13.21,
+       "head_min_m": 13.2,
+       "head_range_m": 0.01,
+       "n": 6,
+       "sill_max_m": 11.96,
+       "sill_min_m": 11.96,
+       "sill_range_m": 0.0,
+       "width_m": 2.04
+      }
+     ]
+    },
+    "groups": [
+     {
+      "flagged": true,
+      "head_max_m": 13.2,
+      "head_min_m": 6.25,
+      "head_range_m": 6.95,
+      "members": [
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_01-W3",
+        "sheet": "Elevation_01",
+        "sill_m": 12.37
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_01-W7",
+        "sheet": "Elevation_01",
+        "sill_m": 8.89
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_01-W12",
+        "sheet": "Elevation_01",
+        "sill_m": 5.41
+       }
+      ],
+      "n": 3,
+      "sill_max_m": 12.37,
+      "sill_min_m": 5.41,
+      "sill_range_m": 6.96,
+      "width_m": 0.68
+     },
+     {
+      "flagged": true,
+      "head_max_m": 13.2,
+      "head_min_m": 2.22,
+      "head_range_m": 10.98,
+      "members": [
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_01-W2",
+        "sheet": "Elevation_01",
+        "sill_m": 12.37
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_01-W6",
+        "sheet": "Elevation_01",
+        "sill_m": 8.89
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_01-W8",
+        "sheet": "Elevation_01",
+        "sill_m": 8.89
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_01-W9",
+        "sheet": "Elevation_01",
+        "sill_m": 8.89
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_01-W11",
+        "sheet": "Elevation_01",
+        "sill_m": 5.41
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_01-W16",
+        "sheet": "Elevation_01",
+        "sill_m": 1.38
+       }
+      ],
+      "n": 6,
+      "sill_max_m": 12.37,
+      "sill_min_m": 1.38,
+      "sill_range_m": 10.99,
+      "width_m": 0.69
+     },
+     {
+      "flagged": true,
+      "head_max_m": 13.21,
+      "head_min_m": 2.22,
+      "head_range_m": 10.99,
+      "members": [
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_01-W1",
+        "sheet": "Elevation_01",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_01-W5",
+        "sheet": "Elevation_01",
+        "sill_m": 8.48
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_01-W10",
+        "sheet": "Elevation_01",
+        "sill_m": 5.01
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_01-W15",
+        "sheet": "Elevation_01",
+        "sill_m": 0.98
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.21,
+        "id": "Elevation_04-W1",
+        "sheet": "Elevation_04",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.73,
+        "id": "Elevation_04-W3",
+        "sheet": "Elevation_04",
+        "sill_m": 8.49
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_04-W7",
+        "sheet": "Elevation_04",
+        "sill_m": 0.98
+       }
+      ],
+      "n": 7,
+      "sill_max_m": 11.96,
+      "sill_min_m": 0.98,
+      "sill_range_m": 10.98,
+      "width_m": 1.04
+     },
+     {
+      "flagged": true,
+      "head_max_m": 15.67,
+      "head_min_m": 5.25,
+      "head_range_m": 10.42,
+      "members": [
+       {
+        "floor_band": "Roof",
+        "head_m": 15.67,
+        "id": "Elevation_02-W1",
+        "sheet": "Elevation_02",
+        "sill_m": 14.43
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 12.2,
+        "id": "Elevation_02-W4",
+        "sheet": "Elevation_02",
+        "sill_m": 10.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 8.72,
+        "id": "Elevation_02-W7",
+        "sheet": "Elevation_02",
+        "sill_m": 7.48
+       },
+       {
+        "floor_band": "First",
+        "head_m": 5.25,
+        "id": "Elevation_02-W10",
+        "sheet": "Elevation_02",
+        "sill_m": 4.01
+       }
+      ],
+      "n": 4,
+      "sill_max_m": 14.43,
+      "sill_min_m": 4.01,
+      "sill_range_m": 10.42,
+      "width_m": 1.23
+     },
+     {
+      "flagged": true,
+      "head_max_m": 13.21,
+      "head_min_m": 2.22,
+      "head_range_m": 10.99,
+      "members": [
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_01-W4",
+        "sheet": "Elevation_01",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_01-W13",
+        "sheet": "Elevation_01",
+        "sill_m": 5.01
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_01-W14",
+        "sheet": "Elevation_01",
+        "sill_m": 0.98
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.21,
+        "id": "Elevation_02-W2",
+        "sheet": "Elevation_02",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.21,
+        "id": "Elevation_02-W3",
+        "sheet": "Elevation_02",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.73,
+        "id": "Elevation_02-W5",
+        "sheet": "Elevation_02",
+        "sill_m": 8.49
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.73,
+        "id": "Elevation_02-W6",
+        "sheet": "Elevation_02",
+        "sill_m": 8.49
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.26,
+        "id": "Elevation_02-W8",
+        "sheet": "Elevation_02",
+        "sill_m": 5.02
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.26,
+        "id": "Elevation_02-W9",
+        "sheet": "Elevation_02",
+        "sill_m": 5.02
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_02-W11",
+        "sheet": "Elevation_02",
+        "sill_m": 0.99
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_02-W12",
+        "sheet": "Elevation_02",
+        "sill_m": 0.99
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_03-W1",
+        "sheet": "Elevation_03",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.2,
+        "id": "Elevation_03-W2",
+        "sheet": "Elevation_03",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_03-W3",
+        "sheet": "Elevation_03",
+        "sill_m": 8.48
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.72,
+        "id": "Elevation_03-W4",
+        "sheet": "Elevation_03",
+        "sill_m": 8.48
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_03-W5",
+        "sheet": "Elevation_03",
+        "sill_m": 5.01
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_03-W6",
+        "sheet": "Elevation_03",
+        "sill_m": 5.01
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_03-W7",
+        "sheet": "Elevation_03",
+        "sill_m": 0.98
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_03-W8",
+        "sheet": "Elevation_03",
+        "sill_m": 0.98
+       },
+       {
+        "floor_band": "Third",
+        "head_m": 13.21,
+        "id": "Elevation_04-W2",
+        "sheet": "Elevation_04",
+        "sill_m": 11.96
+       },
+       {
+        "floor_band": "Second",
+        "head_m": 9.73,
+        "id": "Elevation_04-W4",
+        "sheet": "Elevation_04",
+        "sill_m": 8.49
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_04-W5",
+        "sheet": "Elevation_04",
+        "sill_m": 5.02
+       },
+       {
+        "floor_band": "First",
+        "head_m": 6.25,
+        "id": "Elevation_04-W6",
+        "sheet": "Elevation_04",
+        "sill_m": 5.02
+       },
+       {
+        "floor_band": "Ground",
+        "head_m": 2.22,
+        "id": "Elevation_04-W8",
+        "sheet": "Elevation_04",
+        "sill_m": 0.98
+       }
+      ],
+      "n": 24,
+      "sill_max_m": 11.96,
+      "sill_min_m": 0.98,
+      "sill_range_m": 10.98,
+      "width_m": 2.04
+     }
+    ],
+    "name": "width_consistency_check",
+    "task_id": "T2",
+    "tolerance_m": 0.05
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T2",
+   "wall_time_s": 1.2093300060005276,
+   "wall_times_s": [
+    1.2850046880002992,
+    1.2093300060005276,
+    1.2082660699998087
+   ]
+  },
+  {
+   "arm": "ad-hoc",
+   "bytes_returned": 13140,
+   "call_list": "list_sheets(), extract_elevation_openings(Elevation_01), extract_elevation_openings(Elevation_02), extract_elevation_openings(Elevation_03), extract_elevation_openings(Elevation_04)",
+   "calls": 1,
+   "context_bytes": 563,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 5,
+   "mismatch": "",
+   "output": {
+    "bands": [
+     {
+      "band": "Ground",
+      "count": 9,
+      "head_max_m": 2.22,
+      "head_min_m": 2.22,
+      "sill_max_m": 1.38,
+      "sill_min_m": 0.98
+     },
+     {
+      "band": "First",
+      "count": 11,
+      "head_max_m": 6.26,
+      "head_min_m": 5.25,
+      "sill_max_m": 5.41,
+      "sill_min_m": 4.01
+     },
+     {
+      "band": "Second",
+      "count": 12,
+      "head_max_m": 9.73,
+      "head_min_m": 8.72,
+      "sill_max_m": 8.89,
+      "sill_min_m": 7.48
+     },
+     {
+      "band": "Third",
+      "count": 11,
+      "head_max_m": 13.21,
+      "head_min_m": 12.2,
+      "sill_max_m": 12.37,
+      "sill_min_m": 10.96
+     },
+     {
+      "band": "Roof",
+      "count": 1,
+      "head_max_m": 15.67,
+      "head_min_m": 15.67,
+      "sill_max_m": 14.43,
+      "sill_min_m": 14.43
+     }
+    ],
+    "name": "band_sill_head_ranges",
+    "task_id": "T3"
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T3",
+   "wall_time_s": 1.219444356999702,
+   "wall_times_s": [
+    1.219444356999702,
+    1.2668560439997236,
+    1.2042819030002647
+   ]
+  },
+  {
+   "arm": "ad-hoc",
+   "bytes_returned": 14673,
+   "call_list": "list_sheets(), extract_elevation_openings(Elevation_01), extract_elevation_openings(Elevation_02), extract_elevation_openings(Elevation_03), extract_elevation_openings(Elevation_04), get_crop(Elevation_01,elevation_01-w14_ground), get_crop(Elevation_01,elevation_01-w15_ground), get_crop(Elevation_01,elevation_01-w16_ground), get_crop(Elevation_02,elevation_02-w11_ground), get_crop(Elevation_02,elevation_02-w12_ground), get_crop(Elevation_03,elevation_03-w7_ground), get_crop(Elevation_03,elevation_03-w8_ground), get_crop(Elevation_04,elevation_04-w7_ground), get_crop(Elevation_04,elevation_04-w8_ground)",
+   "calls": 1,
+   "context_bytes": 2100,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 14,
+   "mismatch": "",
+   "output": {
+    "crops": [
+     {
+      "bbox_px": [
+       1531,
+       2630,
+       1760,
+       2769
+      ],
+      "file_name": "Elevation_01_elevation_01-w14_ground.png",
+      "id": "Elevation_01-W14",
+      "label": "elevation_01-w14_ground",
+      "sheet": "Elevation_01",
+      "size_px": [
+       229,
+       139
+      ],
+      "source_box_px": [
+       1531,
+       2630,
+       1760,
+       2769
+      ]
+     },
+     {
+      "bbox_px": [
+       2220,
+       2630,
+       2336,
+       2769
+      ],
+      "file_name": "Elevation_01_elevation_01-w15_ground.png",
+      "id": "Elevation_01-W15",
+      "label": "elevation_01-w15_ground",
+      "sheet": "Elevation_01",
+      "size_px": [
+       116,
+       139
+      ],
+      "source_box_px": [
+       2220,
+       2630,
+       2336,
+       2769
+      ]
+     },
+     {
+      "bbox_px": [
+       2559,
+       2630,
+       2636,
+       2724
+      ],
+      "file_name": "Elevation_01_elevation_01-w16_ground.png",
+      "id": "Elevation_01-W16",
+      "label": "elevation_01-w16_ground",
+      "sheet": "Elevation_01",
+      "size_px": [
+       77,
+       94
+      ],
+      "source_box_px": [
+       2559,
+       2630,
+       2636,
+       2724
+      ]
+     },
+     {
+      "bbox_px": [
+       1492,
+       2664,
+       1721,
+       2802
+      ],
+      "file_name": "Elevation_02_elevation_02-w11_ground.png",
+      "id": "Elevation_02-W11",
+      "label": "elevation_02-w11_ground",
+      "sheet": "Elevation_02",
+      "size_px": [
+       229,
+       138
+      ],
+      "source_box_px": [
+       1492,
+       2664,
+       1721,
+       2802
+      ]
+     },
+     {
+      "bbox_px": [
+       2284,
+       2664,
+       2513,
+       2802
+      ],
+      "file_name": "Elevation_02_elevation_02-w12_ground.png",
+      "id": "Elevation_02-W12",
+      "label": "elevation_02-w12_ground",
+      "sheet": "Elevation_02",
+      "size_px": [
+       229,
+       138
+      ],
+      "source_box_px": [
+       2284,
+       2664,
+       2513,
+       2802
+      ]
+     },
+     {
+      "bbox_px": [
+       1705,
+       2657,
+       1934,
+       2796
+      ],
+      "file_name": "Elevation_03_elevation_03-w7_ground.png",
+      "id": "Elevation_03-W7",
+      "label": "elevation_03-w7_ground",
+      "sheet": "Elevation_03",
+      "size_px": [
+       229,
+       139
+      ],
+      "source_box_px": [
+       1705,
+       2657,
+       1934,
+       2796
+      ]
+     },
+     {
+      "bbox_px": [
+       2118,
+       2657,
+       2347,
+       2796
+      ],
+      "file_name": "Elevation_03_elevation_03-w8_ground.png",
+      "id": "Elevation_03-W8",
+      "label": "elevation_03-w8_ground",
+      "sheet": "Elevation_03",
+      "size_px": [
+       229,
+       139
+      ],
+      "source_box_px": [
+       2118,
+       2657,
+       2347,
+       2796
+      ]
+     },
+     {
+      "bbox_px": [
+       1815,
+       2670,
+       1931,
+       2809
+      ],
+      "file_name": "Elevation_04_elevation_04-w7_ground.png",
+      "id": "Elevation_04-W7",
+      "label": "elevation_04-w7_ground",
+      "sheet": "Elevation_04",
+      "size_px": [
+       116,
+       139
+      ],
+      "source_box_px": [
+       1815,
+       2670,
+       1931,
+       2809
+      ]
+     },
+     {
+      "bbox_px": [
+       2065,
+       2670,
+       2294,
+       2809
+      ],
+      "file_name": "Elevation_04_elevation_04-w8_ground.png",
+      "id": "Elevation_04-W8",
+      "label": "elevation_04-w8_ground",
+      "sheet": "Elevation_04",
+      "size_px": [
+       229,
+       139
+      ],
+      "source_box_px": [
+       2065,
+       2670,
+       2294,
+       2809
+      ]
+     }
+    ],
+    "name": "ground_band_evidence_crops",
+    "task_id": "T4"
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T4",
+   "wall_time_s": 3.366901136000706,
+   "wall_times_s": [
+    3.366901136000706,
+    3.335857140000371,
+    3.453748656999778
+   ]
+  },
+  {
+   "arm": "ad-hoc",
+   "bytes_returned": 13672,
+   "call_list": "list_sheets(), extract_elevation_openings(Elevation_01), extract_elevation_openings(Elevation_02), extract_elevation_openings(Elevation_03), extract_elevation_openings(Elevation_04), summarise_findings(<10 findings>)",
+   "calls": 1,
+   "context_bytes": 1354,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 6,
+   "mismatch": "",
+   "output": {
+    "band_order": [
+     "Ground",
+     "First",
+     "Second",
+     "Third",
+     "Roof"
+    ],
+    "band_sill_head_ranges": [
+     {
+      "band": "Ground",
+      "count": 9,
+      "head_max_m": 2.22,
+      "head_min_m": 2.22,
+      "sill_max_m": 1.38,
+      "sill_min_m": 0.98
+     },
+     {
+      "band": "First",
+      "count": 11,
+      "head_max_m": 6.26,
+      "head_min_m": 5.25,
+      "sill_max_m": 5.41,
+      "sill_min_m": 4.01
+     },
+     {
+      "band": "Second",
+      "count": 12,
+      "head_max_m": 9.73,
+      "head_min_m": 8.72,
+      "sill_max_m": 8.89,
+      "sill_min_m": 7.48
+     },
+     {
+      "band": "Third",
+      "count": 11,
+      "head_max_m": 13.21,
+      "head_min_m": 12.2,
+      "sill_max_m": 12.37,
+      "sill_min_m": 10.96
+     },
+     {
+      "band": "Roof",
+      "count": 1,
+      "head_max_m": 15.67,
+      "head_min_m": 15.67,
+      "sill_max_m": 14.43,
+      "sill_min_m": 14.43
+     }
+    ],
+    "findings_summary": {
+     "building_totals": {
+      "Cannot Determine": 3,
+      "Mismatch": 7
+     },
+     "floor_status": {
+      "First": "Mismatch",
+      "Ground": "Mismatch",
+      "Roof": "Mismatch",
+      "Second": "Mismatch",
+      "Third": "Mismatch"
+     },
+     "per_floor": {
+      "First": {
+       "Cannot Determine": 1,
+       "Mismatch": 2
+      },
+      "Ground": {
+       "Cannot Determine": 0,
+       "Mismatch": 2
+      },
+      "Roof": {
+       "Cannot Determine": 0,
+       "Mismatch": 1
+      },
+      "Second": {
+       "Cannot Determine": 1,
+       "Mismatch": 1
+      },
+      "Third": {
+       "Cannot Determine": 1,
+       "Mismatch": 1
+      }
+     }
+    },
+    "name": "audit_prep_composite",
+    "opening_count_matrix": {
+     "Elevation_01": {
+      "First": 4,
+      "Ground": 3,
+      "Roof": 0,
+      "Second": 5,
+      "Third": 4
+     },
+     "Elevation_02": {
+      "First": 3,
+      "Ground": 2,
+      "Roof": 1,
+      "Second": 3,
+      "Third": 3
+     },
+     "Elevation_03": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     },
+     "Elevation_04": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     }
+    },
+    "task_id": "T5"
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T5",
+   "wall_time_s": 1.1957416329996704,
+   "wall_times_s": [
+    1.185549154999535,
+    1.2419395700007954,
+    1.1957416329996704
+   ]
+  }
+ ],
+ "repeats": 3,
+ "sensitivity": [
+  {
+   "arm": "sequential-aggregate",
+   "bytes_returned": 14475,
+   "call_list": "list_sheets(), extract_all_elevations(), summarise_findings(<10 findings>)",
+   "calls": 3,
+   "context_bytes": 14475,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 3,
+   "mismatch": "",
+   "output": {
+    "band_order": [
+     "Ground",
+     "First",
+     "Second",
+     "Third",
+     "Roof"
+    ],
+    "band_sill_head_ranges": [
+     {
+      "band": "Ground",
+      "count": 9,
+      "head_max_m": 2.22,
+      "head_min_m": 2.22,
+      "sill_max_m": 1.38,
+      "sill_min_m": 0.98
+     },
+     {
+      "band": "First",
+      "count": 11,
+      "head_max_m": 6.26,
+      "head_min_m": 5.25,
+      "sill_max_m": 5.41,
+      "sill_min_m": 4.01
+     },
+     {
+      "band": "Second",
+      "count": 12,
+      "head_max_m": 9.73,
+      "head_min_m": 8.72,
+      "sill_max_m": 8.89,
+      "sill_min_m": 7.48
+     },
+     {
+      "band": "Third",
+      "count": 11,
+      "head_max_m": 13.21,
+      "head_min_m": 12.2,
+      "sill_max_m": 12.37,
+      "sill_min_m": 10.96
+     },
+     {
+      "band": "Roof",
+      "count": 1,
+      "head_max_m": 15.67,
+      "head_min_m": 15.67,
+      "sill_max_m": 14.43,
+      "sill_min_m": 14.43
+     }
+    ],
+    "findings_summary": {
+     "building_totals": {
+      "Cannot Determine": 3,
+      "Mismatch": 7
+     },
+     "floor_status": {
+      "First": "Mismatch",
+      "Ground": "Mismatch",
+      "Roof": "Mismatch",
+      "Second": "Mismatch",
+      "Third": "Mismatch"
+     },
+     "per_floor": {
+      "First": {
+       "Cannot Determine": 1,
+       "Mismatch": 2
+      },
+      "Ground": {
+       "Cannot Determine": 0,
+       "Mismatch": 2
+      },
+      "Roof": {
+       "Cannot Determine": 0,
+       "Mismatch": 1
+      },
+      "Second": {
+       "Cannot Determine": 1,
+       "Mismatch": 1
+      },
+      "Third": {
+       "Cannot Determine": 1,
+       "Mismatch": 1
+      }
+     }
+    },
+    "name": "audit_prep_composite",
+    "opening_count_matrix": {
+     "Elevation_01": {
+      "First": 4,
+      "Ground": 3,
+      "Roof": 0,
+      "Second": 5,
+      "Third": 4
+     },
+     "Elevation_02": {
+      "First": 3,
+      "Ground": 2,
+      "Roof": 1,
+      "Second": 3,
+      "Third": 3
+     },
+     "Elevation_03": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     },
+     "Elevation_04": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     }
+    },
+    "task_id": "T5"
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T5",
+   "wall_time_s": 1.429416413000581,
+   "wall_times_s": [
+    1.411359777999678,
+    1.4796398389999013,
+    1.429416413000581
+   ]
+  },
+  {
+   "arm": "code-mode",
+   "bytes_returned": 14475,
+   "call_list": "list_sheets, extract_all_elevations, summarise_findings",
+   "calls": 1,
+   "context_bytes": 1354,
+   "correctness": "exact",
+   "error": null,
+   "host_calls": 3,
+   "mismatch": "",
+   "output": {
+    "band_order": [
+     "Ground",
+     "First",
+     "Second",
+     "Third",
+     "Roof"
+    ],
+    "band_sill_head_ranges": [
+     {
+      "band": "Ground",
+      "count": 9,
+      "head_max_m": 2.22,
+      "head_min_m": 2.22,
+      "sill_max_m": 1.38,
+      "sill_min_m": 0.98
+     },
+     {
+      "band": "First",
+      "count": 11,
+      "head_max_m": 6.26,
+      "head_min_m": 5.25,
+      "sill_max_m": 5.41,
+      "sill_min_m": 4.01
+     },
+     {
+      "band": "Second",
+      "count": 12,
+      "head_max_m": 9.73,
+      "head_min_m": 8.72,
+      "sill_max_m": 8.89,
+      "sill_min_m": 7.48
+     },
+     {
+      "band": "Third",
+      "count": 11,
+      "head_max_m": 13.21,
+      "head_min_m": 12.2,
+      "sill_max_m": 12.37,
+      "sill_min_m": 10.96
+     },
+     {
+      "band": "Roof",
+      "count": 1,
+      "head_max_m": 15.67,
+      "head_min_m": 15.67,
+      "sill_max_m": 14.43,
+      "sill_min_m": 14.43
+     }
+    ],
+    "findings_summary": {
+     "building_totals": {
+      "Cannot Determine": 3,
+      "Mismatch": 7
+     },
+     "floor_status": {
+      "First": "Mismatch",
+      "Ground": "Mismatch",
+      "Roof": "Mismatch",
+      "Second": "Mismatch",
+      "Third": "Mismatch"
+     },
+     "per_floor": {
+      "First": {
+       "Cannot Determine": 1,
+       "Mismatch": 2
+      },
+      "Ground": {
+       "Cannot Determine": 0,
+       "Mismatch": 2
+      },
+      "Roof": {
+       "Cannot Determine": 0,
+       "Mismatch": 1
+      },
+      "Second": {
+       "Cannot Determine": 1,
+       "Mismatch": 1
+      },
+      "Third": {
+       "Cannot Determine": 1,
+       "Mismatch": 1
+      }
+     }
+    },
+    "name": "audit_prep_composite",
+    "opening_count_matrix": {
+     "Elevation_01": {
+      "First": 4,
+      "Ground": 3,
+      "Roof": 0,
+      "Second": 5,
+      "Third": 4
+     },
+     "Elevation_02": {
+      "First": 3,
+      "Ground": 2,
+      "Roof": 1,
+      "Second": 3,
+      "Third": 3
+     },
+     "Elevation_03": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     },
+     "Elevation_04": {
+      "First": 2,
+      "Ground": 2,
+      "Roof": 0,
+      "Second": 2,
+      "Third": 2
+     }
+    },
+    "task_id": "T5"
+   },
+   "outputs_stable": true,
+   "repeats": 3,
+   "task_id": "T5-aggregate",
+   "wall_time_s": 1.2205692040006397,
+   "wall_times_s": [
+    1.2337697450002452,
+    1.1937942819995442,
+    1.2205692040006397
+   ]
+  }
+ ],
+ "setup_seconds": {
+  "ad-hoc": [
+   1.0171681949996128,
+   0.932542086000467,
+   0.8588007439993817
+  ],
+  "sequential": [
+   1.1813183490003212,
+   0.9743610340001396,
+   1.0454985200003648
+  ]
+ },
+ "total_wall_time_s": 95.80168128500009,
+ "verdict": {
+  "adhoc_close_to_code_mode": true,
+  "adhoc_within_10pct": {
+   "calls": true,
+   "context_bytes": true,
+   "wall_time_s": true
+  },
+  "bars_met": true,
+  "call_saving_T5": 0.8333333333333334,
+  "code_mode_mismatches": [],
+  "context_saving_T5": 0.9009654768870685,
+  "inexpressible_tasks": [],
+  "label": "Park",
+  "why": "code-mode beats sequential (context 90.1 %, calls 83.3 %) but the ad-hoc arm is within 10 % on every measure"
+ }
+}

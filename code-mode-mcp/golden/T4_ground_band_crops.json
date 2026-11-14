@@ -1,0 +1,204 @@
+{
+ "crops": [
+  {
+   "bbox_px": [
+    1531,
+    2630,
+    1760,
+    2769
+   ],
+   "file_name": "Elevation_01_elevation_01-w14_ground.png",
+   "id": "Elevation_01-W14",
+   "label": "elevation_01-w14_ground",
+   "sheet": "Elevation_01",
+   "size_px": [
+    229,
+    139
+   ],
+   "source_box_px": [
+    1531,
+    2630,
+    1760,
+    2769
+   ]
+  },
+  {
+   "bbox_px": [
+    2220,
+    2630,
+    2336,
+    2769
+   ],
+   "file_name": "Elevation_01_elevation_01-w15_ground.png",
+   "id": "Elevation_01-W15",
+   "label": "elevation_01-w15_ground",
+   "sheet": "Elevation_01",
+   "size_px": [
+    116,
+    139
+   ],
+   "source_box_px": [
+    2220,
+    2630,
+    2336,
+    2769
+   ]
+  },
+  {
+   "bbox_px": [
+    2559,
+    2630,
+    2636,
+    2724
+   ],
+   "file_name": "Elevation_01_elevation_01-w16_ground.png",
+   "id": "Elevation_01-W16",
+   "label": "elevation_01-w16_ground",
+   "sheet": "Elevation_01",
+   "size_px": [
+    77,
+    94
+   ],
+   "source_box_px": [
+    2559,
+    2630,
+    2636,
+    2724
+   ]
+  },
+  {
+   "bbox_px": [
+    1492,
+    2664,
+    1721,
+    2802
+   ],
+   "file_name": "Elevation_02_elevation_02-w11_ground.png",
+   "id": "Elevation_02-W11",
+   "label": "elevation_02-w11_ground",
+   "sheet": "Elevation_02",
+   "size_px": [
+    229,
+    138
+   ],
+   "source_box_px": [
+    1492,
+    2664,
+    1721,
+    2802
+   ]
+  },
+  {
+   "bbox_px": [
+    2284,
+    2664,
+    2513,
+    2802
+   ],
+   "file_name": "Elevation_02_elevation_02-w12_ground.png",
+   "id": "Elevation_02-W12",
+   "label": "elevation_02-w12_ground",
+   "sheet": "Elevation_02",
+   "size_px": [
+    229,
+    138
+   ],
+   "source_box_px": [
+    2284,
+    2664,
+    2513,
+    2802
+   ]
+  },
+  {
+   "bbox_px": [
+    1705,
+    2657,
+    1934,
+    2796
+   ],
+   "file_name": "Elevation_03_elevation_03-w7_ground.png",
+   "id": "Elevation_03-W7",
+   "label": "elevation_03-w7_ground",
+   "sheet": "Elevation_03",
+   "size_px": [
+    229,
+    139
+   ],
+   "source_box_px": [
+    1705,
+    2657,
+    1934,
+    2796
+   ]
+  },
+  {
+   "bbox_px": [
+    2118,
+    2657,
+    2347,
+    2796
+   ],
+   "file_name": "Elevation_03_elevation_03-w8_ground.png",
+   "id": "Elevation_03-W8",
+   "label": "elevation_03-w8_ground",
+   "sheet": "Elevation_03",
+   "size_px": [
+    229,
+    139
+   ],
+   "source_box_px": [
+    2118,
+    2657,
+    2347,
+    2796
+   ]
+  },
+  {
+   "bbox_px": [
+    1815,
+    2670,
+    1931,
+    2809
+   ],
+   "file_name": "Elevation_04_elevation_04-w7_ground.png",
+   "id": "Elevation_04-W7",
+   "label": "elevation_04-w7_ground",
+   "sheet": "Elevation_04",
+   "size_px": [
+    116,
+    139
+   ],
+   "source_box_px": [
+    1815,
+    2670,
+    1931,
+    2809
+   ]
+  },
+  {
+   "bbox_px": [
+    2065,
+    2670,
+    2294,
+    2809
+   ],
+   "file_name": "Elevation_04_elevation_04-w8_ground.png",
+   "id": "Elevation_04-W8",
+   "label": "elevation_04-w8_ground",
+   "sheet": "Elevation_04",
+   "size_px": [
+    229,
+    139
+   ],
+   "source_box_px": [
+    2065,
+    2670,
+    2294,
+    2809
+   ]
+  }
+ ],
+ "name": "ground_band_evidence_crops",
+ "task_id": "T4"
+}
