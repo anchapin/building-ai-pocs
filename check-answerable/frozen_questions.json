@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-11-14",
+  "frozen_by": "building-ai-pocs issue #56, Phase 0 slice 1 (worker-56)",
+  "purpose": "Hand-labelled frozen question set for the standalone table-only `check_answerable` prototype (Part A). Labels were fixed from the issue's documented question classes BEFORE the prototype was run against this set.",
+  "evidence_source": "building-ai-pocs issue #56 - Part A documented question-class table (classes enumerated verbatim in the Phase 0 slice 1 brief): covered = elevation window counts / elevation window bands / elevation sill-head heights; uncovered = elevation doors / floor-plan extraction / section extraction / schedules; partial = window width at schedule precision. NOTE: the issue file itself (ISSUE.md) was not present in this worktree at labelling time; the class table above is the enumeration quoted in the slice-1 brief, and this file cites that enumeration row-by-row.",
+  "label_vocabulary": {
+    "answerable": "the class is covered by the documented pipeline (table verdict: covered)",
+    "partial": "the class is only partially covered (table verdict: partial)",
+    "unanswerable": "the class is not covered by the documented pipeline (table verdict: uncovered)"
+  },
+  "questions": [
+    {
+      "id": "Q01",
+      "question": "How many windows are drawn on the north elevation of level 2?",
+      "question_class": "elevation_window_count",
+      "sheet_type": "elevation",
+      "label": "answerable",
+      "evidence": "issue #56 Part A class table row 'elevation window counts' -> covered; sheet type: elevation"
+    },
+    {
+      "id": "Q02",
+      "question": "How many windows are shown on the south elevation of the ground floor?",
+      "question_class": "elevation_window_count",
+      "sheet_type": "elevation",
+      "label": "answerable",
+      "evidence": "issue #56 Part A class table row 'elevation window counts' -> covered; sheet type: elevation"
+    },
+    {
+      "id": "Q03",
+      "question": "How many windows are drawn on the east elevation of the top floor?",
+      "question_class": "elevation_window_count",
+      "sheet_type": "elevation",
+      "label": "answerable",
+      "evidence": "issue #56 Part A class table row 'elevation window counts' -> covered; sheet type: elevation"
+    },
+    {
+      "id": "Q04",
+      "question": "How many windows are drawn on the west elevation of level 1?",
+      "question_class": "elevation_window_count",
+      "sheet_type": "elevation",
+      "label": "answerable",
+      "evidence": "issue #56 Part A class table row 'elevation window counts' -> covered; sheet type: elevation"
+    },
+    {
+      "id": "Q05",
+      "question": "How many horizontal window bands does the south elevation show?",
+      "question_class": "elevation_window_band_count",
+      "sheet_type": "elevation",
+      "label": "answerable",
+      "evidence": "issue #56 Part A class table row 'elevation window bands' -> covered; sheet type: elevation"
+    },
+    {
+      "id": "Q06",
+      "question": "How many window bands appear on the north elevation?",
+      "question_class": "elevation_window_band_count",
+      "sheet_type": "elevation",
+      "label": "answerable",
+      "evidence": "issue #56 Part A class table row 'elevation window bands' -> covered; sheet type: elevation"
+    },
+    {
+      "id": "Q07",
+      "question": "How many window bands are drawn on the east elevation of the ground floor?",
+      "question_class": "elevation_window_band_count",
+      "sheet_type": "elevation",
+      "label": "answerable",
+      "evidence": "issue #56 Part A class table row 'elevation window bands' -> covered; sheet type: elevation"
+    },
+    {
+      "id": "Q08",
+      "question": "What is the sill height of the ground-floor windows on the north elevation?",
+      "question_class": "elevation_sill_height",
+      "sheet_type": "elevation",
+      "label": "answerable",
+      "evidence": "issue #56 Part A class table row 'elevation sill-head heights' -> covered; sheet type: elevation"
+    },
+    {
+      "id": "Q09",
+      "question": "What is the sill height of the level-2 windows on the south elevation?",
+      "question_class": "elevation_sill_height",
+      "sheet_type": "elevation",
+      "label": "answerable",
+      "evidence": "issue #56 Part A class table row 'elevation sill-head heights' -> covered; sheet type: elevation"
+    },
+    {
+      "id": "Q10",
+      "question": "What is the sill height of the top-floor windows on the east elevation?",
+      "question_class": "elevation_sill_height",
+      "sheet_type": "elevation",
+      "label": "answerable",
+      "evidence": "issue #56 Part A class table row 'elevation sill-head heights' -> covered; sheet type: elevation"
+    },
+    {
+      "id": "Q11",
+      "question": "What is the head height of the ground-floor windows on the west elevation?",
+      "question_class": "elevation_head_height",
+      "sheet_type": "elevation",
+      "label": "answerable",
+      "evidence": "issue #56 Part A class table row 'elevation sill-head heights' -> covered; sheet type: elevation"
+    },
+    {
+      "id": "Q12",
+      "question": "What is the head height of the level-2 windows on the south elevation?",
+      "question_class": "elevation_head_height",
+      "sheet_type": "elevation",
+      "label": "answerable",
+      "evidence": "issue #56 Part A class table row 'elevation sill-head heights' -> covered; sheet type: elevation"
+    },
+    {
+      "id": "Q13",
+      "question": "How many doors are drawn on the ground-floor north elevation?",
+      "question_class": "elevation_door_count",
+      "sheet_type": "elevation",
+      "label": "unanswerable",
+      "evidence": "issue #56 Part A class table row 'elevation doors' -> uncovered; sheet type: elevation"
+    },
+    {
+      "id": "Q14",
+      "question": "How many entrance doors are shown on the south elevation?",
+      "question_class": "elevation_door_count",
+      "sheet_type": "elevation",
+      "label": "unanswerable",
+      "evidence": "issue #56 Part A class table row 'elevation doors' -> uncovered; sheet type: elevation"
+    },
+    {
+      "id": "Q15",
+      "question": "How many doors are drawn on the east elevation of level 1?",
+      "question_class": "elevation_door_count",
+      "sheet_type": "elevation",
+      "label": "unanswerable",
+      "evidence": "issue #56 Part A class table row 'elevation doors' -> uncovered; sheet type: elevation"
+    },
+    {
+      "id": "Q16",
+      "question": "What is the floor area of Zone 3 as shown on the level-1 floor plan?",
+      "question_class": "floor_plan_extraction",
+      "sheet_type": "floor_plan",
+      "label": "unanswerable",
+      "evidence": "issue #56 Part A class table row 'floor-plan/section extraction' -> uncovered; sheet type: floor_plan"
+    },
+    {
+      "id": "Q17",
+      "question": "Which rooms are labelled on the ground-floor floor plan?",
+      "question_class": "floor_plan_extraction",
+      "sheet_type": "floor_plan",
+      "label": "unanswerable",
+      "evidence": "issue #56 Part A class table row 'floor-plan/section extraction' -> uncovered; sheet type: floor_plan"
+    },
+    {
+      "id": "Q18",
+      "question": "What is the floor-to-floor height shown in the building section?",
+      "question_class": "section_extraction",
+      "sheet_type": "section",
+      "label": "unanswerable",
+      "evidence": "issue #56 Part A class table row 'floor-plan/section extraction' -> uncovered; sheet type: section"
+    },
+    {
+      "id": "Q19",
+      "question": "What ceiling height is shown in the typical section?",
+      "question_class": "section_extraction",
+      "sheet_type": "section",
+      "label": "unanswerable",
+      "evidence": "issue #56 Part A class table row 'floor-plan/section extraction' -> uncovered; sheet type: section"
+    },
+    {
+      "id": "Q20",
+      "question": "What window type is marked W-02 in the window schedule?",
+      "question_class": "schedule_extraction",
+      "sheet_type": "schedule",
+      "label": "unanswerable",
+      "evidence": "issue #56 Part A class table row 'schedules' -> uncovered; sheet type: schedule"
+    },
+    {
+      "id": "Q21",
+      "question": "How many windows does schedule row W-03 cover?",
+      "question_class": "schedule_extraction",
+      "sheet_type": "schedule",
+      "label": "unanswerable",
+      "evidence": "issue #56 Part A class table row 'schedules' -> uncovered; sheet type: schedule"
+    },
+    {
+      "id": "Q22",
+      "question": "What is the width of window type W-02 at the precision given in the window schedule?",
+      "question_class": "window_width_at_schedule_precision",
+      "sheet_type": "schedule",
+      "label": "partial",
+      "evidence": "issue #56 Part A class table row 'window width at schedule precision' -> partial; sheet type: schedule"
+    },
+    {
+      "id": "Q23",
+      "question": "What is the scheduled width of window type W-04?",
+      "question_class": "window_width_at_schedule_precision",
+      "sheet_type": "schedule",
+      "label": "partial",
+      "evidence": "issue #56 Part A class table row 'window width at schedule precision' -> partial; sheet type: schedule"
+    },
+    {
+      "id": "Q24",
+      "question": "What width does the schedule give for window type W-07?",
+      "question_class": "window_width_at_schedule_precision",
+      "sheet_type": "schedule",
+      "label": "partial",
+      "evidence": "issue #56 Part A class table row 'window width at schedule precision' -> partial; sheet type: schedule"
+    }
+  ]
+}
