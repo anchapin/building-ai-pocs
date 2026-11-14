@@ -1,6 +1,11 @@
-# XIAS UI gates — Phase 0 slice 1 report (POC #46 / issue #54)
+# XIAS UI gates — Phase 0 report (POC #46 / issue #54)
 
-Automated rendered-UI gates 1–4 + 7 measured against the real staging-studio app in its own hermetic Playwright harness (seeded user + rehearsal project, mocked providers). No staging-studio code changes; no fixes; measurement only.
+Two surfaces are measured in this report:
+
+- **staging-studio app** (slice 1, issue #54) — automated rendered-UI gates 1–4 + 7 measured against the real staging-studio app in its own hermetic Playwright harness (seeded user + rehearsal project, mocked providers). No staging-studio code changes; no fixes; measurement only. This is the surface the recorded verdict rests on.
+- **generative-ui-diagnostic-lens renderer** (slice 2, this section) — the same gates 1–4 measured against the static HTML the lens renderer produces for its three fixture cases, with a stdlib-only Python script. See "Lens surface" below.
+
+Nothing in the lens section changes the recorded whole-spike verdict; it only makes the previously prose-only lens half reproducible.
 
 - staging-studio commit measured: `44c62048ca47a5ec7c449740979fefc09bdac776` (develop tip at measurement time)
 - Screens: login, projects list, project detail, room studio / edit-room, lookbook editor, settings × light/dark × 1280×800 / 390×844 = 24 cells, all `measured` (0 unmeasurable).
@@ -757,11 +762,47 @@ P1 class per the parent gate: axe serious/critical, rendered contrast < AA, targ
   - `src/app/actions/room-batch.ts` — 16
   - `src/app/api/sign-project/route.ts` — 14
 
+## Lens surface — gates 1–4 on the generative-ui-diagnostic-lens renderer
+
+**Scope.** The three fixture cases the lens' own runner assembles — `case1_ashrae140`, `case2_ground_coupled`, `case3_humid_latent` (`generative-ui-diagnostic-lens/fixtures/case_requests.json` against `generative-ui-diagnostic-lens/fixtures/runs/*.json`) — assembled with `assembler.assemble` against `manifest.manifest_from_run(run)` and rendered by `generative-ui-diagnostic-lens/renderer.py` `render_spec()` (renderer.py:105), exactly as `run_poc.py` does (run_poc.py:252, run_poc.py:127). Measured by `xias-ui-gates/lens_gates.py` (Python standard library only, no browser engine, no network). Raw output: `results/lens-gates-1-4.json`.
+
+**Adaptations (static HTML, no DOM, no layout, no browser engine in this slice).** The staging gates are re-implemented as static measurements over the rendered HTML:
+
+- Gate 1 (accessibility, serious/critical): axe itself is **not** run on this surface (**UNMEASURED**). The static adaptation checks the rules the surface can decide deterministically: missing/empty accessible names on interactive elements, missing `lang`, missing `title`, duplicate ids, and images/SVG without a text alternative.
+- Gate 2 (rendered contrast): WCAG 2.2 contrast ratios computed from the colours the renderer actually specifies — the class rules in the renderer's `<style>` block (renderer.py:112-118) and the SVG `fill`/`stroke` attributes. Large text = ≥24 px, or ≥18.66 px bold.
+- Gate 3 (target size): interactive elements (link/button/input, or an element with an interactive role or a click handler) whose inline `width`/`height` or viewBox-derived size is under 24×24 px.
+- Gate 4 (overflow at 280 px): fixed pixel widths / min-widths in inline styles or in the `<style>` block, and SVG `viewBox` widths above 280 px without a responsive wrapper (`max-width:100%`, `width:100%` or an overflow container). The *rendered* `scrollWidth` of the lens HTML was **not** measured (**UNMEASURED** — no browser engine is available in this slice); the finding below is the static viewBox-width offender, which is what the lens emits.
+
+**Assumptions (explicit).** The renderer's `<style>` block sets no page background and no body colour, so the UA defaults are assumed: page background `#ffffff`, body text `#000000`. Every colour below is cited with the `renderer.py` line that declares it.
+
+| Colour resolved | Source | On | Ratio | Requirement | Result |
+|---|---|---|---|---|---|
+| `#000000` (body text, no rule) | UA default (no colour rule in renderer.py:112-118) | `#ffffff` (UA default) | 21.00:1 | 4.5:1 | pass |
+| `#333333` (`.axis-label` fill, 11 px/400) | renderer.py:118 | `#ffffff` | 12.63:1 | 4.5:1 | pass |
+| `#a00` (`.nodata` colour) | renderer.py:114 | `#ffffff` | 7.75:1 | 4.5:1 | pass (rule present; no `.nodata` element in these three cases) |
+| `#000000` on `#ffdddd` (`.out` badge) | renderer.py:115 | — | 16.64:1 | 4.5:1 | pass |
+
+### Raw table — lens surface (counts per case; worst example per gate)
+
+| Case | Components | G1 a11y | G2 contrast | G3 target | G4 overflow | Worst G2 | Worst G4 |
+|---|---|---|---|---|---|---|---|
+| case1_ashrae140 | TimeSeriesChart ×2, DiffTable, KPICard | 0 | 0 (30 text elements measured) | 0 (0 interactive elements) | 2 | — | `svg.chart[doc#12] role=img aria-label=zone1_air_temperature` — viewBox width 520 px > 280 px viewport, no responsive wrapper (renderer.py:93) |
+| case2_ground_coupled | TimeSeriesChart, DiffTable | 0 | 0 (21 text elements measured) | 0 (0 interactive elements) | 1 | — | `svg.chart[doc#12] role=img aria-label=floor_boundary_temperature` — viewBox width 520 px > 280 px viewport, no responsive wrapper (renderer.py:93) |
+| case3_humid_latent | TimeSeriesChart ×2, DiffTable | 0 | 0 (27 text elements measured) | 0 (0 interactive elements) | 2 | — | `svg.chart[doc#12] role=img aria-label=zone1_relative_humidity` — viewBox width 520 px > 280 px viewport, no responsive wrapper (renderer.py:93) |
+
+Totals for the lens surface: G1 **0**, G2 **0**, G3 **0**, G4 **5** (one offender per chart SVG). Gates failed: **gate 4 only — 1 of 4**. Gates 1 and 3 have no findings at all, so they have no worst example; gate 2 has no worst example because no text element fell below its requirement (the lowest ratio measured is 12.63:1 for the 11 px axis labels, the only non-default colour in these three cases).
+
+**Worst-example convention on this surface.** The lens HTML carries no element ids, so elements are identified by tag + class + document-order index + a short text/attribute excerpt (e.g. `svg.chart[doc#12] role=img aria-label=zone1_air_temperature`).
+
+**Reconciliation with the on-record line.** The "Totals and gate application" section above records, from the #46 comment of 2026-11-13, that the lens half "fails 1 of gates 1–4 (gate 4)". This slice re-measured the same three fixture cases with a reproducible script: gates 1, 2 and 3 measure **0** findings and gate 4 measures **5** findings — the lens fails **1 of gates 1–4, gate 4**. The measurement **agrees** with the on-record line; there is no divergence to resolve, and the old line is annotated rather than overwritten. What this slice adds is the artifact the old line lacked: the script (`lens_gates.py`), the raw results (`results/lens-gates-1-4.json`) and this table.
+
+**Phase 0 implication for the lens surface alone.** The issue's rule is that a surface failing ≥3 of gates 1–4 contributes one Proceed leg. The lens surface fails **1** of gates 1–4 (gate 4 only), so it contributes **no** Proceed leg; the lens half remains NOT ≥3, exactly as recorded. This says nothing about the whole spike: the recorded whole-spike verdict (PROCEED) rests on the staging-studio screens, and gates 5–6 remain open for both surfaces.
+
 ## Totals and gate application
 
 - Total findings (gates 1–4 violation counts + gate-7 'other', per the slice definition): **1310**.
 - P1-class findings appear on **all 6 screens** (axe serious/critical and rendered-contrast failures on every screen; target-size failures on every screen).
-- Lens half (already on record, #46 comment 2026-11-13): fails 1 of gates 1–4 (gate 4), i.e. NOT ≥3.
+- Lens half (already on record, #46 comment 2026-11-13): fails 1 of gates 1–4 (gate 4), i.e. NOT ≥3. — re-measured in this slice's lens-surface section with a reproducible script (`lens_gates.py`, `results/lens-gates-1-4.json`): the measurement **agrees** (1 of 4, gate 4); the original line is kept, not overwritten.
 - **Verdict: PROCEED** — the parent gate's first condition is met (P1 findings on ≥2 staging-studio screens). The Kill condition (near-clean, <5 total, none P1) is nowhere near met. Gates 5 (keyboard) and 6 (verify-interactive) are **NOT measured** in this slice; the Proceed rests on gates 1–4 + 7 and does not need the unmeasured gates, but any future Kill judgement must be flagged as resting on 1–4+7 only.
 
 ## Claims
@@ -772,10 +813,17 @@ P1 class per the parent gate: axe serious/critical, rendered contrast < AA, targ
 - [observed] The dominant rendered failures are colour contrast (muted-foreground text at ~3.5:1 against a 4.5:1 requirement) and sub-24px targets, concentrated in project detail and the lookbook editor; source: results/gates-1-4.json.
 - [inference] Because P1 findings appear on every screen, a Phase 1 gate wired into staging-studio's E2E would start red on day one; the gate-set wall-time (~72 s for the measurement pass, plus build/seed) is the ceiling it would add.
 - [unsupported] Nothing here measures gates 5 (keyboard) or 6 (verify-interactive), real-user impact, or XIAS's effect on these numbers; no claim is made about them.
+- [observed] On the lens surface (three fixture cases rendered by `generative-ui-diagnostic-lens/renderer.py`), gates 1–3 measure 0 findings and gate 4 measures 5 (one 520 px chart `viewBox` per chart SVG, above the 280 px viewport); source: results/lens-gates-1-4.json.
+- [observed] The lens renderer emits no interactive elements (no link, button or input, and no interactive role) in these three cases, so gate 3 has nothing to measure on this surface; source: results/lens-gates-1-4.json.
+- [observed] Every colour gate 2 resolves comes from the renderer's own `<style>` block or its SVG `fill`/`stroke` attributes, with the UA defaults `#ffffff` (page background) and `#000000` (body text) assumed where that block sets nothing; source: generative-ui-diagnostic-lens/renderer.py:112.
+- [inference] Because the lens surface fails 1 of gates 1–4 it contributes no Proceed leg under the issue's rule (a surface needs ≥3 failures); the recorded whole-spike verdict rests on the staging-studio screens and is not changed by this section.
 
 ## Deliverables in this folder
 
 - `REPORT.md` — this report.
 - `gates.spec.ts` — the Playwright gate runner (copy into staging-studio `tests/e2e/specs/` to run; expects the harness's seeded fixtures, axe-core resolvable from the app's node_modules, results path via `XIAS_GATE_OUT`).
 - `gate7-hex-count.mjs` — the gate-7 static counter (`node gate7-hex-count.mjs <staging-studio-root>`).
-- `results/gates-1-4.json`, `results/gate7-hex-count.json` — the raw machine output behind every number above.
+- `lens_gates.py` — the lens-surface gate runner (stdlib only): renders the lens' three fixture cases via `generative-ui-diagnostic-lens/renderer.py` and applies gates 1–4 to the static HTML (`python3 xias-ui-gates/lens_gates.py`).
+- `test_lens_gates.py` — tests for the lens-surface gates (`python3 -m pytest xias-ui-gates/ -q`).
+- `results/gates-1-4.json`, `results/gate7-hex-count.json` — the raw machine output behind every staging-studio number above.
+- `results/lens-gates-1-4.json` — the raw machine output behind every lens-surface number above.

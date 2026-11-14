@@ -1,0 +1,200 @@
+{
+  "assumptions": [
+    "The renderer's <style> block sets no page background and no body colour: the UA defaults are assumed (page background #ffffff, body text #000000).",
+    "Gate 2 resolves the foreground from the class rule in the renderer's <style> block or from the SVG fill attribute; every colour is cited with the renderer.py line that declares it.",
+    "Gate 4 is the static adaptation of the staging gate (fixed pixel widths / min-widths / SVG viewBox widths above 280px without a responsive wrapper). The rendered scrollWidth of the lens HTML was NOT measured: no browser engine is available in this slice (UNMEASURED).",
+    "Gate 3 sizes come from an inline width/height or a viewBox; elements that would need layout to be sized are reported as unmeasurable, not guessed.",
+    "Gate 1 is a static adaptation of the axe serious/critical rule set: axe itself is not run on this surface (UNMEASURED)."
+  ],
+  "cases": [
+    {
+      "caseId": "case1_ashrae140",
+      "components": [
+        "TimeSeriesChart",
+        "TimeSeriesChart",
+        "DiffTable",
+        "KPICard"
+      ],
+      "gates": {
+        "gate1": {
+          "count": 0,
+          "findings": [],
+          "status": "measured",
+          "worst": null
+        },
+        "gate2": {
+          "count": 0,
+          "findings": [],
+          "status": "measured",
+          "textElementsMeasured": 30,
+          "worst": null
+        },
+        "gate3": {
+          "count": 0,
+          "findings": [],
+          "interactiveElements": 0,
+          "note": "the lens renderer emits no interactive elements (no a/button/input/and no interactive role), so gate 3 has 0 findings and nothing to measure",
+          "status": "measured",
+          "worst": null
+        },
+        "gate4": {
+          "count": 2,
+          "findings": [
+            {
+              "element": "svg.chart[doc#12] role=img aria-label=zone1_air_temperature",
+              "measured": "viewBox width 520px > 280px viewport, no responsive wrapper",
+              "rule": "svg-viewbox-width",
+              "source": "generative-ui-diagnostic-lens/renderer.py:93",
+              "widthPx": 520.0
+            },
+            {
+              "element": "svg.chart[doc#23] role=img aria-label=zone2_air_temperature",
+              "measured": "viewBox width 520px > 280px viewport, no responsive wrapper",
+              "rule": "svg-viewbox-width",
+              "source": "generative-ui-diagnostic-lens/renderer.py:93",
+              "widthPx": 520.0
+            }
+          ],
+          "status": "measured",
+          "worst": {
+            "element": "svg.chart[doc#12] role=img aria-label=zone1_air_temperature",
+            "measured": "viewBox width 520px > 280px viewport, no responsive wrapper",
+            "rule": "svg-viewbox-width",
+            "source": "generative-ui-diagnostic-lens/renderer.py:93",
+            "widthPx": 520.0
+          }
+        }
+      },
+      "htmlBytes": 3215,
+      "request": "chart zone1 air temperature and zone2 air temperature and add a diff table of zone1 air temperature with the peak value and a kpi card for total heating energy",
+      "runId": "run_ashrae140_case1"
+    },
+    {
+      "caseId": "case2_ground_coupled",
+      "components": [
+        "TimeSeriesChart",
+        "DiffTable"
+      ],
+      "gates": {
+        "gate1": {
+          "count": 0,
+          "findings": [],
+          "status": "measured",
+          "worst": null
+        },
+        "gate2": {
+          "count": 0,
+          "findings": [],
+          "status": "measured",
+          "textElementsMeasured": 21,
+          "worst": null
+        },
+        "gate3": {
+          "count": 0,
+          "findings": [],
+          "interactiveElements": 0,
+          "note": "the lens renderer emits no interactive elements (no a/button/input/and no interactive role), so gate 3 has 0 findings and nothing to measure",
+          "status": "measured",
+          "worst": null
+        },
+        "gate4": {
+          "count": 1,
+          "findings": [
+            {
+              "element": "svg.chart[doc#12] role=img aria-label=floor_boundary_temperature",
+              "measured": "viewBox width 520px > 280px viewport, no responsive wrapper",
+              "rule": "svg-viewbox-width",
+              "source": "generative-ui-diagnostic-lens/renderer.py:93",
+              "widthPx": 520.0
+            }
+          ],
+          "status": "measured",
+          "worst": {
+            "element": "svg.chart[doc#12] role=img aria-label=floor_boundary_temperature",
+            "measured": "viewBox width 520px > 280px viewport, no responsive wrapper",
+            "rule": "svg-viewbox-width",
+            "source": "generative-ui-diagnostic-lens/renderer.py:93",
+            "widthPx": 520.0
+          }
+        }
+      },
+      "htmlBytes": 2027,
+      "request": "plot the floor boundary temperature and compare it with the ground baseline temperature in a diff table",
+      "runId": "run_ground_coupled_case2"
+    },
+    {
+      "caseId": "case3_humid_latent",
+      "components": [
+        "TimeSeriesChart",
+        "TimeSeriesChart",
+        "DiffTable"
+      ],
+      "gates": {
+        "gate1": {
+          "count": 0,
+          "findings": [],
+          "status": "measured",
+          "worst": null
+        },
+        "gate2": {
+          "count": 0,
+          "findings": [],
+          "status": "measured",
+          "textElementsMeasured": 27,
+          "worst": null
+        },
+        "gate3": {
+          "count": 0,
+          "findings": [],
+          "interactiveElements": 0,
+          "note": "the lens renderer emits no interactive elements (no a/button/input/and no interactive role), so gate 3 has 0 findings and nothing to measure",
+          "status": "measured",
+          "worst": null
+        },
+        "gate4": {
+          "count": 2,
+          "findings": [
+            {
+              "element": "svg.chart[doc#12] role=img aria-label=zone1_relative_humidity",
+              "measured": "viewBox width 520px > 280px viewport, no responsive wrapper",
+              "rule": "svg-viewbox-width",
+              "source": "generative-ui-diagnostic-lens/renderer.py:93",
+              "widthPx": 520.0
+            },
+            {
+              "element": "svg.chart[doc#23] role=img aria-label=zone1_latent_load",
+              "measured": "viewBox width 520px > 280px viewport, no responsive wrapper",
+              "rule": "svg-viewbox-width",
+              "source": "generative-ui-diagnostic-lens/renderer.py:93",
+              "widthPx": 520.0
+            }
+          ],
+          "status": "measured",
+          "worst": {
+            "element": "svg.chart[doc#12] role=img aria-label=zone1_relative_humidity",
+            "measured": "viewBox width 520px > 280px viewport, no responsive wrapper",
+            "rule": "svg-viewbox-width",
+            "source": "generative-ui-diagnostic-lens/renderer.py:93",
+            "widthPx": 520.0
+          }
+        }
+      },
+      "htmlBytes": 2952,
+      "request": "chart the zone1 relative humidity and zone1 latent load and add a diff table of zone1 relative humidity",
+      "runId": "run_humid_latent_case3"
+    }
+  ],
+  "gatesFailed": [
+    "gate4"
+  ],
+  "gatesFailedCount": 1,
+  "schema": "xias-lens-gates-1",
+  "source": "generative-ui-diagnostic-lens/renderer.py render_spec()",
+  "surface": "generative-ui-diagnostic-lens renderer (static HTML)",
+  "totals": {
+    "gate1": 0,
+    "gate2": 0,
+    "gate3": 0,
+    "gate4": 5
+  }
+}
