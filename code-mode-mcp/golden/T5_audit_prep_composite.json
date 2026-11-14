@@ -1,0 +1,118 @@
+{
+ "band_order": [
+  "Ground",
+  "First",
+  "Second",
+  "Third",
+  "Roof"
+ ],
+ "band_sill_head_ranges": [
+  {
+   "band": "Ground",
+   "count": 9,
+   "head_max_m": 2.22,
+   "head_min_m": 2.22,
+   "sill_max_m": 1.38,
+   "sill_min_m": 0.98
+  },
+  {
+   "band": "First",
+   "count": 11,
+   "head_max_m": 6.26,
+   "head_min_m": 5.25,
+   "sill_max_m": 5.41,
+   "sill_min_m": 4.01
+  },
+  {
+   "band": "Second",
+   "count": 12,
+   "head_max_m": 9.73,
+   "head_min_m": 8.72,
+   "sill_max_m": 8.89,
+   "sill_min_m": 7.48
+  },
+  {
+   "band": "Third",
+   "count": 11,
+   "head_max_m": 13.21,
+   "head_min_m": 12.2,
+   "sill_max_m": 12.37,
+   "sill_min_m": 10.96
+  },
+  {
+   "band": "Roof",
+   "count": 1,
+   "head_max_m": 15.67,
+   "head_min_m": 15.67,
+   "sill_max_m": 14.43,
+   "sill_min_m": 14.43
+  }
+ ],
+ "findings_summary": {
+  "building_totals": {
+   "Cannot Determine": 3,
+   "Mismatch": 7
+  },
+  "floor_status": {
+   "First": "Mismatch",
+   "Ground": "Mismatch",
+   "Roof": "Mismatch",
+   "Second": "Mismatch",
+   "Third": "Mismatch"
+  },
+  "per_floor": {
+   "First": {
+    "Cannot Determine": 1,
+    "Mismatch": 2
+   },
+   "Ground": {
+    "Cannot Determine": 0,
+    "Mismatch": 2
+   },
+   "Roof": {
+    "Cannot Determine": 0,
+    "Mismatch": 1
+   },
+   "Second": {
+    "Cannot Determine": 1,
+    "Mismatch": 1
+   },
+   "Third": {
+    "Cannot Determine": 1,
+    "Mismatch": 1
+   }
+  }
+ },
+ "name": "audit_prep_composite",
+ "opening_count_matrix": {
+  "Elevation_01": {
+   "First": 4,
+   "Ground": 3,
+   "Roof": 0,
+   "Second": 5,
+   "Third": 4
+  },
+  "Elevation_02": {
+   "First": 3,
+   "Ground": 2,
+   "Roof": 1,
+   "Second": 3,
+   "Third": 3
+  },
+  "Elevation_03": {
+   "First": 2,
+   "Ground": 2,
+   "Roof": 0,
+   "Second": 2,
+   "Third": 2
+  },
+  "Elevation_04": {
+   "First": 2,
+   "Ground": 2,
+   "Roof": 0,
+   "Second": 2,
+   "Third": 2
+  }
+ },
+ "task_id": "T5"
+}

@@ -1,0 +1,28 @@
+{
+ "frozen_workload": "workload.py",
+ "frozen_workload_sha256": "f668a5a0aeb7812171a91bc1b2a4fd8169e6885e9bc667f38e26f2ee27eaefcf",
+ "freeze_command": "/home/hatch/workspace/fixtrees/bap50-venv/bin/python code-mode-mcp/workload.py freeze",
+ "golden": {
+  "T1": {
+   "file": "T1_opening_count_matrix.json",
+   "sha256": "bfe03b769f2cad4db455e58f61e9642940b811933ee5ef8a065c763509bb88d9"
+  },
+  "T2": {
+   "file": "T2_width_consistency.json",
+   "sha256": "4ee6d35641ae0ac3a3864f1e5b351f812f3ec2195356938cd723724bffa0aa79"
+  },
+  "T3": {
+   "file": "T3_band_sill_head_ranges.json",
+   "sha256": "6fb2803aa44c1b20d34bf1581f585f27857f57d0f8379ada025ea882283e1c94"
+  },
+  "T4": {
+   "file": "T4_ground_band_crops.json",
+   "sha256": "717f312e9bc55663c55445abc215ff05c4d3116c2f7471e5d373ff2c23c9a8e9"
+  },
+  "T5": {
+   "file": "T5_audit_prep_composite.json",
+   "sha256": "76fb510a595623b35189109886deb7748a5e5a96522f6c351313b9debde9d51c"
+  }
+ },
+ "note": "The workload and the five golden files were frozen BEFORE any timing run and before any measurement code was written; the hashes above are the freeze evidence quoted in REPORT.md."
+}

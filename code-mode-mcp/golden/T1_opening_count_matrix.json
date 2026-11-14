@@ -1,0 +1,41 @@
+{
+ "band_order": [
+  "Ground",
+  "First",
+  "Second",
+  "Third",
+  "Roof"
+ ],
+ "matrix": {
+  "Elevation_01": {
+   "First": 4,
+   "Ground": 3,
+   "Roof": 0,
+   "Second": 5,
+   "Third": 4
+  },
+  "Elevation_02": {
+   "First": 3,
+   "Ground": 2,
+   "Roof": 1,
+   "Second": 3,
+   "Third": 3
+  },
+  "Elevation_03": {
+   "First": 2,
+   "Ground": 2,
+   "Roof": 0,
+   "Second": 2,
+   "Third": 2
+  },
+  "Elevation_04": {
+   "First": 2,
+   "Ground": 2,
+   "Roof": 0,
+   "Second": 2,
+   "Third": 2
+  }
+ },
+ "name": "elevation_x_band_opening_count_matrix",
+ "task_id": "T1"
+}

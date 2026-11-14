@@ -1,0 +1,46 @@
+{
+ "bands": [
+  {
+   "band": "Ground",
+   "count": 9,
+   "head_max_m": 2.22,
+   "head_min_m": 2.22,
+   "sill_max_m": 1.38,
+   "sill_min_m": 0.98
+  },
+  {
+   "band": "First",
+   "count": 11,
+   "head_max_m": 6.26,
+   "head_min_m": 5.25,
+   "sill_max_m": 5.41,
+   "sill_min_m": 4.01
+  },
+  {
+   "band": "Second",
+   "count": 12,
+   "head_max_m": 9.73,
+   "head_min_m": 8.72,
+   "sill_max_m": 8.89,
+   "sill_min_m": 7.48
+  },
+  {
+   "band": "Third",
+   "count": 11,
+   "head_max_m": 13.21,
+   "head_min_m": 12.2,
+   "sill_max_m": 12.37,
+   "sill_min_m": 10.96
+  },
+  {
+   "band": "Roof",
+   "count": 1,
+   "head_max_m": 15.67,
+   "head_min_m": 15.67,
+   "sill_max_m": 14.43,
+   "sill_min_m": 14.43
+  }
+ ],
+ "name": "band_sill_head_ranges",
+ "task_id": "T3"
+}
