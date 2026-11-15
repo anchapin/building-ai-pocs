@@ -1,0 +1,116 @@
+{
+ "request_url": "https://tnmaccess.nationalmap.gov/api/v1/products?bbox=-77.430667,37.533222,-77.427667,37.536222&q=Lidar%20Point%20Cloud&max=100",
+ "response": {
+  "total": 3,
+  "items": [
+   {
+    "title": "USGS Lidar Point Cloud VA_SouthamptonHenricoWMBG_2019_B19 18stg850565",
+    "moreInfo": "Lidar (Light detection and ranging) discrete-return point cloud data are available in the American Society for Photogrammetry and Remote Sensing (ASPRS) LAS format. The LAS format is a standardized binary format for storing 3-dimensional point cloud data and point attributes along with header information and variable length records specific to the data. Millions of data points are stored as a 3-dimensional data cloud as a series of x (longitude), y (latitude) and z (elevation) points. A few older projects in this collection are in ASCII format. Please refer to http://www.asprs.org/Committee-General/LASer-LAS-File-Format-Exchange-Activities.html for additional information. This data set is a LAZ (compressed LAS) format file containing [...]",
+    "sourceId": "5fe75ab0d34ea5387debb4b2",
+    "sourceName": "ScienceBase",
+    "sourceOriginId": null,
+    "sourceOriginName": "gda",
+    "metaUrl": "https://www.sciencebase.gov/catalog/item/5fe75ab0d34ea5387debb4b2",
+    "vendorMetaUrl": "https://prd-tnm.s3.amazonaws.com/index.html?prefix=StagedProducts/Elevation/metadata/VA_SouthamptonHenricoWMBG_2019_B19/VA_SouthamptonHenricoWMBG_2_2019",
+    "publicationDate": "2020-12-21",
+    "lastUpdated": "2022-03-27T23:47:32.470-06:00",
+    "dateCreated": "2020-12-26T08:45:52.830-07:00",
+    "sizeInBytes": 15550374,
+    "extent": "Varies",
+    "format": "LAZ",
+    "downloadURL": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/VA_SouthamptonHenricoWMBG_2019_B19/VA_SouthamptonHenricoWMBG_2_2019/LAZ/USGS_LPC_VA_SouthamptonHenricoWMBG_2019_B19_18stg850565.laz",
+    "downloadURLRaster": null,
+    "previewGraphicURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/LPC/Projects/VA_SouthamptonHenricoWMBG_2019_B19/VA_SouthamptonHenricoWMBG_2_2019/browse/USGS_LPC_VA_SouthamptonHenricoWMBG_2019_B19_18stg850565.jpg",
+    "downloadLazURL": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/VA_SouthamptonHenricoWMBG_2019_B19/VA_SouthamptonHenricoWMBG_2_2019/LAZ/USGS_LPC_VA_SouthamptonHenricoWMBG_2019_B19_18stg850565.laz",
+    "urls": {
+     "LAZ": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/VA_SouthamptonHenricoWMBG_2019_B19/VA_SouthamptonHenricoWMBG_2_2019/LAZ/USGS_LPC_VA_SouthamptonHenricoWMBG_2019_B19_18stg850565.laz"
+    },
+    "datasets": [],
+    "boundingBox": {
+     "minX": -77.43338855481655,
+     "maxX": -77.4162355706308,
+     "minY": 37.530435863721195,
+     "maxY": 37.53666505207732
+    },
+    "bestFitIndex": 0.0,
+    "body": "Lidar (Light detection and ranging) discrete-return point cloud data are available in the American Society for Photogrammetry and Remote Sensing (ASPRS) LAS format. The LAS format is a standardized binary format for storing 3-dimensional point cloud data and point attributes along with header information and variable length records specific to the data. Millions of data points are stored as a 3-dimensional data cloud as a series of x (longitude), y (latitude) and z (elevation) points. A few older projects in this collection are in ASCII format.  Please refer to http://www.asprs.org/Committee-General/LASer-LAS-File-Format-Exchange-Activities.html for additional information.  This data set is a LAZ (compressed LAS) format file containing lidar point cloud data. Compression to an LAZ file was done with the LAStools 'laszip' program and can be unzipped with the same free program (laszip.org). ",
+    "processingUrl": "processingUrl",
+    "modificationInfo": "2021-07-01"
+   },
+   {
+    "title": "USGS Lidar Point Cloud Virginia_SANDY_QL2_LiDAR 18STG8556",
+    "moreInfo": "Lidar (Light detection and ranging) discrete-return point cloud data are available in the American Society for Photogrammetry and Remote Sensing (ASPRS) LAS format. The LAS format is a standardized binary format for storing 3-dimensional point cloud data and point attributes along with header information and variable length records specific to the data. Millions of data points are stored as a 3-dimensional data cloud as a series of x (longitude), y (latitude) and z (elevation) points. A few older projects in this collection are in ASCII format. Please refer to http://www.asprs.org/Committee-General/LASer-LAS-File-Format-Exchange-Activities.html for additional information. This data set is a LAZ (compressed LAS) format file containing [...]",
+    "sourceId": "643c6adad34ee8d4ade4d15f",
+    "sourceName": "ScienceBase",
+    "sourceOriginId": null,
+    "sourceOriginName": "gda",
+    "metaUrl": "https://www.sciencebase.gov/catalog/item/643c6adad34ee8d4ade4d15f",
+    "vendorMetaUrl": "https://prd-tnm.s3.amazonaws.com/index.html?prefix=StagedProducts/Elevation/metadata/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014",
+    "publicationDate": "2015-06-17",
+    "lastUpdated": "2023-04-16T15:39:43.988-06:00",
+    "dateCreated": "2023-04-16T15:38:34.786-06:00",
+    "sizeInBytes": 100184521,
+    "extent": "Varies",
+    "format": "LAZ",
+    "downloadURL": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8556.laz",
+    "downloadURLRaster": null,
+    "previewGraphicURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/browse/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8556.jpg",
+    "downloadLazURL": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8556.laz",
+    "urls": {
+     "LAZ": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8556.laz"
+    },
+    "datasets": [],
+    "boundingBox": {
+     "minX": -77.43899800070365,
+     "maxX": -77.4215983999282,
+     "minY": 37.52131381863631,
+     "maxY": 37.53517111581411
+    },
+    "bestFitIndex": 0.0,
+    "body": "Lidar (Light detection and ranging) discrete-return point cloud data are available in the American Society for Photogrammetry and Remote Sensing (ASPRS) LAS format. The LAS format is a standardized binary format for storing 3-dimensional point cloud data and point attributes along with header information and variable length records specific to the data. Millions of data points are stored as a 3-dimensional data cloud as a series of x (longitude), y (latitude) and z (elevation) points. A few older projects in this collection are in ASCII format. Please refer to http://www.asprs.org/Committee-General/LASer-LAS-File-Format-Exchange-Activities.html for additional information. This data set is a LAZ (compressed LAS) format file containing lidar point cloud data. Compression to an LAZ file was done with the LAStools 'laszip' program and can be unzipped with the same free program (laszip.org).",
+    "processingUrl": "processingUrl",
+    "modificationInfo": "2023-04-16"
+   },
+   {
+    "title": "USGS Lidar Point Cloud Virginia_SANDY_QL2_LiDAR 18STG8557",
+    "moreInfo": "Lidar (Light detection and ranging) discrete-return point cloud data are available in the American Society for Photogrammetry and Remote Sensing (ASPRS) LAS format. The LAS format is a standardized binary format for storing 3-dimensional point cloud data and point attributes along with header information and variable length records specific to the data. Millions of data points are stored as a 3-dimensional data cloud as a series of x (longitude), y (latitude) and z (elevation) points. A few older projects in this collection are in ASCII format. Please refer to http://www.asprs.org/Committee-General/LASer-LAS-File-Format-Exchange-Activities.html for additional information. This data set is a LAZ (compressed LAS) format file containing [...]",
+    "sourceId": "643c6caad34ee8d4ade4e367",
+    "sourceName": "ScienceBase",
+    "sourceOriginId": null,
+    "sourceOriginName": "gda",
+    "metaUrl": "https://www.sciencebase.gov/catalog/item/643c6caad34ee8d4ade4e367",
+    "vendorMetaUrl": "https://prd-tnm.s3.amazonaws.com/index.html?prefix=StagedProducts/Elevation/metadata/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014",
+    "publicationDate": "2015-06-17",
+    "lastUpdated": "2023-04-16T15:53:14.038-06:00",
+    "dateCreated": "2023-04-16T15:46:18.347-06:00",
+    "sizeInBytes": 120474886,
+    "extent": "Varies",
+    "format": "LAZ",
+    "downloadURL": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8557.laz",
+    "downloadURLRaster": null,
+    "previewGraphicURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/browse/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8557.jpg",
+    "downloadLazURL": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8557.laz",
+    "urls": {
+     "LAZ": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8557.laz"
+    },
+    "datasets": [],
+    "boundingBox": {
+     "minX": -77.43943845268197,
+     "maxX": -77.42203538601997,
+     "minY": 37.5348218832792,
+     "maxY": 37.548679496948935
+    },
+    "bestFitIndex": 0.0,
+    "body": "Lidar (Light detection and ranging) discrete-return point cloud data are available in the American Society for Photogrammetry and Remote Sensing (ASPRS) LAS format. The LAS format is a standardized binary format for storing 3-dimensional point cloud data and point attributes along with header information and variable length records specific to the data. Millions of data points are stored as a 3-dimensional data cloud as a series of x (longitude), y (latitude) and z (elevation) points. A few older projects in this collection are in ASCII format. Please refer to http://www.asprs.org/Committee-General/LASer-LAS-File-Format-Exchange-Activities.html for additional information. This data set is a LAZ (compressed LAS) format file containing lidar point cloud data. Compression to an LAZ file was done with the LAStools 'laszip' program and can be unzipped with the same free program (laszip.org).",
+    "processingUrl": "processingUrl",
+    "modificationInfo": "2023-04-16"
+   }
+  ],
+  "errors": [],
+  "messages": [
+   "Retrieved 3 item(s) Retrieved (1 through 100)"
+  ],
+  "sciencebaseQuery": "https://www.sciencebase.gov/catalog/items?filter=tagslq%3Dtags.scheme%3A%22The+National+Map+Product+Extent+Thesaurus%22&filter=spatialQuery%3D%7B%22wkt%22%3A%22POLYGON%28%28-77.430667+37.533222%2C-77.427667+37.533222%2C-77.427667+37.536222%2C-77.430667+37.536222%2C-77.430667+37.533222%29%29%22%2C%22relation%22%3A%22intersects%22%7D&max=100&offset=0&fields=id%2Ctitle%2Csummary%2Cbody%2Ctags%2CwebLinks%2Cdates%2Cspatial%2Cidentifiers&format=json&sort=title&order=asc&q=Lidar+Point+Cloud",
+  "filteredOut": 0
+ }
+}
