@@ -137,3 +137,327 @@ evidence. Phase 1 remains gated on a Phase 0 Proceed + Alex's separate tap, per 
   report skeleton + evidence collected; report body completed by the supervisor from
   that evidence, with the gaps (§1 references, §1.2 two unconfirmed, §3 source-build
   unassessed) stated rather than filled.
+
+---
+
+## 5. Desktop continuation (2026-11-14, retry)
+
+This section is the retry of POC #64/#65 Phase 0 on Alex's desktop PC (the operator's
+desktop runner). The previous worker run on the sandbox VM failed by sequencing: it
+spent its whole step budget fighting USGS download rate-limits (HTTP 429) and never
+recorded the Docker verdict nor wrote the report. This section is written **first**
+(the report exists before any download is attempted) and is updated in place as each
+result lands.
+
+### 5.0 Docker verdict on the desktop
+
+Commands run on the desktop (worktree `/home/alex/muse-workers/wt/building-ai-pocs-65`):
+
+```
+$ docker --version
+Docker version 29.9.3, build 5457199
+
+$ docker ps
+CONTAINER ID   IMAGE                                     COMMAND                  CREATED          STATUS                  PORTS
+14db0a12990a   lscr.io/linuxserver/tvheadend:latest      "/init"                 37 hours ago    Up 37 hours             0.0.0.0:9981-9982->9981-9982/tcp, [::]:9981-9982->9981-9982/tcp   tvheadend
+567e41e77c85   alturismo/xteve:latest                    "./entrypoint.sh"       37 hours ago    Up 37 hours             0.0.0.0:34400->34400/tcp, [::]:34400->34400/tcp   xteve
+c98f214f52db   heroiclabs/nakama:3.21.1                  "/bin/sh -ecx 'case …"  6 weeks ago     Up 37 hours (healthy)   0.0.0.0:7349-7351->7349-7351/tcp, [::]:7349-7351->7349-7351/tcp   armored_archer_server
+... (7 further running containers)
+
+$ docker info | head -20
+Client: Docker Engine - Community
+ Version: 29.9.3
+ Context: default
+ Debug Mode: false
+ Plugins:
+  buildx: Docker Buildx (Docker Inc.)
+   Version:  v0.39.0
+   Path:     /usr/libexec/docker/cli-plugins/docker-buildx
+  compose: Docker Compose (Docker Inc.)
+   Version:  v5.7.1
+   Path:     /usr/libexec/docker/cli-plugins/docker-compose
+
+Server:
+ Containers: 10
+ Running: 10
+ Paused: 0
+ Stopped: 0
+ Images: 11
+ Storage Driver: overlay2
+```
+
+**Outcome: the Docker daemon answers on the desktop.** The "no daemon" outcome that
+produced the Blocked (environment) verdict in §3 does NOT reproduce here — that
+§3 verdict was a property of the sandbox VM, not of the desktop. The pinned
+`3dgi/3dbag-pipeline-tools` route is therefore available and Task 3 proceeds.
+
+### Run record — Richmond Main Street Station (2026-11-14 retry)
+
+**Environment / tool route**
+
+- Image (pinned): `3dgi/3dbag-pipeline-tools@sha256:055d02c5ea9ed23945e2f96725a1637e0d9fc66c68b78b92148ce953ba8c22c5`.
+  `docker pull` on the desktop returned `Status: Image is up to date for
+  3dgi/3dbag-pipeline-tools@sha256:055d02...` (already in the local image store).
+- The image's binaries are **not** on its default PATH (`PATH=/opt/3dbag-pipeline/venv/bin:...`);
+  the tools live in `/opt/3dbag-pipeline/tools/bin`. Working invocation form used throughout:
+  ```
+  docker run --rm -v "$PWD":/work -w /work --entrypoint bash <image> \
+      -c "export PATH=/opt/3dbag-pipeline/tools/bin:\$PATH; roofer ..."
+  ```
+- Versions: `roofer --version` → `roofer c9f272f (dirty, 2025-12-03 17:42:21 +0000)`;
+  image-bundled `val3dity version: 2.4.0` (so no `pip install val3dity` was needed),
+  PDAL 2.8.4, GDAL 3.8.5, PROJ 9.4.0, LASTools 2.0.4.
+- Python tooling on the host: the pre-existing virtualenv `~/muse-workers/venv-roofer`
+  (geopandas 1.2.0, shapely 2.2.0, pyproj 3.8.0, laspy 2.2.0). One pip install in this run:
+  `pip install lazrs` → lazrs 0.8.2 (needed only to read the LAZ outside the container).
+
+**Footprint (no footprint-tile download)**
+
+- Built from the repo's already-confirmed extract
+  (`queries/coverage_results.json` → `results.main_street_station.ms.features_covering_point[0]`),
+  i.e. no new Microsoft Building Footprints tile was downloaded:
+  ```
+  ~/muse-workers/venv-roofer/bin/python address-to-bem-roofer/scripts/make_footprint_gpkg.py \
+      --tag main_street_station \
+      --out /home/alex/muse-workers/roofer-scratch/footprints_main_street_station.gpkg
+  → main_street_station: 1 feature(s) -> .../footprints_main_street_station.gpkg
+    crs=EPSG:26918 bounds=[285318.71502607 4156904.64845788 285400.05358459 4156995.78888859]
+    main_street_station_0: area=3167.4 m2
+  ```
+- Footprint CRS is EPSG:26918 (NAD83 / UTM 18N) as required; the LAZ header CRS is
+  NAD83(2011) / UTM zone 18N (EPSG:6347) — same projection, sub-metre datum-epoch difference.
+  Roofer reprojects the polygon source itself.
+
+**Point cloud (exactly one LAZ tile)**
+
+- The single tile whose bbox contains the building point (37.534722, -77.429167), from
+  `queries/tnm_lpc_main_street_station.json`, is
+  `USGS_LPC_VA_SouthamptonHenricoWMBG_2019_B19_18stg850565.laz` (15,550,374 bytes) —
+  the VA_SouthamptonHenricoWMBG_2019_B19 tile. No second tile was downloaded.
+- That tile had already been fetched (HTTP 200, full size) by the previous desktop run on
+  2026-11-14 22:42 UTC (scratch log `dl_mss.log`, attempt 10 → `code=200 size=15550374`).
+  In THIS run the mandated resume command was issued against it:
+  ```
+  curl -L -C - --retry 6 --retry-delay 20 --retry-all-errors -o tile_18stg850565.laz <url>
+  curl: (33) HTTP server doesn't seem to support byte ranges. Cannot resume.
+  Warning: Problem (retrying all errors). Will retry in 20 seconds. 4 retries left.
+  ```
+  followed by a 190-byte HTTP 200 body (the USGS vdelivery error page, not LAZ data).
+  The on-disk tile was left untouched and was verified complete/valid before use:
+  `ls -l` → 15,550,374 bytes, `md5sum` → `7ecb83d381521fcae55c72f00f10c293`, and
+  `lasinfo64` (in-container) → LAS 1.4, point data format 6, **2,216,671 points**,
+  X 285000.01–286500.00, Y 4156500.00–4157153.01, Z −18.13–80.67,
+  CRS `NAD83(2011) / UTM zone 18N` (EPSG:6347), classification range 1–20.
+  The 429 behaviour of `rockyweb.usgs.gov` reproduces (fresh requests return a 259-byte
+  HTTP 429 body); no retry loop beyond the mandated discipline was entered.
+
+**Roofer runs (logs verbatim; ANSI colour stripped)**
+
+Run A — default building class 6, LoD2.2 (default):
+
+```
+$ roofer tile_18stg850565.laz footprints_main_street_station.gpkg out_mss
+[2026-11-15 05:49:15.425] [stdout] [info] Region of interest: 285318.715 4156904.648, 285400.054 4156995.789
+[2026-11-15 05:49:15.425] [stdout] [info] Number of source footprints: 1
+[2026-11-15 05:49:15.425] [stdout] [info] Using 7 threads for the reconstructor pool, 12 threads in total (system offers 12)
+[2026-11-15 05:49:15.425] [stdout] [info] [serializer] Writing output to out_mss
+[2026-11-15 05:49:15.428] [stdout] [info] Simplifying and buffering footprints...
+[2026-11-15 05:49:15.428] [stdout] [info] Cropping pointcloud ...
+[2026-11-15 05:49:16.191] [stdout] [info] Analysing pointcloud ...
+runtime: 1.01 s wall (0.01user 0.01system 2%CPU), container exit code 0
+```
+
+Output: 1 Building with a LoD0 MultiSurface only — no roof surface. Attributes:
+`rf_extrusion_mode "skip"`, `rf_roof_type "no points"`,
+`rf_pc_select "_HIGHEST_YET_INSUFFICIENT_COVERAGE"`, `rf_h_roof_max 0.0`,
+`rf_pt_density 4.702`, `rf_nodata_frac 0.960`, `rf_pointcloud_unusable true`.
+
+Diagnosis (PDAL crop of the footprint ROI → `crop_mss.las`, 27,297 points; LAStools
+`las2txt64 -parse xyzc` histogram of the classification field):
+
+| class | meaning | points in footprint ROI |
+|---|---|---|
+| 1 | unclassified | 17,299 (z 5.99 – 51.05 m) |
+| 2 | ground | 7,689 (z 5.92 – 9.30 m) |
+| 17 | bridge deck | 2,297 (z 14.47 – 27.59 m) |
+| 7 | noise | 12 |
+| **6** | **building** | **0** |
+
+The 2019 B19 delivery carries **no** class-6 building points over this footprint; the
+station structure is delivered as unclassified (class 1) and bridge-deck (class 17) points.
+The default `--bld-class 6` therefore cannot produce a roof. This is a data/classification
+property of the delivery, not a footprint problem. The fix applied below is a **documented
+Roofer classification parameter**, not any hand-repair of geometry.
+
+Run B — LoD2.2 with `--bld-class 1` (unclassified treated as building):
+
+```
+$ roofer --bld-class 1 tile_18stg850565.laz footprints_main_street_station.gpkg out_final
+[2026-11-15 05:50:22.823] [stdout] [info] Region of interest: 285318.715 4156904.648, 285400.054 4156995.789
+[2026-11-15 05:50:22.823] [stdout] [info] Number of source footprints: 1
+[2026-11-15 05:50:22.823] [stdout] [info] Using 7 threads for the reconstructor pool, 12 threads in total (system offers 12)
+[2026-11-15 05:50:22.823] [stdout] [info] [serializer] Writing output to out_final
+[2026-11-15 05:50:22.826] [stdout] [info] Simplifying and buffering footprints...
+[2026-11-15 05:50:22.826] [stdout] [info] Cropping pointcloud ...
+[2026-11-15 05:50:23.546] [stdout] [info] Analysing pointcloud ...
+runtime: 1.35 s wall (0.01user 0.01system 1%CPU), container exit code 0
+```
+
+Output: 28,240 bytes — one `Building` (LoD0 MultiSurface footprint) plus a
+`BuildingPart` with a **Solid, LoD 2.2** geometry (309 faces, 536 vertices).
+Attributes: `rf_roof_type "slanted"`, `rf_roof_planes 42`, `rf_h_ground 6.670 m`,
+`rf_h_roof_max 39.160 m`, `rf_h_roof_50p 24.870 m`, `rf_pt_density 5.736`,
+`rf_nodata_frac 0.408`, `rf_volume_lod22 56,212.49 m³`, `rf_rmse_lod22 0.840 m`,
+`rf_pc_select "_HIGHEST_YET_INSUFFICIENT_COVERAGE"`, `rf_pointcloud_unusable false`,
+`rf_success true`. Roofer reports no absolute `height` attribute; height above terrain
+implied by the attributes is 39.16 − 6.67 = **32.49 m**.
+
+Run C — LoD1.2 fallback:
+
+```
+$ roofer --bld-class 1 --lod12 --no-lod22 tile_18stg850565.laz footprints_main_street_station.gpkg out_c1_lod12
+[2026-11-15 05:50:17.802] [stdout] [info] Region of interest: 285318.715 4156904.648, 285400.054 4156995.789
+[2026-11-15 05:50:17.802] [stdout] [info] Number of source footprints: 1
+[2026-11-15 05:50:17.802] [stdout] [info] Using 7 threads for the reconstructor pool, 12 threads in total (system offers 12)
+[2026-11-15 05:50:17.803] [stdout] [info] [serializer] Writing output to out_c1_lod12
+[2026-11-15 05:50:17.805] [stdout] [info] Simplifying and buffering footprints...
+[2026-11-15 05:50:17.805] [stdout] [info] Cropping pointcloud ...
+[2026-11-15 05:50:18.519] [stdout] [info] Analysing pointcloud ...
+runtime: 1.35 s wall, container exit code 0
+```
+
+Output: 3,886 bytes (LoD1.2).
+
+**val3dity (image-bundled 2.4.0)**
+
+Note: val3dity 2.4.0 only recognises input names ending `.city.jsonl` / `.jsonl`
+(other names are rejected with `Couldn't find match for argument`), so the outputs were
+copied to such a name inside the scratch dir before validation.
+
+LoD2.2 output (`out_final/285318_4156904.city.jsonl`):
+
+```
+CityJSONL input file
+Validation of 1 feature(s):
+[==================================================] 100%
++++++++++++++++++++ SUMMARY +++++++++++++++++++
+INVALID :(
+Total # of Features:          1
+  # valid:                    0 (0.0%)
+  # invalid:                  1 (100.0%)
+Types:
+  Building
+Total # of primitives:        2
+  # valid:                    1 (50.0%)
+  # invalid:                  1 (50.0%)
+Types:
+  Solid
+  MultiSurface
+Errors present:
+  102 -- CONSECUTIVE_POINTS_SAME
+          1 primitive(s)
+```
+
+The JSON report (saved as `outputs/val3dity_report_main_street_station.json`) was generated
+from the delivered file itself and locates the two occurrences: `shell:0 -- face:58` and
+`shell:0 -- face:170` of the LoD2.2 Solid.
+The LoD0 footprint MultiSurface is valid. No geometry was hand-edited to silence these.
+
+LoD1.2 output (`out_c1_lod12/285318_4156904.city.jsonl`):
+
+```
++++++++++++++++++++ SUMMARY +++++++++++++++++++
+VALID :)
+Total # of Features:          1
+  # valid:                    1 (100.0%)
+  # invalid:                  0 (0.0%)
+Total # of primitives:        2
+  # valid:                    2 (100.0%)
+  # invalid:                  0 (0.0%)
+(no errors present)
+```
+
+**Delivered artefacts (worktree)**
+
+- `address-to-bem-roofer/outputs/main_street_station.city.jsonl` — 28,240 bytes, the Run B
+  (LoD2.2) CityJSONSeq output. Under 5 MB, so not gzipped.
+- `address-to-bem-roofer/outputs/main_street_station_lod12.city.jsonl` — 3,886 bytes, the
+  Run C (LoD1.2) fallback output (val3dity-clean).
+- `address-to-bem-roofer/outputs/val3dity_report_main_street_station.json` — 1,625 bytes,
+  val3dity 2.4.0 JSON report for the LoD2.2 output.
+- No LAZ/tile files were written into the worktree; every download stayed in
+  `/home/alex/muse-workers/roofer-scratch/`. Roofer (GPLv3) was executed as a container
+  process only — no Roofer source or binary was vendored into the repo.
+
+
+### Coverage completion
+
+**Footprints — 5/5 CONFIRMED.** The two nearest-feature confirmations are a **data
+edit**: the measurements were made by the previous desktop run (2026-11-14) over the same
+quadkey tile `032010221`; they are re-applied to `queries/coverage_results.json` by
+`scripts/apply_footprint_confirmations.py`, **not re-measured** here, and no footprint
+tile was downloaded again.
+
+| Building | Confirmation method | Distance | Evidence now in `queries/coverage_results.json` |
+|---|---|---|---|
+| Virginia State Capitol | point-in-polygon | 0.0 m | `ms.features_covering_point` (1 feature) + `ms.footprint_confirmed: true` |
+| 600 Canal Place | point-in-polygon | 0.0 m | `ms.features_covering_point` (1 feature) + `ms.footprint_confirmed: true` |
+| Richmond Main Street Station | point-in-polygon | 0.0 m | `ms.features_covering_point` (1 feature) + `ms.footprint_confirmed: true` |
+| James Monroe Building | nearest-feature | 3.00 m | `ms.footprint_confirmed: true`, `ms.confirmation_method: "nearest-feature"`, `ms.nearest_feature` (2,589.1 m², 32 vertices, height 24.25 m) |
+| Federal Reserve Bank Building | nearest-feature | 35.96 m | `ms.footprint_confirmed: true`, `ms.confirmation_method: "nearest-feature"`, `ms.nearest_feature` (108.6 m², 4 vertices, height 12.60 m) |
+
+Caveat on the Federal Reserve Bank Building: its nearest feature is a small 108.6 m²,
+4-vertex polygon 35.96 m from the reference point, so this is a weaker confirmation than
+the other four (it may be an outbuilding rather than the 119.8 m tower itself). It is
+recorded as CONFIRMED **by nearest-feature**, not by containment.
+
+**LiDAR — 5/5** (unchanged from §1.1): every candidate is covered by the 2019/2020
+`VA_SouthamptonHenricoWMBG_2019_B19` LPC tiles (published 2020-12-21) and by the 2015
+`Virginia_SANDY_QL2_LiDAR` tiles.
+
+**Published references** (one web search per building, 2026-11-14; nothing estimated;
+recorded in `queries/coverage_results.json` under each building's `published_reference`):
+
+| Building | Published figure | Source URL |
+|---|---|---|
+| Virginia State Capitol | Roof height 85 ft (SkyscraperPage gives the source as "Google Earth"); floor count 3 | https://skyscraperpage.com/cities/?buildingID=190890 |
+| James Monroe Building (Two World Trade Center) | 137 m (449 ft), 29 floors | https://en.wikipedia.org/wiki/James_Monroe_Building |
+| 600 Canal Place (Dominion Energy HQ) | 127.2 m (417 ft), 20 floors | https://en.wikipedia.org/wiki/600_Canal_Place ; https://en.wikipedia.org/wiki/List_of_tallest_buildings_in_Richmond |
+| Richmond Main Street Station | **NOT SOURCED** — the Wikipedia article publishes no height or footprint-area figure, and the follow-up web search returned a CAPTCHA challenge within the search budget | https://en.wikipedia.org/wiki/Richmond_Main_Street_Station |
+| Federal Reserve Bank Building | 119.8 m (394 ft), 26 floors | https://en.wikipedia.org/wiki/List_of_tallest_buildings_in_Richmond (cites CTBUH Skyscraper Center: https://www.skyscrapercenter.com/building/federal-reserve-bank-building/10616) |
+
+Cross-check note: the LoD2.2 model for Main Street Station implies 32.49 m above terrain
+(39.16 m roof − 6.67 m ground). Because no published figure was sourced for that building,
+that number is **unverified** and should not be read as a validated height.
+
+### Verdict
+
+**PROCEED** — Phase 0 clears the #64 bars on this desktop run.
+
+- **Docker route works.** The daemon answers on the desktop (§5.0) and the pinned
+  `3dgi/3dbag-pipeline-tools` image runs Roofer and val3dity as container processes.
+- **One-building Roofer run produced a val3dity-checked CityJSON output.**
+  Richmond Main Street Station, LoD2.2 (`outputs/main_street_station.city.jsonl`), val3dity
+  2.4.0 report attached (`outputs/val3dity_report_main_street_station.json`); the LoD1.2
+  fallback output (`outputs/main_street_station_lod12.city.jsonl`) is val3dity-VALID.
+- **Coverage stands at LiDAR 5/5 + footprints 5/5**, with published references recorded for
+  4 of 5 buildings and Main Street Station explicitly marked **NOT SOURCED**.
+
+Caveats that attach to this Proceed (they do not overturn it):
+
+1. The 2019 3DEP delivery has **no class-6 (building) points** over the Main Street Station
+   footprint, so the LoD2.2 model required `--bld-class 1` (unclassified treated as
+   building). The implied 32.49 m height above terrain is therefore likely inflated by
+   neighbouring unclassified structures and vegetation, and is unverified against any
+   published figure (none was sourced for that building).
+2. The LoD2.2 Solid is **val3dity-INVALID** (2 × `102 CONSECUTIVE_POINTS_SAME`, faces 58
+   and 170 of the BuildingPart Solid). The geometry was **not** hand-repaired; the LoD1.2
+   fallback output is the val3dity-clean artefact.
+3. The Federal Reserve Bank Building footprint confirmation is a nearest-feature match to a
+   small 108.6 m² polygon 35.96 m away, not a containment match.
+4. **No coverage fact was contradicted by anything gathered in this run**: the LiDAR 5/5
+   coverage and the three point-in-polygon confirmations stand unchanged, and the two
+   nearest-feature confirmations are re-applied as recorded measurements.
+
+No Phase 1 work was started: no CityJSON→OpenStudio code, no other repo touched, no LAZ
+file in the worktree, and Roofer (GPLv3) was used as a container process only.

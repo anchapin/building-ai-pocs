@@ -1,0 +1,78 @@
+{
+  "all_errors": [
+    102
+  ],
+  "dataset_errors": [],
+  "features": [
+    {
+      "errors": [],
+      "id": "1",
+      "primitives": [
+        {
+          "id": "0",
+          "numberfaces": 1,
+          "numbervertices": 24,
+          "type": "MultiSurface",
+          "validity": true
+        },
+        {
+          "errors": [
+            {
+              "code": 102,
+              "description": "CONSECUTIVE_POINTS_SAME",
+              "id": "shell:0 -- face:58",
+              "info": "",
+              "type": "Error"
+            },
+            {
+              "code": 102,
+              "description": "CONSECUTIVE_POINTS_SAME",
+              "id": "shell:0 -- face:170",
+              "info": "",
+              "type": "Error"
+            }
+          ],
+          "id": "1",
+          "numberfaces": 309,
+          "numbershells": 1,
+          "numbervertices": 536,
+          "type": "Solid",
+          "validity": false
+        }
+      ],
+      "type": "Building",
+      "validity": false
+    }
+  ],
+  "features_overview": [
+    {
+      "total": 1,
+      "type": "Building",
+      "valid": 0
+    }
+  ],
+  "input_file": "delivered.city.jsonl",
+  "input_file_type": "CityJSONL",
+  "parameters": {
+    "overlap_tol": -1.0,
+    "planarity_d2p_tol": 0.01,
+    "planarity_n_tol": 20.0,
+    "snap_tol": 0.001
+  },
+  "primitives_overview": [
+    {
+      "total": 1,
+      "type": "Solid",
+      "valid": 0
+    },
+    {
+      "total": 1,
+      "type": "MultiSurface",
+      "valid": 1
+    }
+  ],
+  "time": "Sun Nov 15 05:53:06 2026 UTC",
+  "type": "val3dity_report",
+  "val3dity_version": "2.4.0",
+  "validity": false
+}
