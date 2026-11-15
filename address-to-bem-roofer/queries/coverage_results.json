@@ -173,7 +173,16 @@
        ]
       ]
      }
-    ]
+    ],
+    "footprint_confirmed": true,
+    "confirmation_method": "point-in-polygon",
+    "confirmation_distance_m": 0.0,
+    "footprint_confirmation_note": "CONFIRMED by point-in-polygon test against the same MS Building Footprints quadkey tile 032010221 (measured 2026-11-14; the covering feature is kept in features_covering_point)."
+   },
+   "published_reference": {
+    "figure": "Roof height 85 ft (source given as \"Google Earth\" by SkyscraperPage); floor count 3",
+    "source_url": "https://skyscraperpage.com/cities/?buildingID=190890",
+    "status": "SOURCED"
    }
   },
   "james_monroe_building": {
@@ -227,7 +236,160 @@
     "quadkey": "032010221",
     "tile_url": "https://bfppub.z5.web.core.windows.net/2026-08-13/global-buildings.geojsonl/RegionName=UnitedStates/quadkey=032010221/part-00049-110f5303-ff85-4c71-a2bf-c6070024fec8.c000.csv.gz",
     "status": "ok",
-    "features_covering_point": []
+    "features_covering_point": [],
+    "footprint_confirmed": true,
+    "confirmation_method": "nearest-feature",
+    "confirmation_distance_m": 3.0,
+    "nearest_feature": {
+     "id": null,
+     "Height": 24.253658294677734,
+     "numVertices": 32,
+     "area_m2": 2589.1,
+     "geometry": [
+      [
+       [
+        [
+         -77.43015114529675,
+         37.53632653075246
+        ],
+        [
+         -77.43026813261426,
+         37.53637174561388
+        ],
+        [
+         -77.43028417911844,
+         37.536345639143576
+        ],
+        [
+         -77.43028464557649,
+         37.53638478675583
+        ],
+        [
+         -77.43032097248222,
+         37.536384514582465
+        ],
+        [
+         -77.43030652341177,
+         37.5364080187598
+        ],
+        [
+         -77.4302043755603,
+         37.536408784085566
+        ],
+        [
+         -77.43027943894405,
+         37.53643779558176
+        ],
+        [
+         -77.43028900592255,
+         37.53643085865078
+        ],
+        [
+         -77.43053103547996,
+         37.536524401389244
+        ],
+        [
+         -77.43054834417111,
+         37.53649624149172
+        ],
+        [
+         -77.43067241583951,
+         37.536544201185954
+        ],
+        [
+         -77.43086956332371,
+         37.5364012513726
+        ],
+        [
+         -77.43086871200538,
+         37.53632980426176
+        ],
+        [
+         -77.43070560763914,
+         37.53618836068193
+        ],
+        [
+         -77.43057236387662,
+         37.536237100359614
+        ],
+        [
+         -77.43054337145625,
+         37.53621196013884
+        ],
+        [
+         -77.43057443780727,
+         37.536161417376846
+        ],
+        [
+         -77.4304582828666,
+         37.53616228765125
+        ],
+        [
+         -77.4302408996835,
+         37.53597377317365
+        ],
+        [
+         -77.43023050774254,
+         37.535955909361704
+        ],
+        [
+         -77.43028180922622,
+         37.535937143554925
+        ],
+        [
+         -77.4302403671705,
+         37.5359012049742
+        ],
+        [
+         -77.42985354822441,
+         37.53618170689657
+        ],
+        [
+         -77.42998010931896,
+         37.53618075865579
+        ],
+        [
+         -77.4299805943557,
+         37.53622116626225
+        ],
+        [
+         -77.4300439737199,
+         37.53622069140175
+        ],
+        [
+         -77.43004347388478,
+         37.53617874251743
+        ],
+        [
+         -77.43004510829284,
+         37.536178144752334
+        ],
+        [
+         -77.43021086801679,
+         37.5361769028214
+        ],
+        [
+         -77.43013987757621,
+         37.53629239918691
+        ],
+        [
+         -77.43019072974663,
+         37.5363120532429
+        ],
+        [
+         -77.43015114529675,
+         37.53632653075246
+        ]
+       ]
+      ]
+     ]
+    },
+    "footprint_confirmation_note": "CONFIRMED by nearest-feature match on the same MS Building Footprints quadkey tile 032010221 (measured 2026-11-14 on the desktop; re-applied to this file as a data edit on 2026-11-14, not re-measured)."
+   },
+   "published_reference": {
+    "figure": "137 m (449 ft), 29 floors",
+    "source_url": "https://en.wikipedia.org/wiki/James_Monroe_Building",
+    "status": "SOURCED"
    }
   },
   "600_canal_place": {
@@ -411,7 +573,16 @@
        ]
       ]
      }
-    ]
+    ],
+    "footprint_confirmed": true,
+    "confirmation_method": "point-in-polygon",
+    "confirmation_distance_m": 0.0,
+    "footprint_confirmation_note": "CONFIRMED by point-in-polygon test against the same MS Building Footprints quadkey tile 032010221 (measured 2026-11-14; the covering feature is kept in features_covering_point)."
+   },
+   "published_reference": {
+    "figure": "127.2 m (417 ft), 20 floors",
+    "source_url": "https://en.wikipedia.org/wiki/600_Canal_Place ; https://en.wikipedia.org/wiki/List_of_tallest_buildings_in_Richmond",
+    "status": "SOURCED"
    }
   },
   "main_street_station": {
@@ -575,7 +746,16 @@
        ]
       ]
      }
-    ]
+    ],
+    "footprint_confirmed": true,
+    "confirmation_method": "point-in-polygon",
+    "confirmation_distance_m": 0.0,
+    "footprint_confirmation_note": "CONFIRMED by point-in-polygon test against the same MS Building Footprints quadkey tile 032010221 (measured 2026-11-14; the covering feature is kept in features_covering_point)."
+   },
+   "published_reference": {
+    "figure": "NOT SOURCED - the Wikipedia article publishes no height or footprint-area figure and the follow-up web search was blocked by a CAPTCHA within the search budget",
+    "source_url": "https://en.wikipedia.org/wiki/Richmond_Main_Street_Station",
+    "status": "NOT SOURCED"
    }
   },
   "federal_reserve_bank": {
@@ -642,7 +822,48 @@
     "quadkey": "032010221",
     "tile_url": "https://bfppub.z5.web.core.windows.net/2026-08-13/global-buildings.geojsonl/RegionName=UnitedStates/quadkey=032010221/part-00049-110f5303-ff85-4c71-a2bf-c6070024fec8.c000.csv.gz",
     "status": "ok",
-    "features_covering_point": []
+    "features_covering_point": [],
+    "footprint_confirmed": true,
+    "confirmation_method": "nearest-feature",
+    "confirmation_distance_m": 35.96,
+    "nearest_feature": {
+     "id": null,
+     "Height": 12.601751327514648,
+     "numVertices": 4,
+     "area_m2": 108.6,
+     "geometry": [
+      [
+       [
+        [
+         -77.44033028613275,
+         37.535433706506815
+        ],
+        [
+         -77.44025307576835,
+         37.535385502998324
+        ],
+        [
+         -77.44016518252924,
+         37.53547402952991
+        ],
+        [
+         -77.44024240034395,
+         37.53552223334696
+        ],
+        [
+         -77.44033028613275,
+         37.535433706506815
+        ]
+       ]
+      ]
+     ]
+    },
+    "footprint_confirmation_note": "CONFIRMED by nearest-feature match on the same MS Building Footprints quadkey tile 032010221 (measured 2026-11-14 on the desktop; re-applied to this file as a data edit on 2026-11-14, not re-measured)."
+   },
+   "published_reference": {
+    "figure": "119.8 m (394 ft), 26 floors",
+    "source_url": "https://en.wikipedia.org/wiki/List_of_tallest_buildings_in_Richmond ; https://www.skyscrapercenter.com/building/federal-reserve-bank-building/10616",
+    "status": "SOURCED"
    }
   }
  }
