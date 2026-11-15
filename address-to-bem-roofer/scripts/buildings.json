@@ -1,0 +1,42 @@
+[
+  {
+    "tag": "va_state_capitol",
+    "name": "Virginia State Capitol, 1000 Bank St, Richmond, VA",
+    "lat": 37.538758,
+    "lon": -77.433594,
+    "kind": "public / government",
+    "published_ref": "see REPORT.md section 1"
+  },
+  {
+    "tag": "james_monroe_building",
+    "name": "James Monroe Building (Two World Trade Center), 101 N 14th St, Richmond, VA",
+    "lat": 37.536278,
+    "lon": -77.430111,
+    "kind": "commercial office",
+    "published_ref": "see REPORT.md section 1"
+  },
+  {
+    "tag": "600_canal_place",
+    "name": "600 Canal Place (Dominion Energy HQ), 111 S 6th St, Richmond, VA",
+    "lat": 37.538176,
+    "lon": -77.439818,
+    "kind": "commercial office",
+    "published_ref": "see REPORT.md section 1"
+  },
+  {
+    "tag": "main_street_station",
+    "name": "Richmond Main Street Station, 1520 E Main St, Richmond, VA",
+    "lat": 37.534722,
+    "lon": -77.429167,
+    "kind": "public / transportation",
+    "published_ref": "see REPORT.md section 1"
+  },
+  {
+    "tag": "federal_reserve_bank",
+    "name": "Federal Reserve Bank Building, 701 E Byrd St, Richmond, VA",
+    "lat": 37.535639,
+    "lon": -77.440645,
+    "kind": "institutional",
+    "published_ref": "see REPORT.md section 1"
+  }
+]

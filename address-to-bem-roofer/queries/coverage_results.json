@@ -1,0 +1,649 @@
+{
+ "generated_utc": "2026-11-15T02:45:28.459121+00:00",
+ "results": {
+  "va_state_capitol": {
+   "name": "Virginia State Capitol, 1000 Bank St, Richmond, VA",
+   "lat": 37.538758,
+   "lon": -77.433594,
+   "tnm_request_url": "https://tnmaccess.nationalmap.gov/api/v1/products?bbox=-77.435094,37.537258,-77.432094,37.540258&q=Lidar%20Point%20Cloud&max=100",
+   "tnm_tile_count": 2,
+   "tnm_tiles": [
+    {
+     "title": "USGS Lidar Point Cloud VA_SouthamptonHenricoWMBG_2019_B19 18stg835565",
+     "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/VA_SouthamptonHenricoWMBG_2019_B19/VA_SouthamptonHenricoWMBG_2_2019/LAZ/USGS_LPC_VA_SouthamptonHenricoWMBG_2019_B19_18stg835565.laz",
+     "publicationDate": "2020-12-21",
+     "format": "LAZ",
+     "sizeInBytes": 21123373,
+     "bbox": {
+      "minX": -77.44546183698655,
+      "maxX": -77.43319749397504,
+      "minY": 37.530187424626114,
+      "maxY": 37.53787500613274
+     }
+    },
+    {
+     "title": "USGS Lidar Point Cloud Virginia_SANDY_QL2_LiDAR 18STG8557",
+     "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8557.laz",
+     "publicationDate": "2015-06-17",
+     "format": "LAZ",
+     "sizeInBytes": 120474886,
+     "bbox": {
+      "minX": -77.43943845268197,
+      "maxX": -77.42203538601997,
+      "minY": 37.5348218832792,
+      "maxY": 37.548679496948935
+     }
+    }
+   ],
+   "ms": {
+    "quadkey": "032010221",
+    "tile_url": "https://bfppub.z5.web.core.windows.net/2026-08-13/global-buildings.geojsonl/RegionName=UnitedStates/quadkey=032010221/part-00049-110f5303-ff85-4c71-a2bf-c6070024fec8.c000.csv.gz",
+    "status": "ok",
+    "features_covering_point": [
+     {
+      "id": null,
+      "Height": null,
+      "numVertices": null,
+      "geometry": [
+       [
+        [
+         -77.43366765405729,
+         37.53851469376139
+        ],
+        [
+         -77.43358755823637,
+         37.53863101879049
+        ],
+        [
+         -77.43337330152056,
+         37.53853824804879
+        ],
+        [
+         -77.43334734841102,
+         37.53854575501903
+        ],
+        [
+         -77.43334259515082,
+         37.53855265740709
+        ],
+        [
+         -77.43325215784716,
+         37.53857882152391
+        ],
+        [
+         -77.43319167264764,
+         37.53866665427216
+        ],
+        [
+         -77.43318845003968,
+         37.53865964914321
+        ],
+        [
+         -77.43315789791889,
+         37.538704014948884
+        ],
+        [
+         -77.43317599285112,
+         37.538743348691014
+        ],
+        [
+         -77.43325668468489,
+         37.53877828278433
+        ],
+        [
+         -77.43328201325603,
+         37.538770956485486
+        ],
+        [
+         -77.43337610446531,
+         37.53881169680507
+        ],
+        [
+         -77.43333199900754,
+         37.538875743747475
+        ],
+        [
+         -77.43334532836523,
+         37.5389047127299
+        ],
+        [
+         -77.43351072671882,
+         37.53897632800992
+        ],
+        [
+         -77.43352087971019,
+         37.53896158266203
+        ],
+        [
+         -77.43355807133715,
+         37.538977686133926
+        ],
+        [
+         -77.43353663724423,
+         37.53900881519156
+        ],
+        [
+         -77.43357382887116,
+         37.53902491865325
+        ],
+        [
+         -77.43358285375238,
+         37.53901181168604
+        ],
+        [
+         -77.43379907886478,
+         37.539105434126114
+        ],
+        [
+         -77.43381969076003,
+         37.53909947100987
+        ],
+        [
+         -77.43390592002355,
+         37.53913680704139
+        ],
+        [
+         -77.4340528068371,
+         37.53892350854643
+        ],
+        [
+         -77.4340127239048,
+         37.5388363787137
+        ],
+        [
+         -77.434003042228,
+         37.53883218667085
+        ],
+        [
+         -77.43402899132363,
+         37.53879450514585
+        ],
+        [
+         -77.43396380893029,
+         37.53876628197872
+        ],
+        [
+         -77.43402923931922,
+         37.538671256084555
+        ],
+        [
+         -77.43366765405729,
+         37.53851469376139
+        ]
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  "james_monroe_building": {
+   "name": "James Monroe Building (Two World Trade Center), 101 N 14th St, Richmond, VA",
+   "lat": 37.536278,
+   "lon": -77.430111,
+   "tnm_request_url": "https://tnmaccess.nationalmap.gov/api/v1/products?bbox=-77.431611,37.534778,-77.428611,37.537778&q=Lidar%20Point%20Cloud&max=100",
+   "tnm_tile_count": 3,
+   "tnm_tiles": [
+    {
+     "title": "USGS Lidar Point Cloud VA_SouthamptonHenricoWMBG_2019_B19 18stg850565",
+     "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/VA_SouthamptonHenricoWMBG_2019_B19/VA_SouthamptonHenricoWMBG_2_2019/LAZ/USGS_LPC_VA_SouthamptonHenricoWMBG_2019_B19_18stg850565.laz",
+     "publicationDate": "2020-12-21",
+     "format": "LAZ",
+     "sizeInBytes": 15550374,
+     "bbox": {
+      "minX": -77.43338855481655,
+      "maxX": -77.4162355706308,
+      "minY": 37.530435863721195,
+      "maxY": 37.53666505207732
+     }
+    },
+    {
+     "title": "USGS Lidar Point Cloud Virginia_SANDY_QL2_LiDAR 18STG8556",
+     "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8556.laz",
+     "publicationDate": "2015-06-17",
+     "format": "LAZ",
+     "sizeInBytes": 100184521,
+     "bbox": {
+      "minX": -77.43899800070365,
+      "maxX": -77.4215983999282,
+      "minY": 37.52131381863631,
+      "maxY": 37.53517111581411
+     }
+    },
+    {
+     "title": "USGS Lidar Point Cloud Virginia_SANDY_QL2_LiDAR 18STG8557",
+     "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8557.laz",
+     "publicationDate": "2015-06-17",
+     "format": "LAZ",
+     "sizeInBytes": 120474886,
+     "bbox": {
+      "minX": -77.43943845268197,
+      "maxX": -77.42203538601997,
+      "minY": 37.5348218832792,
+      "maxY": 37.548679496948935
+     }
+    }
+   ],
+   "ms": {
+    "quadkey": "032010221",
+    "tile_url": "https://bfppub.z5.web.core.windows.net/2026-08-13/global-buildings.geojsonl/RegionName=UnitedStates/quadkey=032010221/part-00049-110f5303-ff85-4c71-a2bf-c6070024fec8.c000.csv.gz",
+    "status": "ok",
+    "features_covering_point": []
+   }
+  },
+  "600_canal_place": {
+   "name": "600 Canal Place (Dominion Energy HQ), 111 S 6th St, Richmond, VA",
+   "lat": 37.538176,
+   "lon": -77.439818,
+   "tnm_request_url": "https://tnmaccess.nationalmap.gov/api/v1/products?bbox=-77.441318,37.536676,-77.438318,37.539676&q=Lidar%20Point%20Cloud&max=100",
+   "tnm_tile_count": 3,
+   "tnm_tiles": [
+    {
+     "title": "USGS Lidar Point Cloud VA_SouthamptonHenricoWMBG_2019_B19 18stg835565",
+     "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/VA_SouthamptonHenricoWMBG_2019_B19/VA_SouthamptonHenricoWMBG_2_2019/LAZ/USGS_LPC_VA_SouthamptonHenricoWMBG_2019_B19_18stg835565.laz",
+     "publicationDate": "2020-12-21",
+     "format": "LAZ",
+     "sizeInBytes": 21123373,
+     "bbox": {
+      "minX": -77.44546183698655,
+      "maxX": -77.43319749397504,
+      "minY": 37.530187424626114,
+      "maxY": 37.53787500613274
+     }
+    },
+    {
+     "title": "USGS Lidar Point Cloud Virginia_SANDY_QL2_LiDAR 18STG8357",
+     "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8357.laz",
+     "publicationDate": "2015-06-17",
+     "format": "LAZ",
+     "sizeInBytes": 119348504,
+     "bbox": {
+      "minX": -77.45640394147146,
+      "maxX": -77.43899823274212,
+      "minY": 37.53447021706474,
+      "maxY": 37.54832991253504
+     }
+    },
+    {
+     "title": "USGS Lidar Point Cloud Virginia_SANDY_QL2_LiDAR 18STG8557",
+     "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8557.laz",
+     "publicationDate": "2015-06-17",
+     "format": "LAZ",
+     "sizeInBytes": 120474886,
+     "bbox": {
+      "minX": -77.43943845268197,
+      "maxX": -77.42203538601997,
+      "minY": 37.5348218832792,
+      "maxY": 37.548679496948935
+     }
+    }
+   ],
+   "ms": {
+    "quadkey": "032010221",
+    "tile_url": "https://bfppub.z5.web.core.windows.net/2026-08-13/global-buildings.geojsonl/RegionName=UnitedStates/quadkey=032010221/part-00049-110f5303-ff85-4c71-a2bf-c6070024fec8.c000.csv.gz",
+    "status": "ok",
+    "features_covering_point": [
+     {
+      "id": null,
+      "Height": null,
+      "numVertices": null,
+      "geometry": [
+       [
+        [
+         -77.4399793691388,
+         37.538720909828
+        ],
+        [
+         -77.43999891900798,
+         37.5387487039319
+        ],
+        [
+         -77.44037557426364,
+         37.538242554232745
+        ],
+        [
+         -77.44037653806154,
+         37.53823434410574
+        ],
+        [
+         -77.44045631309432,
+         37.53824023242427
+        ],
+        [
+         -77.44045652977881,
+         37.53823838659414
+        ],
+        [
+         -77.4403248514448,
+         37.53805120114497
+        ],
+        [
+         -77.4403404926082,
+         37.53803018240613
+        ],
+        [
+         -77.4401435391252,
+         37.53793801690261
+        ],
+        [
+         -77.44020469067777,
+         37.53785584072695
+        ],
+        [
+         -77.44000993289266,
+         37.537841465278774
+        ],
+        [
+         -77.43997787149334,
+         37.537826461934245
+        ],
+        [
+         -77.43995315427055,
+         37.53779132095286
+        ],
+        [
+         -77.43983378854293,
+         37.53784411179408
+        ],
+        [
+         -77.43986783589065,
+         37.53786004447247
+        ],
+        [
+         -77.43986109276452,
+         37.53786910489397
+        ],
+        [
+         -77.43984115200658,
+         37.53787792501945
+        ],
+        [
+         -77.43966167309718,
+         37.537864677338604
+        ],
+        [
+         -77.43958984533462,
+         37.53796120031011
+        ],
+        [
+         -77.43959045802586,
+         37.53796207138401
+        ],
+        [
+         -77.43964553504378,
+         37.53798784499125
+        ],
+        [
+         -77.43956503945253,
+         37.53802344945323
+        ],
+        [
+         -77.43954415608744,
+         37.53799376295055
+        ],
+        [
+         -77.43931564342704,
+         37.53830083992047
+        ],
+        [
+         -77.43905334732574,
+         37.53841684249192
+        ],
+        [
+         -77.43983378854293,
+         37.538782051388345
+        ],
+        [
+         -77.43985183890752,
+         37.53877406851357
+        ],
+        [
+         -77.43985662926063,
+         37.53873326210013
+        ],
+        [
+         -77.43991180380307,
+         37.538811703862336
+        ],
+        [
+         -77.4399793691388,
+         37.538720909828
+        ]
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  "main_street_station": {
+   "name": "Richmond Main Street Station, 1520 E Main St, Richmond, VA",
+   "lat": 37.534722,
+   "lon": -77.429167,
+   "tnm_request_url": "https://tnmaccess.nationalmap.gov/api/v1/products?bbox=-77.430667,37.533222,-77.427667,37.536222&q=Lidar%20Point%20Cloud&max=100",
+   "tnm_tile_count": 3,
+   "tnm_tiles": [
+    {
+     "title": "USGS Lidar Point Cloud VA_SouthamptonHenricoWMBG_2019_B19 18stg850565",
+     "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/VA_SouthamptonHenricoWMBG_2019_B19/VA_SouthamptonHenricoWMBG_2_2019/LAZ/USGS_LPC_VA_SouthamptonHenricoWMBG_2019_B19_18stg850565.laz",
+     "publicationDate": "2020-12-21",
+     "format": "LAZ",
+     "sizeInBytes": 15550374,
+     "bbox": {
+      "minX": -77.43338855481655,
+      "maxX": -77.4162355706308,
+      "minY": 37.530435863721195,
+      "maxY": 37.53666505207732
+     }
+    },
+    {
+     "title": "USGS Lidar Point Cloud Virginia_SANDY_QL2_LiDAR 18STG8556",
+     "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8556.laz",
+     "publicationDate": "2015-06-17",
+     "format": "LAZ",
+     "sizeInBytes": 100184521,
+     "bbox": {
+      "minX": -77.43899800070365,
+      "maxX": -77.4215983999282,
+      "minY": 37.52131381863631,
+      "maxY": 37.53517111581411
+     }
+    },
+    {
+     "title": "USGS Lidar Point Cloud Virginia_SANDY_QL2_LiDAR 18STG8557",
+     "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8557.laz",
+     "publicationDate": "2015-06-17",
+     "format": "LAZ",
+     "sizeInBytes": 120474886,
+     "bbox": {
+      "minX": -77.43943845268197,
+      "maxX": -77.42203538601997,
+      "minY": 37.5348218832792,
+      "maxY": 37.548679496948935
+     }
+    }
+   ],
+   "ms": {
+    "quadkey": "032010221",
+    "tile_url": "https://bfppub.z5.web.core.windows.net/2026-08-13/global-buildings.geojsonl/RegionName=UnitedStates/quadkey=032010221/part-00049-110f5303-ff85-4c71-a2bf-c6070024fec8.c000.csv.gz",
+    "status": "ok",
+    "features_covering_point": [
+     {
+      "id": null,
+      "Height": null,
+      "numVertices": null,
+      "geometry": [
+       [
+        [
+         -77.4297170848373,
+         37.534317341706114
+        ],
+        [
+         -77.42939617106299,
+         37.53416065978137
+        ],
+        [
+         -77.42928190984944,
+         37.534307824294785
+        ],
+        [
+         -77.42930524976232,
+         37.53431921839316
+        ],
+        [
+         -77.42925297833811,
+         37.53438654208273
+        ],
+        [
+         -77.42903588572787,
+         37.5344381466396
+        ],
+        [
+         -77.42886005263578,
+         37.53466461265195
+        ],
+        [
+         -77.42888101666773,
+         37.5346748480054
+        ],
+        [
+         -77.42888841147943,
+         37.53469440553038
+        ],
+        [
+         -77.42880950016718,
+         37.53471316327338
+        ],
+        [
+         -77.42888884285253,
+         37.53475189663489
+        ],
+        [
+         -77.4288587838138,
+         37.53479061136422
+        ],
+        [
+         -77.42888249737133,
+         37.53485334263332
+        ],
+        [
+         -77.42898100243642,
+         37.53472647244257
+        ],
+        [
+         -77.42898998317129,
+         37.534750224341494
+        ],
+        [
+         -77.42901300876935,
+         37.53476146493073
+        ],
+        [
+         -77.42907268657805,
+         37.53491929826619
+        ],
+        [
+         -77.42909433207247,
+         37.5348914198647
+        ],
+        [
+         -77.42909459675836,
+         37.53489211989423
+        ],
+        [
+         -77.42912905099753,
+         37.534883929913
+        ],
+        [
+         -77.42916789812904,
+         37.53498667102678
+        ],
+        [
+         -77.42919514475722,
+         37.534951578652574
+        ],
+        [
+         -77.42921124598307,
+         37.53495943978856
+        ],
+        [
+         -77.42921363654901,
+         37.53496576224553
+        ],
+        [
+         -77.4297170848373,
+         37.534317341706114
+        ]
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  "federal_reserve_bank": {
+   "name": "Federal Reserve Bank Building, 701 E Byrd St, Richmond, VA",
+   "lat": 37.535639,
+   "lon": -77.440645,
+   "tnm_request_url": "https://tnmaccess.nationalmap.gov/api/v1/products?bbox=-77.442145,37.534139,-77.439145,37.537139&q=Lidar%20Point%20Cloud&max=100",
+   "tnm_tile_count": 4,
+   "tnm_tiles": [
+    {
+     "title": "USGS Lidar Point Cloud VA_SouthamptonHenricoWMBG_2019_B19 18stg835565",
+     "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/VA_SouthamptonHenricoWMBG_2019_B19/VA_SouthamptonHenricoWMBG_2_2019/LAZ/USGS_LPC_VA_SouthamptonHenricoWMBG_2019_B19_18stg835565.laz",
+     "publicationDate": "2020-12-21",
+     "format": "LAZ",
+     "sizeInBytes": 21123373,
+     "bbox": {
+      "minX": -77.44546183698655,
+      "maxX": -77.43319749397504,
+      "minY": 37.530187424626114,
+      "maxY": 37.53787500613274
+     }
+    },
+    {
+     "title": "USGS Lidar Point Cloud Virginia_SANDY_QL2_LiDAR 18STG8356",
+     "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8356.laz",
+     "publicationDate": "2015-06-17",
+     "format": "LAZ",
+     "sizeInBytes": 105680829,
+     "bbox": {
+      "minX": -77.45596055060327,
+      "maxX": -77.43855819063228,
+      "minY": 37.52096223058152,
+      "maxY": 37.53482179088798
+     }
+    },
+    {
+     "title": "USGS Lidar Point Cloud Virginia_SANDY_QL2_LiDAR 18STG8357",
+     "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8357.laz",
+     "publicationDate": "2015-06-17",
+     "format": "LAZ",
+     "sizeInBytes": 119348504,
+     "bbox": {
+      "minX": -77.45640394147146,
+      "maxX": -77.43899823274212,
+      "minY": 37.53447021706474,
+      "maxY": 37.54832991253504
+     }
+    },
+    {
+     "title": "USGS Lidar Point Cloud Virginia_SANDY_QL2_LiDAR 18STG8557",
+     "url": "https://rockyweb.usgs.gov/vdelivery/Datasets/Staged/Elevation/LPC/Projects/Virginia_SANDY_QL2_LiDAR/VA_Sandy_2014/LAZ/USGS_LPC_Virginia_SANDY_QL2_LiDAR_18STG8557.laz",
+     "publicationDate": "2015-06-17",
+     "format": "LAZ",
+     "sizeInBytes": 120474886,
+     "bbox": {
+      "minX": -77.43943845268197,
+      "maxX": -77.42203538601997,
+      "minY": 37.5348218832792,
+      "maxY": 37.548679496948935
+     }
+    }
+   ],
+   "ms": {
+    "quadkey": "032010221",
+    "tile_url": "https://bfppub.z5.web.core.windows.net/2026-08-13/global-buildings.geojsonl/RegionName=UnitedStates/quadkey=032010221/part-00049-110f5303-ff85-4c71-a2bf-c6070024fec8.c000.csv.gz",
+    "status": "ok",
+    "features_covering_point": []
+   }
+  }
+ }
+}
