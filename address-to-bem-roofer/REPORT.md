@@ -117,11 +117,11 @@ evidence. Phase 1 remains gated on a Phase 0 Proceed + Alex's separate tap, per 
 
 ## Claims
 
-- [observed] All 5 candidates are covered by VA_SouthamptonHenricoWMBG_2019_B19 LPC
+- [observed] All 5 candidates are covered by VA_SouthamptonHenricoWMBG_2019_B19 LPC (source: queries/coverage_results.json, queries/tnm_lpc_*.json)
   tiles — `queries/tnm_lpc_*.json`, `queries/coverage_results.json`.
-- [observed] MS Building Footprints polygons cover the reference points of 3 of 5
+- [observed] MS Building Footprints polygons cover the reference points of 3 of 5 (source: queries/coverage_results.json)
   candidates — `queries/coverage_results.json`.
-- [observed] No docker daemon and no podman exist in this environment — worker
+- [observed] No docker daemon and no podman exist in this environment — worker (source: worker toolchain probes, REPORT.md section 3)
   toolchain probes (§3).
 - [unsupported] The bbox-wide pre-check counts (415 / 13 tiles) — not re-run here (§2).
 - [unsupported] Published footprint-area/height references for the 5 candidates —
